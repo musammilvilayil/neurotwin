@@ -1,0 +1,2 @@
+import 'dotenv/config'; import mongoose from 'mongoose'; import app from './app.js'; import {seed} from './seed.js';
+const port=process.env.PORT||5000; mongoose.connect(process.env.MONGODB_URI||'mongodb://localhost:27017/neurotwin').then(async()=>{await seed();app.listen(port,()=>console.log(`NeuroTwin API on ${port}`))}).catch(e=>{console.error('MongoDB connection failed:',e.message);process.exit(1)});

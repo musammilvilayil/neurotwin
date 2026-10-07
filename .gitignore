@@ -9,3 +9,8 @@ __pycache__/
 models/*.keras
 data/raw/
 data/processed/
+node_modules/
+dist/
+.env
+__pycache__/
+*.pyc
