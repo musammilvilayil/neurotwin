@@ -1,46 +1,146 @@
-# NeuroTwin
+# NeuroTwin EEG Dataset Training Pipeline
 
-NeuroTwin is an academic/research prototype for EEG-informed neurological monitoring and a patient-specific Digital Twin. It pairs a React clinical workspace, Express/MongoDB API, and Python/MNE/TensorFlow research pipeline.
+This repository contains a research-only EEG training pipeline for public PhysioNet datasets, integrated with the NeuroTwin workspace. It is intentionally built around safe research boundaries: no clinical diagnosis claim, no fake trained model results, and no dataset files committed to Git.
 
-> **Safety boundary:** this is clinical decision-support software, not a diagnostic device. It does not replace clinician judgement. The repository ships **no trained model and no performance claims**. All demo outputs are labelled untrained/demo and require clinician review.
+## Datasets supported
 
-## What is included
+1. Auditory evoked potential EEG-Biometric dataset
+   - DOI: https://doi.org/10.13026/ps31-fc50
+   - Use only valid subject identity or raw experiment-ID labels.
+   - No clinical disease prediction claim is made.
 
-- JWT authentication and RBAC for Doctor, Patient, Caregiver, and Admin roles
-- Doctor/patient-oriented dashboard, clinical notes, caregiver read-only patient access, admin audit endpoint
-- MongoDB models for users, patients, EEG sessions, analyses, Digital Twin snapshots, notes, and audit events
-- EEG upload contract plus Python MNE EDF inspection/preprocessing (EEG pick, 0.5–40 Hz filter, 128 Hz resample, z-score)
-- CNN–LSTM architecture and reproducible training entry point for appropriately approved, de-identified labelled data
-- Prototype confidence/explanation fields and longitudinal snapshot updates, intentionally marked demo until validated weights are deployed
-- Demo seed accounts and a responsive frontend
+2. EEG Motor Movement/Imagery dataset
+   - DOI: https://doi.org/10.13026/C28G6P
+   - Uses EDF+ files and annotations.
+   - Handles baseline, motor execution, and motor imagery tasks separately.
 
-## Run locally
+## Safety boundary
 
-Requirements: Node 20+, MongoDB 7+, and Python 3.11+ for the ML service.
+This project is research-only. It does not diagnose disease, predict patient health status, or claim clinical validity. Outputs must carry a `research_only` or `untrained/demo` status whenever validated weights are absent.
 
+## Repository setup
+
+Requirements:
+- Node.js 20+
+- Python 3.11+
+- MongoDB 7+ (optional for API smoke testing)
+- pip/venv
+
+Install:
+```bash
+npm install
+npm install --prefix server
+npm install --prefix client
+python -m venv services/ml/.venv
+services/ml/.venv\Scripts\python -m pip install --upgrade pip
+services/ml/.venv\Scripts\python -m pip install -r services/ml/requirements.txt
+```
+
+On macOS/Linux use:
+```bash
+python -m venv services/ml/.venv
+. services/ml/.venv/bin/activate
+python -m pip install -r services/ml/requirements.txt
+```
+
+## Dataset preparation
+
+The dataset archives are not committed to this repository. Download them into `data/` or a local research directory and then prepare features.
+
+Auditory dataset:
+```bash
+python services/ml/download_physionet.py --dataset auditory --doi 10.13026/ps31-fc50 --output-dir data/raw
+```
+
+Motor imagery dataset:
+```bash
+python services/ml/download_physionet.py --dataset motor-imagery --doi 10.13026/C28G6P --output-dir data/raw
+```
+
+Place/inspect dataset files under a local path such as:
+```bash
+data/raw/auditory/
+data/raw/motor-imagery/
+```
+
+## Preparation and training commands
+
+Preprocess and inspect a single EEG file:
+```bash
+services/ml/.venv\Scripts\python -c "from preprocessing import preprocess_eeg_record; print(preprocess_eeg_record('data/raw/example.edf', window_size=512)['metadata'])"
+```
+
+Prepare a dataset for training (example):
+```bash
+services/ml/.venv\Scripts\python - <<'PY'
+from preprocessing import parse_physionet_dataset
+print(parse_physionet_dataset('data/raw/auditory', dataset_type='auditory'))
+PY
+```
+
+Train a model with subject-wise split protection:
+```bash
+services/ml/.venv\Scripts\python services/ml/train.py --features data/features/X.npy --labels data/features/y.npy --subject-ids data/features/subject_ids.npy --dataset-name auditory --task-name subject_identity --output-dir model_artifacts/auditory --epochs 25 --batch-size 32 --learning-rate 1e-3 --seed 42
+```
+
+Train motor imagery/execution pipeline:
+```bash
+services/ml/.venv\Scripts\python services/ml/train.py --features data/features/motor_X.npy --labels data/features/motor_y.npy --subject-ids data/features/motor_subject_ids.npy --dataset-name motor_imagery --task-name motor_imagery_execution --output-dir model_artifacts/motor_imagery --epochs 25 --batch-size 32 --learning-rate 1e-3 --seed 42
+```
+
+## Evaluation and output
+
+The training script exports:
+- `metrics.json`
+- `training_history.csv`
+- `model_metadata.json`
+- `model.keras` (when generated locally)
+
+Evaluate using held-out subjects only; do not mix windows from the same participant across splits.
+
+## API and UI model-state behavior
+
+The backend exposes a safety endpoint:
+```bash
+curl http://localhost:5000/api/model/state
+```
+
+When no trained weight file is present, it must return a state of `untrained/demo` and include a research-only notice rather than a fake result.
+
+## License and data use
+
+This repository does not bundle the PhysioNet datasets. Users must comply with the dataset's own license and access conditions, including PhysioNet credentialing and approved research use.
+
+## Running the app
+
+Start the API and frontend:
 ```bash
 cp .env.example server/.env
-npm run install:all
 npm run dev
 ```
 
-Start MongoDB locally first. The web app opens at `http://localhost:5173`; API at `http://localhost:5000`. Alternatively, run `docker compose up --build` for MongoDB, API, and ML service (run the Vite client separately).
+The web app runs at `http://localhost:5173` and the API at `http://localhost:5000`.
 
-Demo password for every account: `DemoPass123!`
+## Tests
 
-| Role | Email |
-|---|---|
-| Doctor | doctor@neurotwin.demo |
-| Patient | patient@neurotwin.demo |
-| Caregiver | caregiver@neurotwin.demo |
-| Admin | admin@neurotwin.demo |
+Server safety checks:
+```bash
+npm test --prefix server
+```
 
-## API and data boundaries
+Dataset parsing and leakage-protection tests:
+```bash
+services/ml/.venv\Scripts\python -m pytest services/ml/tests/test_dataset_pipeline.py
+```
 
-`POST /api/eeg/upload` registers an EEG file and produces a clearly labelled demo analysis/snapshot. It does not infer a medical condition. The ML service's `POST /inspect-eeg` accepts EDF files and returns preprocessing metadata only; it intentionally performs no inference without validated supplied weights.
+Frontend build:
+```bash
+npm run build --prefix client
+```
 
-Never upload identifiable health information to an unapproved environment. Before any real-world use, add institutional approvals, informed consent, encryption/key management, data retention rules, model validation, bias evaluation, monitoring, and applicable regulatory review.
+## Important limitations
 
-## Tests and deployment
-
-Run `npm test` for the API health/safety-boundary test and `npm run build` for the production client bundle. Set a strong unique `JWT_SECRET`, restricted `CLIENT_ORIGIN`, production MongoDB credentials, TLS, and durable object storage before deployment. See [architecture notes](docs/ARCHITECTURE.md).
+- This repository does not include any trained model weights.
+- No clinical or diagnostic claim is made.
+- Public dataset use is subject to data access and licensing terms.
+- Only de-identified and approved research data should be used.
