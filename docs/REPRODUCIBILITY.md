@@ -7,6 +7,7 @@ Place the downloaded PhysioNet directory under a local path such as `services/ml
 ```bash
 cd services/ml
 pip install -r requirements.txt
+python download_chbmit.py --output-dir data
 python prepare_chbmit.py --data-dir data --output-dir prepared
 ```
 
