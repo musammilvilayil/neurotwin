@@ -1,6 +1,6 @@
 # NeuroTwin Architecture
 
-Public/de-identified EEG -> preprocessing -> CNN-LSTM -> confidence/explanation -> patient Digital Twin -> role-based dashboards.
+Authorized EDF upload -> authenticated Express proxy -> MNE preprocessing -> artifact-backed CNN-LSTM -> seizure-score timeline/waveform -> patient Digital Twin snapshot -> role-based dashboards.
 
 ## Roles
 Patient, Doctor, Caregiver, Admin.
@@ -10,3 +10,7 @@ User, PatientProfile, EEGSession, Analysis, TwinSnapshot, ClinicalNote, Appointm
 
 ## Safety boundary
 NeuroTwin is an academic clinical decision-support system. Outputs require clinician review and are not independent diagnoses.
+
+## Model boundary
+
+The API never manufactures an analysis. The ML service returns `503 model_not_ready` until a paired Keras artifact and metadata file are mounted. Training uses subject-disjoint partitions and persists evaluation metadata, but those results require independent review before any research deployment.

@@ -5,7 +5,10 @@ services:
     volumes: ["mongo-data:/data/db"]
   ml:
     build: ./services/ml
+    environment:
+      MODEL_ARTIFACT_DIR: /app/artifacts
     ports: ["8001:8001"]
+    volumes: ["./services/ml/artifacts:/app/artifacts:ro"]
   server:
     build: ./server
     environment:
