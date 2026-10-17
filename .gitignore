@@ -17,3 +17,5 @@ __pycache__/
 services/ml/artifacts/
 services/ml/__pycache__/
 services/ml/tests/__pycache__/
+services/ml/data/
+services/ml/prepared/
