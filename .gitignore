@@ -14,3 +14,8 @@ dist/
 .env
 __pycache__/
 *.pyc
+services/ml/artifacts/
+services/ml/__pycache__/
+services/ml/tests/__pycache__/
+services/ml/data/
+services/ml/prepared/
