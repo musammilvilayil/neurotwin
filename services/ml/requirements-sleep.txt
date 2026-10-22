@@ -1,0 +1,5 @@
+# Install in a separate Python 3.11+ virtual environment when dependency resolution
+# conflicts with the pinned TensorFlow ML service requirements.
+yasa==0.8.0
+lightgbm>=4.6,<5
+antropy>=0.1.9
