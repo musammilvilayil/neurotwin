@@ -6,6 +6,7 @@ import numpy as np
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from tensorflow import keras
 from preprocessing import load_edf, preprocess, windows
+from model_registry import list_models
 
 app=FastAPI(title='NeuroTwin ML Service',version='1.0.0')
 ARTIFACT_DIR=Path(os.getenv('MODEL_ARTIFACT_DIR','artifacts'))
@@ -13,6 +14,10 @@ def artifacts():
     model_path,metadata_path=ARTIFACT_DIR/'model.keras',ARTIFACT_DIR/'metadata.json'
     if not model_path.is_file() or not metadata_path.is_file(): return None,None
     return model_path,json.loads(metadata_path.read_text())
+
+@app.get('/models')
+def models():
+    return {'models': list_models(ARTIFACT_DIR), 'notice': 'Availability is not clinical validation.'}
 
 @app.get('/health')
 def health():
