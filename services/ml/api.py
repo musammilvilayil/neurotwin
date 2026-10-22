@@ -3,7 +3,7 @@ import json, os
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 import numpy as np
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, UploadFile, Form
 from tensorflow import keras
 from preprocessing import load_edf, preprocess, windows
 from model_registry import list_models
@@ -23,6 +23,24 @@ def models():
 def health():
     model,meta=artifacts()
     return {'status':'ok','service':'neurotwin-ml','model_state':'ready' if model else 'not_ready','model_metadata':meta,'clinical_boundary':'Research decision support only; no diagnostic claim.'}
+
+@app.post('/infer-sleep')
+async def infer_sleep(file: UploadFile=File(...), eeg_channel: str=Form(...), eog_channel: str | None=Form(None), emg_channel: str | None=Form(None)):
+    if not file.filename or not file.filename.lower().endswith('.edf'):
+        raise HTTPException(400, 'Only EDF recordings are supported.')
+    with NamedTemporaryFile(suffix='.edf') as temp:
+        contents = await file.read(50 * 1024 * 1024 + 1)
+        if len(contents) > 50 * 1024 * 1024:
+            raise HTTPException(413, 'EDF exceeds 50 MB upload limit.')
+        temp.write(contents)
+        temp.flush()
+        try:
+            from sleep_inference import analyze_sleep_edf
+            return analyze_sleep_edf(temp.name, eeg_channel, eog_channel, emg_channel)
+        except ImportError:
+            raise HTTPException(503, {'error': 'sleep_model_not_installed', 'message': 'Install optional YASA dependencies and pretrained classifier.'})
+        except (ValueError, AssertionError) as exc:
+            raise HTTPException(422, str(exc))
 
 @app.post('/inspect-eeg')
 async def inspect_eeg(file: UploadFile = File(...)):
