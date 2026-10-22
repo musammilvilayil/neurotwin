@@ -14,11 +14,17 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+  sleep:
+    build:
+      context: ./services/ml
+      dockerfile: Dockerfile.sleep
+    ports: ["8002:8002"]
   server:
     build: ./server
     environment:
       MONGODB_URI: mongodb://mongo:27017/neurotwin
       ML_SERVICE_URL: http://ml:8001
+      SLEEP_SERVICE_URL: http://sleep:8002
       JWT_SECRET: change-me-before-deploying
     ports: ["5000:5000"]
     depends_on:
