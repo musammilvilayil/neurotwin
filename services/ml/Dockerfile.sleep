@@ -1,0 +1,7 @@
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements-sleep.txt .
+RUN pip install --no-cache-dir -r requirements-sleep.txt fastapi==0.112.0 uvicorn==0.30.5 python-multipart==0.0.9
+COPY sleep_worker.py sleep_inference.py ./
+EXPOSE 8002
+CMD ["uvicorn", "sleep_worker:app", "--host", "0.0.0.0", "--port", "8002"]
