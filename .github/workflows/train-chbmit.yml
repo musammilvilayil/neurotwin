@@ -1,6 +1,12 @@
 name: Train CHB-MIT research model
 
 on:
+  push:
+    branches:
+      - feat/chbmit-training-and-inference
+    paths:
+      - '.github/workflows/train-chbmit.yml'
+      - 'services/ml/**'
   workflow_dispatch:
     inputs:
       subjects:
@@ -13,6 +19,10 @@ on:
         required: true
         default: "10"
         type: string
+
+concurrency:
+  group: neurotwin-chbmit-training
+  cancel-in-progress: true
 
 permissions:
   contents: read
