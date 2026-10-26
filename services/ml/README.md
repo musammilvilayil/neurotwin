@@ -21,12 +21,12 @@ python -m venv .venv
 # Activate the environment, then:
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
-python download_chbmit.py --data-dir data/chbmit --subjects chb01,chb02,chb03,chb05,chb06,chb07 --negative-files-per-subject 1
+python download_chbmit.py --data-dir data/chbmit --subjects chb01,chb02,chb03,chb05,chb06,chb07,chb08,chb09,chb10,chb11 --negative-files-per-subject 1
 python prepare_chbmit.py --data-dir data/chbmit --output-dir data/processed --window-seconds 10 --stride-seconds 10
 python train.py --features data/processed/features.npy --labels data/processed/labels.npy --subjects data/processed/subjects.npy --output-dir artifacts --epochs 10
 ```
 
-The model uses 18 fixed bipolar channels at 128 Hz and 10-second windows. Files without the required channel montage are skipped during preparation; inspect `preparation_report.json`. Splits are separated by subject, and the threshold is selected on validation data before the test set is scored. Metrics are exported to `artifacts/evaluation.json`; the exact test metrics must be reviewed rather than assumed.
+The model uses 18 fixed bipolar channels at 128 Hz and 10-second windows. Files without the required channel montage are skipped during preparation; inspect `preparation_report.json`. Splits are separated by subject (60% train / 20% validation / 20% test), and the threshold is selected on validation data before the test set is scored. Metrics are exported to `artifacts/evaluation.json`; the exact test metrics must be reviewed rather than assumed.
 
 ## Install the trained artifact
 
