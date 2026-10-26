@@ -1,0 +1,86 @@
+name: Train CHB-MIT research model
+
+on:
+  push:
+    branches:
+      - feat/chbmit-training-and-inference
+  workflow_dispatch:
+    inputs:
+      subjects:
+        description: "Comma-separated CHB-MIT subject folders (use at least 6)"
+        required: true
+        default: "chb01,chb02,chb03,chb05,chb06,chb07,chb08,chb09,chb10,chb11"
+        type: string
+      epochs:
+        description: "Maximum training epochs"
+        required: true
+        default: "10"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  train:
+    name: Prepare data, train, and evaluate
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: services/ml/requirements.txt
+
+      - name: Install research dependencies
+        working-directory: services/ml
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Run preprocessing unit tests
+        working-directory: services/ml
+        run: python -m unittest discover -s tests -v
+
+      - name: Download labelled CHB-MIT subset
+        working-directory: services/ml
+        env:
+          SUBJECTS: ${{ inputs.subjects || 'chb01,chb02,chb03,chb05,chb06,chb07,chb08,chb09,chb10,chb11' }}
+        run: python download_chbmit.py --data-dir data/chbmit --subjects "$SUBJECTS" --negative-files-per-subject 1
+
+      - name: Prepare subject-labelled EEG windows
+        working-directory: services/ml
+        run: python prepare_chbmit.py --data-dir data/chbmit --output-dir data/processed --window-seconds 10 --stride-seconds 10
+
+      - name: Train and evaluate CNN-LSTM
+        working-directory: services/ml
+        env:
+          EPOCHS: ${{ inputs.epochs || '10' }}
+        run: |
+          python train.py \
+            --features data/processed/features.npy \
+            --labels data/processed/labels.npy \
+            --subjects data/processed/subjects.npy \
+            --output-dir artifacts \
+            --epochs "$EPOCHS" \
+            --window-seconds 10 \
+            --sampling-rate 128
+
+      - name: Include dataset preparation report
+        working-directory: services/ml
+        run: cp data/processed/preparation_report.json artifacts/preparation_report.json
+
+      - name: Upload model and evaluation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: neurotwin-chbmit-research-model
+          path: |
+            services/ml/artifacts/model.keras
+            services/ml/artifacts/best_model.keras
+            services/ml/artifacts/metadata.json
+            services/ml/artifacts/evaluation.json
+            services/ml/artifacts/preparation_report.json
+          if-no-files-found: error
+          retention-days: 14
