@@ -42,7 +42,8 @@ def get_model(model_path: Path):
 def normalise_channel(name: str) -> str:
     value = name.upper().strip().replace("EEG ", "")
     value = value.replace("-REF", "").replace("-LE", "").replace("--", "-")
-    return value
+    aliases = {"T3": "T7", "T4": "T8", "T5": "P7", "T6": "P8"}
+    return "-".join(aliases.get(part, part) for part in value.split("-"))
 
 
 def select_model_channels(raw, required_channels):
@@ -146,7 +147,7 @@ async def infer(file: UploadFile = File(...)):
     threshold = float(metadata.get("threshold", 0.5))
     step = max(1, int(sample_rate // 8))
     return {
-        "model_state": "research_trained",
+        "model_state": "trained_research_model",
         "model_version": metadata.get("model_version", "unknown"),
         "dataset_name": metadata.get("dataset_name", "unknown"),
         "task_name": metadata.get("task_name", "seizure_window_classification"),
