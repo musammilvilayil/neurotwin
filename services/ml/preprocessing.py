@@ -26,7 +26,7 @@ def parse_chbmit_summary(path: str):
     for block in blocks:
         name=re.search(r'File Name:\s*(\S+)',block,re.I)
         if not name: continue
-        starts=[int(x) for x in re.findall(r'Seizure \d+ Start Time:\s*(\d+)\s*seconds',block,re.I)]; ends=[int(x) for x in re.findall(r'Seizure \d+ End Time:\s*(\d+)\s*seconds',block,re.I)]
+        starts=[int(x) for x in re.findall(r'Seizure(?: \d+)? Start Time:\s*(\d+)\s*seconds',block,re.I)]; ends=[int(x) for x in re.findall(r'Seizure(?: \d+)? End Time:\s*(\d+)\s*seconds',block,re.I)]
         if len(starts)!=len(ends): raise ValueError(f'Malformed seizure times for {name.group(1)}')
         annotations[name.group(1)]=list(zip(starts,ends))
     return annotations
