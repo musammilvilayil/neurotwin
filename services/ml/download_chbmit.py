@@ -45,14 +45,16 @@ def download(url: str, destination: Path) -> None:
     if destination.exists() and destination.stat().st_size > 0:
         print(f"Already downloaded: {destination}")
         return
-    # curl supports retry/resume and avoids holding large EDFs in RAM.
-    subprocess.run(
-        ["curl", "--fail", "--location", "--retry", "4", "--retry-delay", "2",
-         "--continue-at", "-", "--output", str(destination), url],
-        check=True,
-    )
-    if not destination.exists() or destination.stat().st_size == 0:
+    # Keep partial files separate so interrupted downloads can safely resume.
+    partial = destination.with_name(destination.name + ".part")
+    command = ["curl", "--fail", "--location", "--retry", "4", "--retry-delay", "2"]
+    if partial.exists():
+        command.extend(["--continue-at", "-"])
+    command.extend(["--output", str(partial), url])
+    subprocess.run(command, check=True)
+    if not partial.exists() or partial.stat().st_size == 0:
         raise RuntimeError(f"Download returned an empty file: {url}")
+    partial.replace(destination)
 
 
 def main():
