@@ -35,7 +35,7 @@ def split_subjects(X, y, subjects, seed):
             "Use --subjects with at least six CHB-MIT subjects."
         )
     train_idx, held_idx = next(
-        GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=seed).split(X, y, subjects)
+        GroupShuffleSplit(n_splits=1, test_size=0.4, random_state=seed).split(X, y, subjects)
     )
     held_subjects = np.asarray(subjects)[held_idx]
     val_local, test_local = next(
