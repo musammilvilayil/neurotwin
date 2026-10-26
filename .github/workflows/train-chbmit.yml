@@ -1,9 +1,6 @@
 name: Train CHB-MIT research model
 
 on:
-  push:
-    branches:
-      - feat/chbmit-training-and-inference
   workflow_dispatch:
     inputs:
       subjects:
@@ -47,7 +44,7 @@ jobs:
       - name: Download labelled CHB-MIT subset
         working-directory: services/ml
         env:
-          SUBJECTS: ${{ inputs.subjects || 'chb01,chb02,chb03,chb05,chb06,chb07,chb08,chb09,chb10,chb11' }}
+          SUBJECTS: ${{ inputs.subjects }}
         run: python download_chbmit.py --data-dir data/chbmit --subjects "$SUBJECTS" --negative-files-per-subject 1
 
       - name: Prepare subject-labelled EEG windows
@@ -57,7 +54,7 @@ jobs:
       - name: Train and evaluate CNN-LSTM
         working-directory: services/ml
         env:
-          EPOCHS: ${{ inputs.epochs || '10' }}
+          EPOCHS: ${{ inputs.epochs }}
         run: |
           python train.py \
             --features data/processed/features.npy \
