@@ -12,7 +12,7 @@ on:
       subjects:
         description: "Comma-separated CHB-MIT subject folders (use at least 6)"
         required: true
-        default: "chb01,chb02,chb03,chb05,chb06,chb07,chb08,chb09,chb10,chb11"
+        default: "chb01,chb02,chb03,chb05,chb06,chb07"
         type: string
       epochs:
         description: "Maximum training epochs"
@@ -54,8 +54,8 @@ jobs:
       - name: Download labelled CHB-MIT subset
         working-directory: services/ml
         env:
-          SUBJECTS: ${{ inputs.subjects || 'chb01,chb02,chb03,chb05,chb06,chb07,chb08,chb09,chb10,chb11' }}
-        run: python download_chbmit.py --data-dir data/chbmit --subjects "$SUBJECTS" --negative-files-per-subject 1
+          SUBJECTS: ${{ inputs.subjects || 'chb01,chb02,chb03,chb05,chb06,chb07' }}
+        run: python download_chbmit.py --data-dir data/chbmit --subjects "$SUBJECTS" --negative-files-per-subject 1 --max-seizure-files-per-subject 1
 
       - name: Prepare subject-labelled EEG windows
         working-directory: services/ml
