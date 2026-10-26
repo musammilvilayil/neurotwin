@@ -116,7 +116,7 @@ def main():
     # Select a threshold on validation only; the test set remains untouched until final evaluation.
     candidates = np.linspace(0.1, 0.9, 17)
     val_f1 = [f1_score(y[val_idx], val_prob >= t, zero_division=0) for t in candidates]
-    threshold = float(candidates[int(np.argmax(val_f1))]
+    threshold = float(candidates[int(np.argmax(val_f1))])
 
     test_prob = model.predict(X_test, batch_size=args.batch_size, verbose=0)[:, 1]
     predicted = (test_prob >= threshold).astype(int)
