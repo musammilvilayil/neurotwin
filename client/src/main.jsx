@@ -143,7 +143,7 @@ function App() {
     {mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)}/>}
     <aside className={mobileNav ? 'sidebar sidebar-open' : 'sidebar'}>
       <div className="logo"><span className="logo-mark"><Brain size={21}/></span><span>NeuroTwin<small>RESEARCH PLATFORM</small></span><button className="mobile-close" onClick={() => setMobileNav(false)} aria-label="Close menu"><X size={18}/></button></div>
-      <p className="nav-caption">WORKSPACE</p><nav>{navigation.map(item => { const Icon = item.icon; return <button key={item.id} className={tab === item.id ? 'nav-link active' : 'nav-link'} onClick={() => chooseTab(item.id)}><Icon size={18}/><span>{item.label}</span>{tab === item.id && <span className="nav-indicator"/>}</button> )}</nav>
+      <p className="nav-caption">WORKSPACE</p><nav>{navigation.map(item => { const Icon = item.icon; return <button key={item.id} className={tab === item.id ? 'nav-link active' : 'nav-link'} onClick={() => chooseTab(item.id)}><Icon size={18}/><span>{item.label}</span>{tab === item.id && <span className="nav-indicator"/>}</button>; })}</nav>
       <div className="sidebar-bottom"><div className="secure-label"><ShieldCheck size={16}/><span>Protected workspace<small>Role-based access enabled</small></span></div><div className="profile"><div className="avatar">{user?.name?.[0] || 'N'}</div><div className="profile-copy"><b>{user?.name}</b><small>{roleLabels[user?.role] || user?.role}</small></div><button className="icon-button" onClick={logout} aria-label="Sign out" title="Sign out"><LogOut size={17}/></button></div></div>
     </aside>
     <main className="workspace">
