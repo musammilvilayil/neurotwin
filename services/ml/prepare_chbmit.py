@@ -1,6 +1,7 @@
 """Build window-level CHB-MIT arrays from locally downloaded EDF files."""
 import argparse
 import json
+import re
 from pathlib import Path
 
 import numpy as np
@@ -15,16 +16,24 @@ ELECTRODE_ALIASES = {"T3": "T7", "T4": "T8", "T5": "P7", "T6": "P8"}
 
 
 def normalise(name):
+    """Normalize EEG channel labels, including MNE's duplicate-name suffixes."""
     value = name.upper().replace("EEG ", "").replace("-REF", "").replace("-LE", "").replace("--", "-").strip()
+    # MNE makes duplicate EDF labels unique by appending -0, -1, etc.
+    value = re.sub(r"-\d+$", "", value)
     return "-".join(ELECTRODE_ALIASES.get(part, part) for part in value.split("-"))
 
 
 def select_channels(raw, expected):
-    index = {normalise(name): name for name in raw.ch_names}
-    missing = [name for name in expected if normalise(name) not in index]
+    """Select the expected montage, keeping the first occurrence of duplicate labels."""
+    index = {}
+    for name in raw.ch_names:
+        index.setdefault(normalise(name), name)
+
+    missing = [name for name in expected if name not in index]
     if missing:
         raise ValueError(f"missing channels: {', '.join(missing)}")
-    names = [index[normalise(name)] for name in expected]
+
+    names = [index[name] for name in expected]
     return raw.copy().pick_channels(names, ordered=True)
 
 
