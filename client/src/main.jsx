@@ -18,34 +18,64 @@ const api = async (path, opts = {}, token) => {
 const roleLabels = { doctor: 'Clinician', patient: 'Patient', caregiver: 'Caregiver', admin: 'Administrator' };
 const dateLabel = value => value ? new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'Not recorded';
 
-function Login({ onLogin }) {
-  const [email, setEmail] = useState('doctor@neurotwin.demo');
+function PublicSite({ onLogin }) {
+  const [page, setPage] = useState('home');
+  const [identifier, setIdentifier] = useState('doctor');
   const [password, setPassword] = useState('DemoPass123!');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const openLogin = () => { setPage('login'); setError(''); };
   const submit = async event => {
     event.preventDefault(); setBusy(true); setError('');
-    try { onLogin(await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) })); }
+    try { onLogin(await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ identifier, password }) })); }
     catch (err) { setError(err.message); }
     finally { setBusy(false); }
   };
-  return <main className="login">
-    <section className="brand">
-      <div className="logo"><span className="logo-mark"><Brain size={22}/></span> NeuroTwin <span className="brand-tag">RESEARCH PLATFORM</span></div>
-      <div className="brand-copy"><p className="eyebrow">EEG-informed research workspace</p><h1>Understand the signal.<br/><i>Keep the context.</i></h1><p>A longitudinal research workspace for EEG review and patient-specific digital-twin exploration.</p></div>
-      <div className="boundary"><AlertTriangle size={18}/><span><b>Research use only</b><br/>Not a diagnostic device. Outputs require qualified clinical review.</span></div>
-      <div className="brand-footer"><span>NEUROLOGICAL RESEARCH</span><span>01 / PRIVATE WORKSPACE</span></div>
-    </section>
-    <form className="card login-card" onSubmit={submit}>
-      <div className="login-symbol"><ShieldCheck size={22}/></div><p className="eyebrow">SECURE ACCESS</p><h2>Welcome back</h2><p className="muted">Sign in to continue to your workspace.</p>
-      <label>Email address<input autoComplete="username" type="email" value={email} onChange={e => setEmail(e.target.value)} required/></label>
-      <label>Password<input autoComplete="current-password" type="password" value={password} onChange={e => setPassword(e.target.value)} required/></label>
-      {error && <p className="error" role="alert">{error}</p>}
-      <button className="primary-button" disabled={busy}>{busy ? 'Signing in…' : 'Sign in securely'} <ArrowUpRight size={17}/></button>
-      <div className="demo"><b>DEMO ROLE QUICK SELECT</b>{Object.keys(roleLabels).map(role => <button type="button" key={role} onClick={() => setEmail(`${role}@neurotwin.demo`)}>{roleLabels[role]}</button>)}</div>
-      <p className="login-foot"><ShieldCheck size={14}/> Role-based access · Research environment</p>
-    </form>
-  </main>;
+  const nav = (target) => setPage(target);
+  return <div className="public-site">
+    <header className="public-nav">
+      <button className="public-brand" onClick={() => nav('home')}><span className="logo-mark"><Brain size={21}/></span><span>NeuroTwin<small>RESEARCH PLATFORM</small></span></button>
+      <nav aria-label="Main navigation">
+        <button className={page === 'home' ? 'selected' : ''} onClick={() => nav('home')}>Home</button>
+        <button className={page === 'about' ? 'selected' : ''} onClick={() => nav('about')}>About</button>
+        <button className={page === 'features' ? 'selected' : ''} onClick={() => nav('features')}>Features</button>
+        <button className={page === 'research' ? 'selected' : ''} onClick={() => nav('research')}>Research & safety</button>
+      </nav>
+      <button className="primary-button public-login-cta" onClick={openLogin}>Workspace login <ArrowUpRight size={16}/></button>
+    </header>
+    {page === 'login' ? <main className="public-login-layout">
+      <section className="public-login-intro"><p className="eyebrow">AUTHORIZED ACCESS</p><h1>Your research workspace, <i>securely connected.</i></h1><p>Sign in with the username and password assigned to your NeuroTwin account. Your role determines which records and tools are available.</p><div className="boundary"><AlertTriangle size={18}/><span><b>Research use only</b><br/>NeuroTwin is not a diagnostic device. Outputs require qualified clinical review.</span></div></section>
+      <form className="card login-card public-login-card" onSubmit={submit}>
+        <div className="login-symbol"><ShieldCheck size={22}/></div><p className="eyebrow">SECURE ACCESS</p><h2>Welcome back</h2><p className="muted">Enter your username and password to continue.</p>
+        <label>Username or email<input autoComplete="username" value={identifier} onChange={e => setIdentifier(e.target.value)} required/></label>
+        <label>Password<input autoComplete="current-password" type="password" value={password} onChange={e => setPassword(e.target.value)} required/></label>
+        {error && <p className="error" role="alert">{error}</p>}
+        <button className="primary-button" disabled={busy}>{busy ? 'Signing in…' : 'Sign in securely'} <ArrowUpRight size={17}/></button>
+        <div className="demo"><b>DEMO ACCOUNTS · SELECT A ROLE</b>{Object.keys(roleLabels).map(role => <button type="button" key={role} onClick={() => setIdentifier(role)}>{roleLabels[role]}</button>)}<small>Password for all demo accounts: <b>DemoPass123!</b></small></div>
+        <button type="button" className="public-back-link" onClick={() => nav('home')}>← Back to public website</button>
+      </form>
+    </main> : <main className="public-main">
+      <section className="public-hero">
+        <div className="public-hero-copy"><p className="eyebrow">EEG-INFORMED DIGITAL TWIN RESEARCH</p><h1>Understand the signal.<br/><i>Keep the context.</i></h1><p>NeuroTwin brings EEG research outputs, longitudinal context and role-based collaboration into one carefully scoped workspace.</p><div className="public-hero-actions"><button className="primary-button" onClick={openLogin}>Enter workspace <ArrowUpRight size={17}/></button><button className="public-secondary-button" onClick={() => nav('features')}>Explore capabilities</button></div><div className="public-trust"><span><ShieldCheck size={16}/> Role-based access</span><span><Activity size={16}/> EEG research workflow</span><span><Users size={16}/> Connected care roles</span></div></div>
+        <div className="public-visual"><div className="public-orbit orbit-a"/><div className="public-orbit orbit-b"/><div className="public-brain"><Brain size={94} strokeWidth={1.1}/></div><span className="public-signal signal-one"/><span className="public-signal signal-two"/><div className="public-visual-label"><Waves size={16}/> SIGNAL · CONTEXT · INSIGHT</div></div>
+      </section>
+      {page === 'home' && <section className="public-section"><p className="eyebrow">ONE CONNECTED WORKSPACE</p><h2>Research context, made easier to explore.</h2><p className="public-section-lead">A research prototype designed to organize EEG-informed records and support collaboration between authorized roles.</p><div className="public-feature-grid">
+        <article><span><Activity size={20}/></span><h3>EEG research review</h3><p>Upload supported EDF recordings and review artifact-backed model outputs when the research service is available.</p></article>
+        <article><span><Brain size={20}/></span><h3>Digital Twin context</h3><p>Explore stored longitudinal snapshots and research trends alongside available patient context.</p></article>
+        <article><span><ShieldCheck size={20}/></span><h3>Role-based workspace</h3><p>Separate access for administrators, doctors, patients and caregivers.</p></article>
+      </div></section>}
+      {page === 'about' && <section className="public-section public-copy-section"><p className="eyebrow">ABOUT NEUROTWIN</p><h2>A structured view of EEG research and longitudinal context.</h2><p>NeuroTwin is an academic research prototype exploring how EEG signal processing, machine-learning research outputs and patient-specific longitudinal records can be brought together in a single digital workspace.</p><p>It is intended for demonstration, research and supervised review. It does not replace clinical judgement, neurological examination or validated medical devices.</p></section>}
+      {page === 'features' && <section className="public-section"><p className="eyebrow">PLATFORM CAPABILITIES</p><h2>Built around four connected roles.</h2><div className="public-feature-grid role-grid">
+        <article><span><ShieldCheck size={20}/></span><h3>Administrator</h3><p>Review workspace activity and governance records, and oversee platform-level access.</p></article>
+        <article><span><Activity size={20}/></span><h3>Doctor</h3><p>Access assigned patient records, review EEG research outputs, upload EDF files and document clinical context.</p></article>
+        <article><span><Users size={20}/></span><h3>Patient</h3><p>View the linked personal research overview, permitted notes and longitudinal context.</p></article>
+        <article><span><Users size={20}/></span><h3>Caregiver</h3><p>View only the patient information explicitly linked and authorized for caregiver access.</p></article>
+      </div></section>}
+      {page === 'research' && <section className="public-section public-copy-section"><p className="eyebrow">RESEARCH & SAFETY</p><h2>Transparent about what the prototype can — and cannot — do.</h2><p>Model outputs are experimental research information. They must not be used to diagnose, predict an individual's clinical outcome, change medication or make treatment decisions.</p><p>Any EEG analysis shown in the workspace requires review by a qualified clinician and must be interpreted with the broader clinical history. The prototype has not been established as a clinically validated diagnostic device.</p><div className="boundary public-boundary"><AlertTriangle size={18}/><span><b>Important boundary</b><br/>For academic research and demonstration only. Not for diagnosis or treatment.</span></div></section>}
+      <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={openLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
+    </main>}
+    <footer className="public-footer"><span>© NeuroTwin · Academic research prototype</span><span>Privacy-aware access · Not a diagnostic device</span></footer>
+  </div>;
 }
 
 function Badge({ children, type = '' }) { return <span className={`badge ${type}`}>{children}</span>; }
@@ -105,7 +135,7 @@ function App() {
   }, [token, user?.role, user?.linkedPatient, isClinician, logout]);
 
   useEffect(() => { loadWorkspace(); }, [loadWorkspace]);
-  if (!session) return <Login onLogin={value => { localStorage.setItem('nt-session', JSON.stringify(value)); setSession(value); }}/>;
+  if (!session) return <PublicSite onLogin={value => { localStorage.setItem('nt-session', JSON.stringify(value)); setSession(value); }}/>;
   if (!dashboard && busy) return <div className="loading"><span className="loading-mark"><Brain size={25}/></span><b>Preparing your workspace</b><p>Loading authorized research data…</p></div>;
 
   const patient = overview?.patient;
