@@ -24,16 +24,18 @@ npm run install:all
 npm run dev
 ```
 
-Start MongoDB locally first. The web app opens at `http://localhost:5173`; API at `http://localhost:5000`. Alternatively, run `docker compose up --build` for MongoDB, API, and ML service (run the Vite client separately).
+Start MongoDB locally first. The public website opens at `http://localhost:5173`; API at `http://localhost:5000`. On Windows, you can also double-click `RUN-NEUROTWIN.bat` after installing Node.js and starting your local MongoDB service. Alternatively, run `docker compose up --build` for MongoDB, API, and ML service (run the Vite client separately).
 
-Demo password for every account: `DemoPass123!`
+Demo password for every account: `DemoPass123!` (use only on a local demo environment).
 
-| Role | Email |
-|---|---|
-| Doctor | doctor@neurotwin.demo |
-| Patient | patient@neurotwin.demo |
-| Caregiver | caregiver@neurotwin.demo |
-| Admin | admin@neurotwin.demo |
+| Role | Username | Email |
+|---|---|---|
+| Admin | `admin` | admin@neurotwin.demo |
+| Doctor | `doctor` | doctor@neurotwin.demo |
+| Patient | `patient` | patient@neurotwin.demo |
+| Caregiver | `caregiver` | caregiver@neurotwin.demo |
+
+The public Home, About, Features, and Research & Safety pages are available without signing in. Workspace pages require authentication. Existing seeded accounts are assigned usernames from the email prefix on the next server start.
 
 ## API and data boundaries
 
