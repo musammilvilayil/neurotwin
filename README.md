@@ -39,7 +39,7 @@ The public Home, About, Features, and Research & Safety pages are available with
 
 ## API and data boundaries
 
-`POST /api/eeg/upload` accepts an EDF only for an authorized doctor/admin and proxies it to the ML service. It creates no analysis or Digital Twin snapshot when the model is absent or inference fails. The ML service returns HTTP 503 with `model_not_ready` until both `artifacts/model.keras` and `artifacts/metadata.json` are installed. Outputs are research seizure scores, not medical findings.
+`POST /api/eeg/upload` accepts an EDF only for an authorized doctor/admin and proxies it to the ML service. It creates no analysis or Digital Twin snapshot when the model is absent or inference fails. The ML service returns HTTP 503 with `model_not_ready` until both `model.keras` and `metadata.json` are available in `MODEL_ARTIFACT_DIR`. The repository currently includes a research artifact under `services/ml/artifacts-expanded/`; Docker Compose mounts that folder into the ML container. For local ML-service runs from `services/ml/`, set `MODEL_ARTIFACT_DIR=artifacts-expanded`. A newly trained model can be installed by pointing `MODEL_ARTIFACT_DIR` to the directory containing its matching `model.keras` and `metadata.json`. Outputs are research seizure scores, not medical findings.
 
 Never upload identifiable health information to an unapproved environment. Before any real-world use, add institutional approvals, informed consent, encryption/key management, data retention rules, model validation, bias evaluation, monitoring, and applicable regulatory review.
 
