@@ -10,7 +10,7 @@ from tensorflow import keras
 
 from preprocessing import load_edf, preprocess, windows
 
-app = FastAPI(title="NeuroTwin ML Service", version="1.2.0")
+app = FastAPI(title="NeuroTwin ML Service", version="1.2.1")
 ARTIFACT_DIR = Path(os.getenv("MODEL_ARTIFACT_DIR", "artifacts"))
 MAX_EDF_BYTES = 50 * 1024 * 1024
 UPLOAD_CHUNK_BYTES = 1024 * 1024
@@ -58,8 +58,8 @@ def select_model_channels(raw, required_channels):
         normalized = normalise_channel(name)
         index.setdefault(normalized, name)
         for required_name in required:
-            duplicate_suffix = f"{required_name}-"
-            if normalized.startswith(duplicate_suffix) and normalized[len(duplicate_suffix):].isdigit():
+            suffix = f"{required_name}-"
+            if normalized.startswith(suffix) and normalized[len(suffix):].isdigit():
                 index.setdefault(required_name, name)
     missing = [name for name in required_channels if normalise_channel(name) not in index]
     if missing:
@@ -67,8 +67,7 @@ def select_model_channels(raw, required_channels):
             status_code=422,
             detail={
                 "error": "channel_mismatch",
-                "message": "This research model requires the CHB-MIT bipolar channel montage. "
-                           "The uploaded EDF is missing required channels.",
+                "message": "The uploaded EDF is missing channels required by this research model.",
                 "missing_channels": missing,
                 "required_channels": required_channels,
             },
@@ -77,20 +76,20 @@ def select_model_channels(raw, required_channels):
     return raw.copy().pick_channels(names, ordered=True)
 
 
-async def save_upload(file: UploadFile, temp_file):
-    """Stream an EDF upload to disk while enforcing a hard size limit."""
+async def save_upload(file: UploadFile, destination: Path):
+    """Stream an upload to a temporary file and enforce a hard size limit."""
     total = 0
-    while True:
-        chunk = await file.read(UPLOAD_CHUNK_BYTES)
-        if not chunk:
-            break
-        total += len(chunk)
-        if total > MAX_EDF_BYTES:
-            raise HTTPException(413, "EDF file exceeds the 50 MB upload limit.")
-        temp_file.write(chunk)
+    with destination.open("wb") as output:
+        while True:
+            chunk = await file.read(UPLOAD_CHUNK_BYTES)
+            if not chunk:
+                break
+            total += len(chunk)
+            if total > MAX_EDF_BYTES:
+                raise HTTPException(413, "EDF file exceeds the 50 MB upload limit.")
+            output.write(chunk)
     if total == 0:
         raise HTTPException(400, "The uploaded EDF file is empty.")
-    temp_file.flush()
 
 
 def validate_edf_name(file: UploadFile):
@@ -113,24 +112,18 @@ def health():
 @app.post("/inspect-eeg")
 async def inspect_eeg(file: UploadFile = File(...)):
     """Inspect EDF metadata and preprocessing readiness without making predictions."""
-<<<<<<< HEAD
-    if not file.filename or not file.filename.lower().endswith(".edf"):
-        raise HTTPException(400, "This service accepts EDF files only.")
-    with TemporaryDirectory() as temp_dir:
-        temp_path = Path(temp_dir) / "upload.edf"
-=======
     validate_edf_name(file)
-    with NamedTemporaryFile(suffix=".edf") as temp:
-        await save_upload(file, temp)
->>>>>>> 3c2a8d1740932d740410f65bb348e08611765ec1
+    with TemporaryDirectory(prefix="neurotwin-edf-") as directory:
+        temp_path = Path(directory) / "upload.edf"
+        await save_upload(file, temp_path)
         try:
-            temp_path.write_bytes(await file.read())
             raw = load_edf(temp_path)
             cleaned, data = preprocess(raw)
         except HTTPException:
             raise
         except (ValueError, RuntimeError, OSError) as exc:
             raise HTTPException(422, f"Unable to parse/preprocess EDF: {exc}") from exc
+
     model_path, metadata = artifacts()
     return {
         "state": "preprocessed_no_inference",
@@ -186,15 +179,10 @@ async def infer(file: UploadFile = File(...)):
     except (TypeError, ValueError, ZeroDivisionError) as exc:
         raise HTTPException(503, f"Invalid model metadata: {exc}") from exc
 
-<<<<<<< HEAD
-    with TemporaryDirectory() as temp_dir:
-        temp_path = Path(temp_dir) / "upload.edf"
-=======
-    with NamedTemporaryFile(suffix=".edf") as temp:
-        await save_upload(file, temp)
->>>>>>> 3c2a8d1740932d740410f65bb348e08611765ec1
+    with TemporaryDirectory(prefix="neurotwin-edf-") as directory:
+        temp_path = Path(directory) / "upload.edf"
+        await save_upload(file, temp_path)
         try:
-            temp_path.write_bytes(await file.read())
             raw = load_edf(temp_path)
             selected = select_model_channels(raw, required_channels)
             cleaned, data = preprocess(selected, resample_hz=sample_rate)
@@ -225,8 +213,11 @@ async def infer(file: UploadFile = File(...)):
         probabilities.ndim != 2
         or probabilities.shape != (len(X), 2)
         or not np.isfinite(probabilities).all()
+        or np.any(probabilities < 0)
+        or np.any(probabilities > 1)
+        or not np.allclose(probabilities.sum(axis=1), 1.0, atol=1e-3)
     ):
-        raise HTTPException(503, "The installed model returned invalid seizure-score probabilities.")
+        raise HTTPException(503, "The installed model returned invalid class probabilities.")
 
     scores = probabilities[:, 1]
     step = max(1, int(actual_sample_rate // 8))
