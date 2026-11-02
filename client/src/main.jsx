@@ -18,6 +18,47 @@ const api = async (path, opts = {}, token) => {
 const roleLabels = { doctor: 'Clinician', patient: 'Patient', caregiver: 'Caregiver', admin: 'Administrator' };
 const dateLabel = value => value ? new Date(value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'Not recorded';
 
+function HomePage({ onLogin, onNavigate }) {
+  return <main className="public-main">
+    <section className="public-hero">
+      <div className="public-hero-copy"><p className="eyebrow">EEG-INFORMED DIGITAL TWIN RESEARCH</p><h1>Understand the signal.<br/><i>Keep the context.</i></h1><p>NeuroTwin brings EEG research outputs, longitudinal context and role-based collaboration into one carefully scoped workspace.</p><div className="public-hero-actions"><button className="primary-button" onClick={onLogin}>Enter workspace <ArrowUpRight size={17}/></button><button className="public-secondary-button" onClick={() => onNavigate('features')}>Explore capabilities</button></div><div className="public-trust"><span><ShieldCheck size={16}/> Role-based access</span><span><Activity size={16}/> EEG research workflow</span><span><Users size={16}/> Connected care roles</span></div></div>
+      <div className="public-visual"><div className="public-orbit orbit-a"/><div className="public-orbit orbit-b"/><div className="public-brain"><Brain size={94} strokeWidth={1.1}/></div><span className="public-signal signal-one"/><span className="public-signal signal-two"/><div className="public-visual-label"><Waves size={16}/> SIGNAL · CONTEXT · INSIGHT</div></div>
+    </section>
+    <section className="public-section"><p className="eyebrow">ONE CONNECTED WORKSPACE</p><h2>Research context, made easier to explore.</h2><p className="public-section-lead">A research prototype designed to organize EEG-informed records and support collaboration between authorized roles.</p><div className="public-feature-grid">
+      <article><span><Activity size={20}/></span><h3>EEG research review</h3><p>Upload supported EDF recordings and review artifact-backed model outputs when the research service is available.</p></article>
+      <article><span><Brain size={20}/></span><h3>Digital Twin context</h3><p>Explore stored longitudinal snapshots and research trends alongside available patient context.</p></article>
+      <article><span><ShieldCheck size={20}/></span><h3>Role-based workspace</h3><p>Separate access for administrators, doctors, patients and caregivers.</p></article>
+    </div></section>
+    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
+  </main>;
+}
+
+function AboutPage({ onLogin }) {
+  return <main className="public-main">
+    <section className="public-section public-copy-section"><p className="eyebrow">ABOUT NEUROTWIN</p><h2>A structured view of EEG research and longitudinal context.</h2><p>NeuroTwin is an academic research prototype exploring how EEG signal processing, machine-learning research outputs and patient-specific longitudinal records can be brought together in a single digital workspace.</p><p>It is intended for demonstration, research and supervised review. It does not replace clinical judgement, neurological examination or validated medical devices.</p></section>
+    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
+  </main>;
+}
+
+function FeaturesPage({ onLogin }) {
+  return <main className="public-main">
+    <section className="public-section"><p className="eyebrow">PLATFORM CAPABILITIES</p><h2>Built around four connected roles.</h2><div className="public-feature-grid role-grid">
+      <article><span><ShieldCheck size={20}/></span><h3>Administrator</h3><p>Review workspace activity and governance records, and oversee platform-level access.</p></article>
+      <article><span><Activity size={20}/></span><h3>Doctor</h3><p>Access assigned patient records, review EEG research outputs, upload EDF files and document clinical context.</p></article>
+      <article><span><Users size={20}/></span><h3>Patient</h3><p>View the linked personal research overview, permitted notes and longitudinal context.</p></article>
+      <article><span><Users size={20}/></span><h3>Caregiver</h3><p>View only the patient information explicitly linked and authorized for caregiver access.</p></article>
+    </div></section>
+    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
+  </main>;
+}
+
+function ResearchPage({ onLogin }) {
+  return <main className="public-main">
+    <section className="public-section public-copy-section"><p className="eyebrow">RESEARCH & SAFETY</p><h2>Transparent about what the prototype can — and cannot — do.</h2><p>Model outputs are experimental research information. They must not be used to diagnose, predict an individual's clinical outcome, change medication or make treatment decisions.</p><p>Any EEG analysis shown in the workspace requires review by a qualified clinician and must be interpreted with the broader clinical history. The prototype has not been established as a clinically validated diagnostic device.</p><div className="boundary public-boundary"><AlertTriangle size={18}/><span><b>Important boundary</b><br/>For academic research and demonstration only. Not for diagnosis or treatment.</span></div></section>
+    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
+  </main>;
+}
+
 function PublicSite({ onLogin }) {
   const [page, setPage] = useState('home');
   const [identifier, setIdentifier] = useState('doctor');
@@ -32,9 +73,35 @@ function PublicSite({ onLogin }) {
     finally { setBusy(false); }
   };
   const nav = (target) => setPage(target);
+  const renderPage = () => {
+    switch (page) {
+      case 'login':
+        return <main className="public-login-layout">
+          <section className="public-login-intro"><p className="eyebrow">AUTHORIZED ACCESS</p><h1>Your research workspace, <i>securely connected.</i></h1><p>Sign in with the username and password assigned to your NeuroTwin account. Your role determines which records and tools are available.</p><div className="boundary"><AlertTriangle size={18}/><span><b>Research use only</b><br/>NeuroTwin is not a diagnostic device. Outputs require qualified clinical review.</span></div></section>
+          <form className="card login-card public-login-card" onSubmit={submit}>
+            <div className="login-symbol"><ShieldCheck size={22}/></div><p className="eyebrow">SECURE ACCESS</p><h2>Welcome back</h2><p className="muted">Enter your username and password to continue.</p>
+            <label>Username or email<input autoComplete="username" value={identifier} onChange={e => setIdentifier(e.target.value)} required/></label>
+            <label>Password<input autoComplete="current-password" type="password" value={password} onChange={e => setPassword(e.target.value)} required/></label>
+            {error && <p className="error" role="alert">{error}</p>}
+            <button className="primary-button" disabled={busy}>{busy ? 'Signing in…' : 'Sign in securely'} <ArrowUpRight size={17}/></button>
+            <div className="demo"><b>DEMO ACCOUNTS · SELECT A ROLE</b>{Object.keys(roleLabels).map(role => <button type="button" key={role} onClick={() => setIdentifier(role)}>{roleLabels[role]}</button>)}<small>Password for all demo accounts: <b>DemoPass123!</b></small></div>
+            <button type="button" className="public-back-link" onClick={() => nav('home')}>← Back to public website</button>
+          </form>
+        </main>;
+      case 'about':
+        return <AboutPage onLogin={openLogin} />;
+      case 'features':
+        return <FeaturesPage onLogin={openLogin} />;
+      case 'research':
+        return <ResearchPage onLogin={openLogin} />;
+      case 'home':
+      default:
+        return <HomePage onLogin={openLogin} onNavigate={nav} />;
+    }
+  };
   return <div className="public-site">
     <header className="public-nav">
-      <button className="public-brand" onClick={() => nav('home')}><span className="logo-mark"><Brain size={21}/></span><span>NeuroTwin<small>RESEARCH PLATFORM</small></span></button>
+      <button className="public-brand" onClick={() => nav('home')}><span className="logo-mark"><Brain size={21}/></span><span>NeuroTwin<small>EEG WORKSPACE</small></span></button>
       <nav aria-label="Main navigation">
         <button className={page === 'home' ? 'selected' : ''} onClick={() => nav('home')}>Home</button>
         <button className={page === 'about' ? 'selected' : ''} onClick={() => nav('about')}>About</button>
@@ -43,43 +110,27 @@ function PublicSite({ onLogin }) {
       </nav>
       <button className="primary-button public-login-cta" onClick={openLogin}>Workspace login <ArrowUpRight size={16}/></button>
     </header>
-    {page === 'login' ? <main className="public-login-layout">
-      <section className="public-login-intro"><p className="eyebrow">AUTHORIZED ACCESS</p><h1>Your research workspace, <i>securely connected.</i></h1><p>Sign in with the username and password assigned to your NeuroTwin account. Your role determines which records and tools are available.</p><div className="boundary"><AlertTriangle size={18}/><span><b>Research use only</b><br/>NeuroTwin is not a diagnostic device. Outputs require qualified clinical review.</span></div></section>
-      <form className="card login-card public-login-card" onSubmit={submit}>
-        <div className="login-symbol"><ShieldCheck size={22}/></div><p className="eyebrow">SECURE ACCESS</p><h2>Welcome back</h2><p className="muted">Enter your username and password to continue.</p>
-        <label>Username or email<input autoComplete="username" value={identifier} onChange={e => setIdentifier(e.target.value)} required/></label>
-        <label>Password<input autoComplete="current-password" type="password" value={password} onChange={e => setPassword(e.target.value)} required/></label>
-        {error && <p className="error" role="alert">{error}</p>}
-        <button className="primary-button" disabled={busy}>{busy ? 'Signing in…' : 'Sign in securely'} <ArrowUpRight size={17}/></button>
-        <div className="demo"><b>DEMO ACCOUNTS · SELECT A ROLE</b>{Object.keys(roleLabels).map(role => <button type="button" key={role} onClick={() => setIdentifier(role)}>{roleLabels[role]}</button>)}<small>Password for all demo accounts: <b>DemoPass123!</b></small></div>
-        <button type="button" className="public-back-link" onClick={() => nav('home')}>← Back to public website</button>
-      </form>
-    </main> : <main className="public-main">
-      <section className="public-hero">
-        <div className="public-hero-copy"><p className="eyebrow">EEG-INFORMED DIGITAL TWIN RESEARCH</p><h1>Understand the signal.<br/><i>Keep the context.</i></h1><p>NeuroTwin brings EEG research outputs, longitudinal context and role-based collaboration into one carefully scoped workspace.</p><div className="public-hero-actions"><button className="primary-button" onClick={openLogin}>Enter workspace <ArrowUpRight size={17}/></button><button className="public-secondary-button" onClick={() => nav('features')}>Explore capabilities</button></div><div className="public-trust"><span><ShieldCheck size={16}/> Role-based access</span><span><Activity size={16}/> EEG research workflow</span><span><Users size={16}/> Connected care roles</span></div></div>
-        <div className="public-visual"><div className="public-orbit orbit-a"/><div className="public-orbit orbit-b"/><div className="public-brain"><Brain size={94} strokeWidth={1.1}/></div><span className="public-signal signal-one"/><span className="public-signal signal-two"/><div className="public-visual-label"><Waves size={16}/> SIGNAL · CONTEXT · INSIGHT</div></div>
-      </section>
-      {page === 'home' && <section className="public-section"><p className="eyebrow">ONE CONNECTED WORKSPACE</p><h2>Research context, made easier to explore.</h2><p className="public-section-lead">A research prototype designed to organize EEG-informed records and support collaboration between authorized roles.</p><div className="public-feature-grid">
-        <article><span><Activity size={20}/></span><h3>EEG research review</h3><p>Upload supported EDF recordings and review artifact-backed model outputs when the research service is available.</p></article>
-        <article><span><Brain size={20}/></span><h3>Digital Twin context</h3><p>Explore stored longitudinal snapshots and research trends alongside available patient context.</p></article>
-        <article><span><ShieldCheck size={20}/></span><h3>Role-based workspace</h3><p>Separate access for administrators, doctors, patients and caregivers.</p></article>
-      </div></section>}
-      {page === 'about' && <section className="public-section public-copy-section"><p className="eyebrow">ABOUT NEUROTWIN</p><h2>A structured view of EEG research and longitudinal context.</h2><p>NeuroTwin is an academic research prototype exploring how EEG signal processing, machine-learning research outputs and patient-specific longitudinal records can be brought together in a single digital workspace.</p><p>It is intended for demonstration, research and supervised review. It does not replace clinical judgement, neurological examination or validated medical devices.</p></section>}
-      {page === 'features' && <section className="public-section"><p className="eyebrow">PLATFORM CAPABILITIES</p><h2>Built around four connected roles.</h2><div className="public-feature-grid role-grid">
-        <article><span><ShieldCheck size={20}/></span><h3>Administrator</h3><p>Review workspace activity and governance records, and oversee platform-level access.</p></article>
-        <article><span><Activity size={20}/></span><h3>Doctor</h3><p>Access assigned patient records, review EEG research outputs, upload EDF files and document clinical context.</p></article>
-        <article><span><Users size={20}/></span><h3>Patient</h3><p>View the linked personal research overview, permitted notes and longitudinal context.</p></article>
-        <article><span><Users size={20}/></span><h3>Caregiver</h3><p>View only the patient information explicitly linked and authorized for caregiver access.</p></article>
-      </div></section>}
-      {page === 'research' && <section className="public-section public-copy-section"><p className="eyebrow">RESEARCH & SAFETY</p><h2>Transparent about what the prototype can — and cannot — do.</h2><p>Model outputs are experimental research information. They must not be used to diagnose, predict an individual's clinical outcome, change medication or make treatment decisions.</p><p>Any EEG analysis shown in the workspace requires review by a qualified clinician and must be interpreted with the broader clinical history. The prototype has not been established as a clinically validated diagnostic device.</p><div className="boundary public-boundary"><AlertTriangle size={18}/><span><b>Important boundary</b><br/>For academic research and demonstration only. Not for diagnosis or treatment.</span></div></section>}
-      <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={openLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
-    </main>}
+    {renderPage()}
     <footer className="public-footer"><span>© NeuroTwin · Academic research prototype</span><span>Privacy-aware access · Not a diagnostic device</span></footer>
   </div>;
 }
 
 function Badge({ children, type = '' }) { return <span className={`badge ${type}`}>{children}</span>; }
 function EmptyState({ icon: Icon = Activity, title, children }) { return <div className="empty-state"><span><Icon size={22}/></span><b>{title}</b><p>{children}</p></div>; }
+function ModelStatus({ status }) {
+  const ready = status?.model_state === 'ready';
+  const checking = status?.model_state === 'checking';
+  const title = ready ? 'EEG inference available' : checking ? 'Checking EEG service' : 'EEG inference unavailable';
+  const detail = ready
+    ? 'Trained EEG artifacts are installed. EDF uploads are enabled.'
+    : checking
+      ? 'Checking whether the EEG model service is ready.'
+      : status?.error || 'The EEG model service is unavailable. EDF uploads are disabled.';
+  return <div className={`model-status ${ready ? 'model-ready' : 'model-unavailable'}`} role="status" aria-live="polite">
+    <span className="model-status-indicator"/>
+    <div><b>{title}</b><p>{detail}</p></div>
+  </div>;
+}
 function Plot({ values, kind = 'wave' }) {
   if (!Array.isArray(values) || values.length < 2) return <EmptyState icon={Waves} title="No signal to display">A model-backed analysis will appear here when available.</EmptyState>;
   const score = kind === 'score';
@@ -89,7 +140,7 @@ function Plot({ values, kind = 'wave' }) {
     const y = score ? 94 - Math.max(0, Math.min(1, safe)) * 78 : 50 - Math.max(-2.5, Math.min(2.5, safe)) * 14;
     return `${index / (values.length - 1) * 100},${y}`;
   }).join(' ');
-  return <div className="plot-wrap"><svg className={`plot ${score ? 'score-plot' : ''}`} viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label={score ? 'Research score timeline' : 'EEG waveform'}><line x1="0" y1="50" x2="100" y2="50" className="plot-axis"/><polyline points={points}/></svg><div className="plot-labels"><span>Earlier</span><span>Recent</span></div></div>;
+  return <div className="plot-wrap"><svg className={`plot ${score ? 'score-plot' : ''}`} viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label={score ? 'Experimental EEG score timeline' : 'EEG waveform'}><line x1="0" y1="50" x2="100" y2="50" className="plot-axis"/><polyline points={points}/></svg><div className="plot-labels"><span>Earlier</span><span>Recent</span></div></div>;
 }
 
 function App() {
@@ -101,6 +152,8 @@ function App() {
   const [tab, setTab] = useState('overview');
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState('');
+  const [modelStatus, setModelStatus] = useState({ model_state: 'checking' });
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [note, setNote] = useState('');
@@ -114,19 +167,23 @@ function App() {
     if (!token) return;
     setBusy(true); setError('');
     try {
-      const dash = await api('/api/dashboard', {}, token); setDashboard(dash);
+      const modelStatusRequest = isClinician
+        ? api('/api/model/state', {}, token).catch(err => ({ model_state: 'unavailable', error: err.message }))
+        : Promise.resolve(null);
+      const [dash, nextModelStatus] = await Promise.all([api('/api/dashboard', {}, token), modelStatusRequest]);
+      setDashboard(dash);
+      if (nextModelStatus) setModelStatus(nextModelStatus);
       let patientList = dash.patients || [];
       if (isClinician) {
-        try { patientList = await api('/api/patients', {}, token); } catch { /* keep dashboard-scoped list */ }
+        patientList = await api('/api/patients', {}, token);
       }
       setPatients(patientList);
       const selectedId = user?.linkedPatient || patientList[0]?._id;
       if (selectedId) {
-        try { setOverview(await api(`/api/patients/${selectedId}/overview`, {}, token)); }
-        catch (err) { setOverview(null); if (!['patient', 'caregiver'].includes(user?.role)) setError(err.message); }
+        setOverview(await api(`/api/patients/${selectedId}/overview`, {}, token));
       } else setOverview(null);
       if (user?.role === 'admin') {
-        try { setAudit(await api('/api/admin/audit', {}, token)); } catch { setAudit([]); }
+        setAudit(await api('/api/admin/audit', {}, token));
       }
     } catch (err) {
       if (/token|unauthorized|invalid/i.test(err.message)) logout();
@@ -153,13 +210,26 @@ function App() {
     const file = event.target.files?.[0]; event.target.value = '';
     if (!file || !patient?._id) return;
     if (!file.name.toLowerCase().endsWith('.edf')) { setError('Please select an EDF EEG file.'); return; }
+    if (file.size > 50 * 1024 * 1024) { setError('The EDF file exceeds the 50 MB upload limit. Choose a smaller file.'); return; }
+    if (modelStatus?.model_state !== 'ready') { setError('EDF upload is unavailable because the EEG model service is not ready. Refresh the workspace after the service is running.'); return; }
     setUploading(true); setError(''); setNotice('');
+    setUploadingFile(file.name);
     try {
       await api('/api/eeg/upload', { method: 'POST', body: (() => { const form = new FormData(); form.append('eeg', file); form.append('patientId', patient._id); return form; })() }, token);
-      setOverview(await api(`/api/patients/${patient._id}/overview`, {}, token));
+      const refreshedOverview = await api(`/api/patients/${patient._id}/overview`, {}, token);
+      setOverview(refreshedOverview);
+      setDashboard(await api('/api/dashboard', {}, token));
       setNotice('EEG upload processed. Review the research output with a qualified clinician.');
     } catch (err) { setError(err.message); }
-    finally { setUploading(false); }
+    finally { setUploading(false); setUploadingFile(''); }
+  };
+  const selectPatient = async event => {
+    const patientId = event.target.value;
+    if (!patientId) return;
+    setBusy(true); setError(''); setNotice('');
+    try { setOverview(await api(`/api/patients/${patientId}/overview`, {}, token)); }
+    catch (err) { setError(err.message); }
+    finally { setBusy(false); }
   };
   const saveNote = async event => {
     event.preventDefault(); if (!note.trim() || !patient?._id) return;
@@ -169,24 +239,71 @@ function App() {
     finally { setBusy(false); }
   };
   const greeting = user?.role === 'patient' && patient ? patient.fullName?.split(' ')[0] : user?.name?.split(' ').slice(-1)[0];
+
+  const renderRoleDashboard = () => {
+    if (user?.role === 'admin') {
+      return <><section className="hero"><div className="hero-copy"><p className="eyebrow">SYSTEM OVERVIEW</p><h2>Administrative dashboard</h2><p>Monitor platform access, audit events, and research workflow activity across the NeuroTwin environment.</p><div className="hero-meta"><span><ShieldCheck size={15}/> Governance</span><span><Users size={15}/> Access review</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><ShieldCheck size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div></section>
+      <div className="section-heading"><div><p className="eyebrow">ADMIN AT A GLANCE</p><h2>Operational status</h2></div><span className="updated-label"><span/> Platform view</span></div>
+      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">USERS</span></div><small>Active user accounts</small><strong>{dashboard?.counts?.users ?? 0}</strong><span className="stat-foot">Accounts currently enabled</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Users size={18}/></span><span className="stat-kicker">PATIENTS</span></div><small>Patient records</small><strong>{dashboard?.counts?.patients ?? patients.length}</strong><span className="stat-foot">Records across the workspace</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><Activity size={18}/></span><span className="stat-kicker">ANALYSES</span></div><small>EEG analyses</small><strong>{dashboard?.counts?.analyses ?? 0}</strong><span className="stat-foot">Experimental scores, not diagnoses</span></article></section>
+      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><ShieldCheck size={18}/></span><div><h3>System access</h3><p>Permission and security status</p></div></div><Badge type="blue">ADMIN</Badge></div><div className="twin-state"><small>Admin summary</small><p>Workspace activity is governed by role-based permissions and audit trails. Review access events before broader workflow changes.</p><div className="twin-facts"><div><small>Patient records</small><b>{dashboard?.counts?.patients ?? patients.length}</b></div><div><small>Pending review</small><b>{dashboard?.counts?.pending ?? 0}</b></div></div></div></article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><ClipboardList size={18}/></span><div><h3>Recent audit log</h3><p>Latest access events</p></div></div></div>{audit.length ? <div className="patient-list compact-list">{audit.slice(0,4).map((entry,index) => <div className="patient-row" key={`${entry._id || index}`}><span className="patient-details"><b>{entry.action || 'Access event'}</b><small>{entry.actor?.name ? `${entry.actor.name} · ` : ''}{dateLabel(entry.createdAt)}</small></span><Badge type="neutral">{entry.meta?.name || 'Workspace'}</Badge></div>)}</div> : <EmptyState icon={ClipboardList} title="No audit data yet">Audit data will appear after workspace activity.</EmptyState>}</article></section></>;
+    }
+
+    if (user?.role === 'doctor') {
+      return <><section className="hero"><div className="hero-copy"><p className="eyebrow">CLINICAL MONITORING</p><h2>Doctor dashboard</h2><p>Monitor assigned patient records, review EEG analysis outputs, and flag items that need clinician attention.</p><div className="hero-meta"><span><Activity size={15}/> Patient monitoring</span><span><ClipboardList size={15}/> Review queue</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><Activity size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div>{patient && <label className={`upload-button${uploading || modelStatus.model_state !== 'ready' ? ' is-loading' : ''}`} aria-disabled={uploading || modelStatus.model_state !== 'ready'}><Upload size={17}/>{uploading ? 'Processing EEG…' : modelStatus.model_state === 'ready' ? 'Upload EDF EEG' : 'Model unavailable'}<input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || modelStatus.model_state !== 'ready'} hidden/></label>}</section>
+      <div className="section-heading"><div><p className="eyebrow">CLINIC SUMMARY</p><h2>Assigned records</h2></div><span className="updated-label"><span/> Care team view</span></div>
+      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">PATIENTS</span></div><small>Assigned records</small><strong>{dashboard?.counts?.patients ?? patients.length}</strong><span className="stat-foot">Current patient access scope</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSES</span></div><small>Latest EEG records</small><strong>{dashboard?.counts?.analyses ?? overview?.analyses?.length ?? 0}</strong><span className="stat-foot">Stored research analyses</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><ClipboardList size={18}/></span><span className="stat-kicker">REVIEW</span></div><small>Awaiting clinician review</small><strong>{dashboard?.counts?.pending ?? 0}</strong><span className="stat-foot">Prioritized for clinical review</span></article></section>
+      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><Waves size={18}/></span><div><h3>Signal review</h3><p>Most recent waveform</p></div></div><Badge type={latest ? 'blue' : 'neutral'}>{latest ? 'EEG MODEL' : 'NO DATA'}</Badge></div><Plot values={latest?.waveform}/><p className="chart-note">Review waveform context alongside the patient history.</p></article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>EEG score timeline</h3><p>Experimental model output</p></div></div><Badge type="amber">EXPERIMENTAL</Badge></div><Plot values={latest?.timeline} kind="score"/><p className="chart-note">Scores are experimental and are not clinical conclusions.</p></article></section></>;
+    }
+
+    if (user?.role === 'patient') {
+      return <><section className="hero"><div className="hero-copy"><p className="eyebrow">YOUR CARE DASHBOARD</p><h2>{patient?.fullName || 'Your health workspace'}</h2><p>Review your linked monitoring context, available notes, and any research summaries shared to your workspace.</p><div className="hero-meta"><span><Activity size={15}/> Personal context</span><span><ShieldCheck size={15}/> Access-controlled</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><Brain size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div></section>
+      <div className="section-heading"><div><p className="eyebrow">YOUR SUMMARY</p><h2>Care overview</h2></div><span className="updated-label"><span/> Personal view</span></div>
+      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><FileText size={18}/></span><span className="stat-kicker">NOTES</span></div><small>Shared notes</small><strong>{overview?.notes?.length ?? 0}</strong><span className="stat-foot">Visible entries in your workspace</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSIS</span></div><small>Stored analysis</small><strong>{overview?.analyses?.length ?? 0}</strong><span className="stat-foot">Research records linked to your account</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><ShieldCheck size={18}/></span><span className="stat-kicker">STATUS</span></div><small>Clinical review</small><strong>{latest?.clinicianReview || 'Pending'}</strong><span className="stat-foot">Requires qualified clinician review</span></article></section>
+      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><FileText size={18}/></span><div><h3>Recent notes</h3><p>Your available clinical context</p></div></div><Badge type="blue">PATIENT</Badge></div>{overview?.notes?.length ? <div className="patient-list compact-list">{overview.notes.slice(0,3).map((item,index) => <div className="patient-row" key={`${item._id || index}`}><span className="patient-details"><b>{item.body?.slice(0,80) || 'Clinical note'}</b><small>{dateLabel(item.createdAt)}</small></span><Badge type="neutral">{item.visibility || 'patient'}</Badge></div>)}</div> : <EmptyState icon={FileText} title="No notes shared yet">No patient-visible notes are currently available in your workspace.</EmptyState>}</article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>Latest score</h3><p>Most recent research output</p></div></div><Badge type="amber">RESEARCH</Badge></div><Plot values={latest?.timeline} kind="score"/><p className="chart-note">This output is informational and not a diagnosis.</p></article></section></>;
+    }
+
+    if (user?.role === 'caregiver') {
+      return <><section className="hero"><div className="hero-copy"><p className="eyebrow">CAREGIVER VIEW</p><h2>Caregiver dashboard</h2><p>Review the monitored patient context that is available to your role, with emphasis on shared updates and safety guidance.</p><div className="hero-meta"><span><Users size={15}/> Supporting access</span><span><ShieldCheck size={15}/> Read-only scope</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><Users size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div></section>
+      <div className="section-heading"><div><p className="eyebrow">CARE SUMMARY</p><h2>Shared monitoring context</h2></div><span className="updated-label"><span/> Caregiver scope</span></div>
+      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">CLIENT</span></div><small>Linked patient</small><strong>{patient?.fullName ? patient.fullName.split(' ')[0] : 'Patient'}</strong><span className="stat-foot">Authorized care record</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSIS</span></div><small>Available analyses</small><strong>{overview?.analyses?.length ?? 0}</strong><span className="stat-foot">Research records visible in scope</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><FileText size={18}/></span><span className="stat-kicker">NOTES</span></div><small>Shared notes</small><strong>{overview?.notes?.length ?? 0}</strong><span className="stat-foot">Patient-visible information</span></article></section>
+      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><FileText size={18}/></span><div><h3>Visible care notes</h3><p>Current patient-facing context</p></div></div><Badge type="blue">CAREGIVER</Badge></div>{overview?.notes?.length ? <div className="patient-list compact-list">{overview.notes.slice(0,3).map((item,index) => <div className="patient-row" key={`${item._id || index}`}><span className="patient-details"><b>{item.body?.slice(0,80) || 'Clinical note'}</b><small>{dateLabel(item.createdAt)}</small></span><Badge type="neutral">{item.visibility || 'patient'}</Badge></div>)}</div> : <EmptyState icon={FileText} title="No caregiver-visible notes">No patient-visible notes are currently available.</EmptyState>}</article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Brain size={18}/></span><div><h3>Research context</h3><p>Current digital-twin snapshot</p></div></div><Badge type="amber">RESEARCH</Badge></div><div className="twin-state"><small>Current summary</small><p>{twin?.state?.clinicalAction || 'No model-backed digital-twin snapshot has been recorded.'}</p><div className="twin-facts"><div><small>Last upload</small><b>{twin?.state?.lastUpload || 'Not recorded'}</b></div><div><small>Model state</small><b>{twin?.state?.modelState || latest?.modelState || 'Not available'}</b></div></div></div></article></section></>;
+    }
+
+    return <><section className="hero"><div className="hero-copy"><p className="eyebrow">YOUR RESEARCH OVERVIEW</p><h2>{patient?.fullName || 'Your workspace'}</h2><p>Review longitudinal context, EEG research outputs, and clinical notes in one place.</p><div className="hero-meta"><span><Activity size={15}/> Longitudinal monitoring</span><span><ShieldCheck size={15}/> Access controlled</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><Brain size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div>{isClinician && patient && <label className={uploading ? 'upload-button is-loading' : 'upload-button'}><Upload size={17}/>{uploading ? 'Processing EEG…' : 'Upload EDF EEG'}<input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading} hidden/></label>}</section>
+      <div className="section-heading"><div><p className="eyebrow">AT A GLANCE</p><h2>Research summary</h2></div><span className="updated-label"><span/> Live workspace data</span></div>
+      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">ACCESS</span></div><small>Available patients</small><strong>{dashboard?.counts?.patients ?? patients.length}</strong><span className="stat-foot">Based on authorized workspace data</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSIS</span></div><small>Recorded analyses</small><strong>{dashboard?.counts?.analyses ?? overview?.analyses?.length ?? 0}</strong><span className="stat-foot">Research records, not diagnoses</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><ClipboardList size={18}/></span><span className="stat-kicker">REVIEW</span></div><small>Awaiting clinician review</small><strong>{dashboard?.counts?.pending ?? '—'}</strong><span className="stat-foot">Review status from stored records</span></article></section>
+      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><Waves size={18}/></span><div><h3>EEG waveform</h3><p>Latest available signal</p></div></div><Badge type={latest ? 'blue' : 'neutral'}>{latest?.modelState || 'NO MODEL OUTPUT'}</Badge></div><Plot values={latest?.waveform}/><p className="chart-note">Signal visualization is available only when returned by the backend.</p></article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>Research score timeline</h3><p>Windowed model output</p></div></div><Badge type="amber">RESEARCH</Badge></div><Plot values={latest?.timeline} kind="score"/><p className="chart-note">Scores are experimental and must not be interpreted as clinical conclusions.</p></article></section></>;
+  };
+
   return <div className="shell">
     {mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)}/>}
     <aside className={mobileNav ? 'sidebar sidebar-open' : 'sidebar'}>
-      <div className="logo"><span className="logo-mark"><Brain size={21}/></span><span>NeuroTwin<small>RESEARCH PLATFORM</small></span><button className="mobile-close" onClick={() => setMobileNav(false)} aria-label="Close menu"><X size={18}/></button></div>
+      <div className="logo"><span className="logo-mark"><Brain size={21}/></span><span>NeuroTwin<small>EEG WORKSPACE</small></span><button className="mobile-close" onClick={() => setMobileNav(false)} aria-label="Close menu"><X size={18}/></button></div>
       <p className="nav-caption">WORKSPACE</p><nav>{navigation.map(item => { const Icon = item.icon; return <button key={item.id} className={tab === item.id ? 'nav-link active' : 'nav-link'} onClick={() => chooseTab(item.id)}><Icon size={18}/><span>{item.label}</span>{tab === item.id && <span className="nav-indicator"/>}</button>; })}</nav>
       <div className="sidebar-bottom"><div className="secure-label"><ShieldCheck size={16}/><span>Protected workspace<small>Role-based access enabled</small></span></div><div className="profile"><div className="avatar">{user?.name?.[0] || 'N'}</div><div className="profile-copy"><b>{user?.name}</b><small>{roleLabels[user?.role] || user?.role}</small></div><button className="icon-button" onClick={logout} aria-label="Sign out" title="Sign out"><LogOut size={17}/></button></div></div>
     </aside>
     <main className="workspace">
       <header className="topbar"><div className="topbar-title"><button className="menu-toggle icon-button" onClick={() => setMobileNav(true)} aria-label="Open navigation"><Menu size={21}/></button><div><p className="eyebrow">{roleLabels[user?.role] || user?.role} workspace</p><h1>{tab === 'overview' ? `Welcome back${greeting ? `, ${greeting}` : ''}` : navigation.find(item => item.id === tab)?.label || 'Workspace'}</h1></div></div><div className="topbar-actions"><span className="status-pill"><span/> Workspace active</span><button className="icon-button refresh-button" onClick={loadWorkspace} disabled={busy} aria-label="Refresh data" title="Refresh data"><RefreshCw size={17}/></button><div className="top-avatar">{user?.name?.[0] || 'N'}</div></div></header>
-      <div className="safety-banner"><AlertTriangle size={16}/><span><b>Research environment</b> · Model output is not a diagnosis and must be reviewed by a qualified clinician.</span></div>
+      <div className="safety-banner"><AlertTriangle size={16}/><span><b>Safety note</b> · EEG scores are experimental, not diagnoses or treatment recommendations, and require qualified clinician review.</span></div>
       {error && <div className="feedback error-feedback" role="alert"><AlertTriangle size={17}/><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error"><X size={16}/></button></div>}
       {notice && <div className="feedback success-feedback" role="status"><CheckCircle2 size={17}/><span>{notice}</span><button onClick={() => setNotice('')} aria-label="Dismiss notice"><X size={16}/></button></div>}
 
-      {tab === 'overview' && <><section className="hero"><div className="hero-copy"><p className="eyebrow">YOUR RESEARCH OVERVIEW</p><h2>{patient?.fullName || (isClinician ? 'Patient research overview' : 'Your health workspace')}</h2><p>{patient ? 'Review longitudinal context, EEG research outputs, and clinical notes in one place.' : 'Authorized workspace data and research activity will appear here.'}</p><div className="hero-meta"><span><Activity size={15}/> Longitudinal monitoring</span><span><ShieldCheck size={15}/> Access controlled</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><Brain size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div>{isClinician && patient && <label className={uploading ? 'upload-button is-loading' : 'upload-button'}><Upload size={17}/>{uploading ? 'Processing EEG…' : 'Upload EDF EEG'}<input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading} hidden/></label>}</section>
-      <div className="section-heading"><div><p className="eyebrow">AT A GLANCE</p><h2>Research summary</h2></div><span className="updated-label"><span/> Live workspace data</span></div>
-      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">ACCESS</span></div><small>Available patients</small><strong>{dashboard?.counts?.patients ?? patients.length}</strong><span className="stat-foot">Based on authorized workspace data</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSIS</span></div><small>Recorded analyses</small><strong>{dashboard?.counts?.analyses ?? overview?.analyses?.length ?? 0}</strong><span className="stat-foot">Research records, not diagnoses</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><ClipboardList size={18}/></span><span className="stat-kicker">REVIEW</span></div><small>Awaiting clinician review</small><strong>{dashboard?.counts?.pending ?? '—'}</strong><span className="stat-foot">Review status from stored records</span></article></section>
-      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><Waves size={18}/></span><div><h3>EEG waveform</h3><p>Latest available signal</p></div></div><Badge type={latest ? 'blue' : 'neutral'}>{latest?.modelState || 'NO MODEL OUTPUT'}</Badge></div><Plot values={latest?.waveform}/><p className="chart-note">Signal visualization is available only when returned by the backend.</p></article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>Research score timeline</h3><p>Windowed model output</p></div></div><Badge type="amber">RESEARCH</Badge></div><Plot values={latest?.timeline} kind="score"/><p className="chart-note">Scores are experimental and must not be interpreted as clinical conclusions.</p></article></section>
-      <section className="panel recent-panel"><div className="panel-heading"><div><span className="panel-icon"><ClipboardList size={18}/></span><div><h3>Latest research record</h3><p>Most recent available analysis</p></div></div><button className="text-button" onClick={() => chooseTab('twin')}>View details <ArrowUpRight size={15}/></button></div>{latest ? <div className="record-row"><div className="record-status"><CheckCircle2 size={18}/></div><div className="record-copy"><b>{latest.label || 'EEG research analysis'}</b><span>{dateLabel(latest.createdAt)}</span></div><Badge type="amber">{latest.clinicianReview || 'Review required'}</Badge></div> : <EmptyState icon={Activity} title="No analysis available yet">Upload an EDF file when the trained research model is configured, or check back when analysis data is available.</EmptyState>}</section></>}
+      {tab === 'overview' && isClinician && <section className="panel eeg-workflow-panel">
+        <div className="eeg-workflow-patient">
+          <label htmlFor="dashboard-patient">Selected patient</label>
+          <select id="dashboard-patient" value={patient?._id || ''} onChange={selectPatient} disabled={busy || patients.length === 0}>
+            {patients.length === 0 && <option value="">No authorized patient records</option>}
+            {patients.map(item => <option value={item._id} key={item._id}>{item.fullName || 'Unnamed patient'}{item.mrn ? ` · ${item.mrn}` : ''}</option>)}
+          </select>
+        </div>
+        <ModelStatus status={modelStatus}/>
+        {user?.role === 'admin' && <label className={`upload-button workflow-upload${uploading || !patient || modelStatus.model_state !== 'ready' ? ' is-loading' : ''}`} aria-disabled={uploading || !patient || modelStatus.model_state !== 'ready'}>
+          <Upload size={17}/>{uploading ? `Processing ${uploadingFile}…` : 'Upload EDF EEG'}
+          <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || !patient || modelStatus.model_state !== 'ready'} hidden/>
+        </label>}
+      </section>}
+
+      {tab === 'overview' && renderRoleDashboard()}
 
       {tab === 'patients' && <section className="panel page-panel"><div className="section-heading inside"><div><p className="eyebrow">AUTHORIZED RECORDS</p><h2>Patients</h2><p className="muted">Only records available to your account are listed.</p></div><Badge>{patients.length} records</Badge></div>{patients.length ? <div className="patient-list">{patients.map((item,index) => <button className={patient?._id === item._id ? 'patient-row selected' : 'patient-row'} key={item._id} onClick={async () => { setBusy(true); setError(''); try { setOverview(await api(`/api/patients/${item._id}/overview`, {}, token)); setTab('overview'); } catch(err) { setError(err.message); } finally { setBusy(false); } }}><span className="patient-avatar">{item.fullName?.[0] || 'P'}</span><span className="patient-details"><b>{item.fullName || 'Unnamed patient'}</b><small>{item.mrn ? `Record ID · ${item.mrn}` : 'Patient research record'}</small></span><Badge type="blue">{item._id === patient?._id ? 'Selected' : 'Record'}</Badge><ArrowUpRight size={17}/></button> )}</div> : <EmptyState icon={Users} title="No patient records">No patients are currently available for this account.</EmptyState>}</section>}
 

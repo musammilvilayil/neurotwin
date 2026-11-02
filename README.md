@@ -16,7 +16,7 @@ NeuroTwin is an academic/research prototype for EEG-informed neurological monito
 
 ## Run locally
 
-Requirements: Node 20+, MongoDB 7+, and Python 3.11+ for the ML service.
+Requirements: Node 20+, MongoDB 7+ (or the dev fallback will start an embedded MongoMemoryServer automatically), and Python 3.11+ for the ML service.
 
 ```bash
 cp .env.example server/.env
@@ -24,7 +24,7 @@ npm run install:all
 npm run dev
 ```
 
-Start MongoDB locally first. The public website opens at `http://localhost:5173`; API at `http://localhost:5000`. On Windows, you can also double-click `RUN-NEUROTWIN.bat` after installing Node.js and starting your local MongoDB service. Alternatively, run `docker compose up --build` for MongoDB, API, and ML service (run the Vite client separately).
+If you do not have a local MongoDB instance running, the backend dev script creates an embedded MongoMemoryServer automatically so you can still run the app locally. The public website opens at `http://localhost:5173`; API at `http://localhost:5000`. On Windows, you can also double-click `RUN-NEUROTWIN.bat` after installing Node.js and starting your local MongoDB service. Alternatively, run `docker compose up --build` for MongoDB, API, and ML service (run the Vite client separately).
 
 Demo password for every account: `DemoPass123!` (use only on a local demo environment).
 

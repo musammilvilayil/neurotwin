@@ -2,7 +2,7 @@
 import json
 import os
 from pathlib import Path
-from tempfile import NamedTemporaryFile
+from tempfile import TemporaryDirectory
 
 import numpy as np
 from fastapi import FastAPI, File, HTTPException, UploadFile
@@ -47,7 +47,15 @@ def normalise_channel(name: str) -> str:
 
 
 def select_model_channels(raw, required_channels):
-    index = {normalise_channel(name): name for name in raw.ch_names}
+    required = {normalise_channel(name) for name in required_channels}
+    index = {}
+    for name in raw.ch_names:
+        normalized = normalise_channel(name)
+        index.setdefault(normalized, name)
+        for required_name in required:
+            duplicate_suffix = f"{required_name}-"
+            if normalized.startswith(duplicate_suffix) and normalized[len(duplicate_suffix):].isdigit():
+                index.setdefault(required_name, name)
     missing = [name for name in required_channels if normalise_channel(name) not in index]
     if missing:
         raise HTTPException(
@@ -81,11 +89,11 @@ async def inspect_eeg(file: UploadFile = File(...)):
     """Inspect EDF metadata and preprocessing readiness without making predictions."""
     if not file.filename or not file.filename.lower().endswith(".edf"):
         raise HTTPException(400, "This service accepts EDF files only.")
-    with NamedTemporaryFile(suffix=".edf") as temp:
-        temp.write(await file.read())
-        temp.flush()
+    with TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir) / "upload.edf"
         try:
-            raw = load_edf(temp.name)
+            temp_path.write_bytes(await file.read())
+            raw = load_edf(temp_path)
             cleaned, data = preprocess(raw)
         except (ValueError, RuntimeError, OSError) as exc:
             raise HTTPException(422, f"Unable to parse/preprocess EDF: {exc}") from exc
@@ -120,11 +128,11 @@ async def infer(file: UploadFile = File(...)):
     if not isinstance(required_channels, list) or len(required_channels) != int(metadata.get("channels_count", len(required_channels or []))):
         raise HTTPException(503, "Model metadata has no valid channel specification.")
 
-    with NamedTemporaryFile(suffix=".edf") as temp:
-        temp.write(await file.read())
-        temp.flush()
+    with TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir) / "upload.edf"
         try:
-            raw = load_edf(temp.name)
+            temp_path.write_bytes(await file.read())
+            raw = load_edf(temp_path)
             selected = select_model_channels(raw, required_channels)
             cleaned, data = preprocess(
                 selected,

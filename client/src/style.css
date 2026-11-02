@@ -62,3 +62,15 @@
 .public-back-link{display:block;margin:22px auto 0;border:0;background:none;color:#47736e;font-size:11px}
 @media(max-width:900px){.public-nav{padding:0 20px}.public-nav nav{gap:12px}.public-hero{grid-template-columns:1fr;gap:30px;padding-top:55px}.public-visual{height:320px}.role-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.public-login-layout{grid-template-columns:1fr;gap:30px;max-width:620px}.public-login-intro h1{font-size:45px}}
 @media(max-width:620px){.public-nav{height:auto;min-height:72px;flex-wrap:wrap;padding:14px 18px;gap:12px}.public-nav nav{order:3;width:100%;overflow-x:auto;justify-content:space-between}.public-nav nav button{white-space:nowrap;font-size:11px}.public-login-cta{padding:9px 11px;font-size:10px}.public-hero{min-height:0;padding:55px 0 42px}.public-hero-copy h1{font-size:44px;letter-spacing:-2px}.public-hero-copy>p:not(.eyebrow){font-size:14px}.public-visual{height:270px;border-radius:18px}.public-feature-grid,.role-grid{grid-template-columns:1fr}.public-section{padding:48px 0}.public-bottom-cta{align-items:flex-start;flex-direction:column;padding:24px;margin-bottom:40px}.public-bottom-cta h2{font-size:23px}.public-footer{flex-direction:column}.public-login-layout{padding:42px 18px}.public-login-intro h1{font-size:40px}.public-login-card{padding:25px 20px}}
+.eeg-workflow-panel{display:grid;grid-template-columns:minmax(200px,.85fr) minmax(260px,1.4fr) auto;align-items:center;gap:18px;padding:16px 18px}
+.eeg-workflow-patient label{display:block;color:#52666e;font-size:10px;font-weight:700;margin-bottom:7px}
+.eeg-workflow-patient select{width:100%;min-height:40px;padding:9px 11px;border:1px solid #dce6e9;border-radius:8px;background:#fff;color:var(--ink);font:inherit;font-size:11px}
+.model-status{display:flex;align-items:flex-start;gap:11px;min-width:0;padding:11px 13px;border:1px solid #eee3c9;border-radius:9px;background:#fffaf0;color:#7a6331}
+.model-status.model-ready{border-color:#d4e9dc;background:#f1faf4;color:#37664b}
+.model-status-indicator{width:8px;height:8px;flex-shrink:0;margin-top:3px;border-radius:50%;background:#c78c2d;box-shadow:0 0 0 3px #c78c2d22}
+.model-ready .model-status-indicator{background:#39a883;box-shadow:0 0 0 3px #39a88322}
+.model-status b{display:block;font-size:10px}
+.model-status p{margin:4px 0 0;color:#718187;font-size:9px;line-height:1.55}
+.workflow-upload{height:max-content}
+.upload-button[aria-disabled=true]{background:#87999a;cursor:not-allowed;box-shadow:none}
+@media(max-width:760px){.eeg-workflow-panel{grid-template-columns:1fr}.workflow-upload{justify-self:start}}
