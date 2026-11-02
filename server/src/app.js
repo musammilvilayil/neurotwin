@@ -6,22 +6,25 @@ app.get('/api/health',(_,res)=>res.json({status:'ok',clinicalBoundary:'Decision 
 app.get('/api/model/state',async(_,res)=>{try{const response=await fetch(`${process.env.ML_SERVICE_URL||'http://localhost:8001'}/health`,{signal:AbortSignal.timeout(5000)});const state=await response.json();res.status(response.ok?200:503).json({...state,source:'ml-service',clinicalBoundary:'Research only; not for diagnosis or treatment decisions.'})}catch{res.status(503).json({model_state:'not_ready',error:'ML service unavailable',clinicalBoundary:'Research only; not for diagnosis or treatment decisions.'})}});
 app.post('/api/auth/login',async(req,res)=>{const identifier=String(req.body.identifier||req.body.username||req.body.email||'').trim().toLowerCase(); const u=identifier?await User.findOne({$or:[{username:identifier},{email:identifier}] }):null; if(!u||u.active===false||typeof u.passwordHash!=='string'||!u.passwordHash||typeof req.body.password!=='string'||!await bcrypt.compare(req.body.password,u.passwordHash))return res.status(401).json({error:'Invalid username/email or password'}); res.json({token:sign(u),user:{id:u._id,name:u.name,username:u.username,email:u.email,role:u.role,linkedPatient:u.linkedPatient}})});
 app.get('/api/auth/me',authenticate,async(req,res)=>res.json(await User.findById(req.user.id).select('-passwordHash')));
-<<<<<<< HEAD
 app.get('/api/dashboard',authenticate,async(req,res)=>{
   const u=await User.findById(req.user.id);
-  if(!u)return res.status(404).json({error:'User not found'});
-  const patientId=u.linkedPatient;
-  const patients=req.user.role==='doctor'?await Patient.find({assignedDoctor:u._id}):req.user.role==='admin'?await Patient.find():patientId?[...(await Patient.find({_id:patientId}))]:[];
+  if(!u)return res.status(401).json({error:'User account no longer exists'});
+  let patients=[];
+  if(req.user.role==='doctor')patients=await Patient.find({assignedDoctor:u._id});
+  else if(req.user.role==='admin')patients=await Patient.find();
+  else if(req.user.role==='caregiver')patients=await Patient.find({caregiverUsers:u._id});
+  else if(req.user.role==='patient'&&u.linkedPatient)patients=await Patient.find({_id:u.linkedPatient});
   const patientIds=patients.map(p=>p._id);
   const scope=req.user.role==='admin'?{}:{patient:{$in:patientIds}};
   const recent=patientIds.length?await Analysis.find(scope).populate('patient','fullName').sort({createdAt:-1}).limit(5):[];
-  const counts={patients:patients.length,analyses:await Analysis.countDocuments(scope),pending:await Analysis.countDocuments({...scope,clinicianReview:'pending'})};
+  const counts={
+    patients:patients.length,
+    analyses:await Analysis.countDocuments(scope),
+    pending:await Analysis.countDocuments({...scope,clinicianReview:'pending'})
+  };
   if(req.user.role==='admin')counts.users=await User.countDocuments({active:{$ne:false}});
   res.json({role:u.role,patients,recent,counts});
 });
-=======
-app.get('/api/dashboard',authenticate,async(req,res)=>{const u=await User.findById(req.user.id);if(!u)return res.status(401).json({error:'User account no longer exists'});const patients=req.user.role==='doctor'?await Patient.find({assignedDoctor:u._id}):req.user.role==='admin'?await Patient.find():req.user.role==='caregiver'?await Patient.find({caregiverUsers:u._id}):u.linkedPatient?await Patient.find({_id:u.linkedPatient}):[];const patientIds=patients.map(p=>p._id);const scope=req.user.role==='admin'?{}:{patient:{$in:patientIds}};const recent=patientIds.length?await Analysis.find(scope).sort({createdAt:-1}).limit(5):[];const counts={patients:patients.length,analyses:await Analysis.countDocuments(scope),pending:await Analysis.countDocuments({...scope,clinicianReview:'pending'})};res.json({role:u.role,patients,recent,counts})});
->>>>>>> 3c2a8d1740932d740410f65bb348e08611765ec1
 app.get('/api/patients',authenticate,allow('admin','doctor'),async(req,res)=>res.json(await Patient.find(req.user.role==='doctor'?{assignedDoctor:req.user.id}:{}).populate('assignedDoctor','name')));
 app.post('/api/patients',authenticate,allow('admin','doctor'),async(req,res)=>{const fullName=String(req.body.fullName||'').trim();if(!fullName)return res.status(400).json({error:'Patient full name is required'});const assignedDoctor=req.user.role==='doctor'?req.user.id:(req.body.assignedDoctor||undefined);const p=await Patient.create({fullName,dob:req.body.dob||undefined,mrn:req.body.mrn?String(req.body.mrn).trim():undefined,assignedDoctor,conditions:Array.isArray(req.body.conditions)?req.body.conditions.map(x=>String(x).trim()).filter(Boolean):[],consented:req.body.consented===true});await audit(req,'patient.created',p._id);res.status(201).json(p)});
 app.get('/api/patients/:id/overview',authenticate,async(req,res)=>{if(!await canAccess(req,req.params.id))return res.status(403).json({error:'Not authorized for this patient'}); const [patient,analyses,twin,notes]=await Promise.all([Patient.findById(req.params.id).populate('assignedDoctor','name'),Analysis.find({patient:req.params.id}).sort({createdAt:-1}).limit(12),TwinSnapshot.findOne({patient:req.params.id}).sort({date:-1}),ClinicalNote.find({patient:req.params.id, ...(req.user.role==='patient'||req.user.role==='caregiver'?{visibility:'patient'}:{})}).populate('author','name').sort({createdAt:-1})]); if(!patient)return res.status(404).json({error:'Patient not found'}); await audit(req,'patient.viewed',patient._id);res.json({patient,analyses,twin,notes})});
