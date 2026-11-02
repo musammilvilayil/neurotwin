@@ -10,8 +10,10 @@ from tensorflow import keras
 
 from preprocessing import load_edf, preprocess, windows
 
-app = FastAPI(title="NeuroTwin ML Service", version="1.1.0")
+app = FastAPI(title="NeuroTwin ML Service", version="1.2.0")
 ARTIFACT_DIR = Path(os.getenv("MODEL_ARTIFACT_DIR", "artifacts"))
+MAX_EDF_BYTES = 50 * 1024 * 1024
+UPLOAD_CHUNK_BYTES = 1024 * 1024
 _MODEL = None
 _MODEL_KEY = None
 
@@ -25,17 +27,20 @@ def artifacts():
         metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return None, None
-    if metadata.get("model_state") != "research_trained":
-        return None, metadata
+    if not isinstance(metadata, dict) or metadata.get("model_state") != "research_trained":
+        return None, metadata if isinstance(metadata, dict) else None
     return model_path, metadata
 
 
 def get_model(model_path: Path):
     global _MODEL, _MODEL_KEY
-    key = (str(model_path.resolve()), model_path.stat().st_mtime_ns)
-    if _MODEL is None or _MODEL_KEY != key:
-        _MODEL = keras.models.load_model(model_path)
-        _MODEL_KEY = key
+    try:
+        key = (str(model_path.resolve()), model_path.stat().st_mtime_ns)
+        if _MODEL is None or _MODEL_KEY != key:
+            _MODEL = keras.models.load_model(model_path)
+            _MODEL_KEY = key
+    except (OSError, ValueError, TypeError) as exc:
+        raise HTTPException(503, "The installed research model could not be loaded.") from exc
     return _MODEL
 
 
@@ -64,6 +69,27 @@ def select_model_channels(raw, required_channels):
     return raw.copy().pick_channels(names, ordered=True)
 
 
+async def save_upload(file: UploadFile, temp_file):
+    """Stream an EDF upload to disk while enforcing a hard size limit."""
+    total = 0
+    while True:
+        chunk = await file.read(UPLOAD_CHUNK_BYTES)
+        if not chunk:
+            break
+        total += len(chunk)
+        if total > MAX_EDF_BYTES:
+            raise HTTPException(413, "EDF file exceeds the 50 MB upload limit.")
+        temp_file.write(chunk)
+    if total == 0:
+        raise HTTPException(400, "The uploaded EDF file is empty.")
+    temp_file.flush()
+
+
+def validate_edf_name(file: UploadFile):
+    if not file.filename or not file.filename.lower().endswith(".edf"):
+        raise HTTPException(400, "Only EDF files are accepted.")
+
+
 @app.get("/health")
 def health():
     model_path, metadata = artifacts()
@@ -79,14 +105,14 @@ def health():
 @app.post("/inspect-eeg")
 async def inspect_eeg(file: UploadFile = File(...)):
     """Inspect EDF metadata and preprocessing readiness without making predictions."""
-    if not file.filename or not file.filename.lower().endswith(".edf"):
-        raise HTTPException(400, "This service accepts EDF files only.")
+    validate_edf_name(file)
     with NamedTemporaryFile(suffix=".edf") as temp:
-        temp.write(await file.read())
-        temp.flush()
+        await save_upload(file, temp)
         try:
             raw = load_edf(temp.name)
             cleaned, data = preprocess(raw)
+        except HTTPException:
+            raise
         except (ValueError, RuntimeError, OSError) as exc:
             raise HTTPException(422, f"Unable to parse/preprocess EDF: {exc}") from exc
     model_path, metadata = artifacts()
@@ -105,6 +131,7 @@ async def inspect_eeg(file: UploadFile = File(...)):
 @app.post("/infer")
 async def infer(file: UploadFile = File(...)):
     """Return per-window experimental scores only when trained artifacts exist."""
+    validate_edf_name(file)
     model_path, metadata = artifacts()
     if not model_path:
         raise HTTPException(
@@ -114,46 +141,81 @@ async def infer(file: UploadFile = File(...)):
                 "message": "No trained research artifact is installed. Prepare data, train, and evaluate the model first.",
             },
         )
-    if not file.filename or not file.filename.lower().endswith(".edf"):
-        raise HTTPException(400, "Only EDF files are accepted.")
+
     required_channels = metadata.get("channels")
-    if not isinstance(required_channels, list) or len(required_channels) != int(metadata.get("channels_count", len(required_channels or []))):
-        raise HTTPException(503, "Model metadata has no valid channel specification.")
+    if (
+        not isinstance(required_channels, list)
+        or not required_channels
+        or not all(isinstance(name, str) and name.strip() for name in required_channels)
+        or len(set(normalise_channel(name) for name in required_channels)) != len(required_channels)
+    ):
+        raise HTTPException(503, "Model metadata has no valid, unique channel specification.")
+
+    try:
+        sample_rate = float(metadata.get("sampling_rate", 128))
+        if not np.isfinite(sample_rate) or sample_rate <= 0:
+            raise ValueError("Invalid sampling rate in model metadata.")
+        raw_window_seconds = metadata.get("window_seconds")
+        if raw_window_seconds is None:
+            window_samples = metadata.get("window_samples")
+            if window_samples is None:
+                raise ValueError("Model metadata is missing window_seconds/window_samples.")
+            raw_window_seconds = float(window_samples) / sample_rate
+        window_seconds = float(raw_window_seconds)
+        if not np.isfinite(window_seconds) or window_seconds <= 0:
+            raise ValueError("Invalid window duration in model metadata.")
+        threshold = float(metadata.get("threshold", 0.5))
+        if not np.isfinite(threshold) or not 0 <= threshold <= 1:
+            raise ValueError("Invalid classification threshold in model metadata.")
+    except (TypeError, ValueError, ZeroDivisionError) as exc:
+        raise HTTPException(503, f"Invalid model metadata: {exc}") from exc
 
     with NamedTemporaryFile(suffix=".edf") as temp:
-        temp.write(await file.read())
-        temp.flush()
+        await save_upload(file, temp)
         try:
             raw = load_edf(temp.name)
             selected = select_model_channels(raw, required_channels)
-            cleaned, data = preprocess(
-                selected,
-                resample_hz=float(metadata.get("sampling_rate", 128)),
-            )
-            sample_rate = float(cleaned.info["sfreq"])
-            window_seconds = float(metadata.get("window_seconds", metadata["window_samples"] / sample_rate))
-            X, _, starts = windows(data, sample_rate, [], window_seconds, window_seconds)
+            cleaned, data = preprocess(selected, resample_hz=sample_rate)
+            actual_sample_rate = float(cleaned.info["sfreq"])
+            X, _, starts = windows(data, actual_sample_rate, [], window_seconds, window_seconds)
         except HTTPException:
             raise
         except (ValueError, RuntimeError, OSError, KeyError) as exc:
             raise HTTPException(422, f"Unable to prepare EDF for model input: {exc}") from exc
+
     if not len(X):
         raise HTTPException(422, "Recording is shorter than one model window.")
+
     model = get_model(model_path)
-    probabilities = model.predict(X, batch_size=32, verbose=0)
-    if probabilities.ndim != 2 or probabilities.shape[1] != 2:
-        raise HTTPException(503, "The installed model output shape is incompatible with seizure-window scoring.")
+    input_shape = getattr(model, "input_shape", None)
+    if isinstance(input_shape, tuple) and len(input_shape) == 3:
+        expected_steps, expected_channels = input_shape[1], input_shape[2]
+        if expected_steps is not None and int(expected_steps) != X.shape[1]:
+            raise HTTPException(503, "EDF window dimensions do not match the installed model.")
+        if expected_channels is not None and int(expected_channels) != X.shape[2]:
+            raise HTTPException(503, "EDF channel dimensions do not match the installed model.")
+
+    try:
+        probabilities = np.asarray(model.predict(X, batch_size=32, verbose=0))
+    except (ValueError, RuntimeError, OSError) as exc:
+        raise HTTPException(503, "Research model inference failed for this EDF.") from exc
+    if (
+        probabilities.ndim != 2
+        or probabilities.shape != (len(X), 2)
+        or not np.isfinite(probabilities).all()
+    ):
+        raise HTTPException(503, "The installed model returned invalid seizure-score probabilities.")
+
     scores = probabilities[:, 1]
-    threshold = float(metadata.get("threshold", 0.5))
-    step = max(1, int(sample_rate // 8))
+    step = max(1, int(actual_sample_rate // 8))
     return {
         "model_state": "trained_research_model",
         "model_version": metadata.get("model_version", "unknown"),
         "dataset_name": metadata.get("dataset_name", "unknown"),
         "task_name": metadata.get("task_name", "seizure_window_classification"),
-        "sampling_rate": sample_rate,
+        "sampling_rate": actual_sample_rate,
         "channels": cleaned.ch_names,
-        "waveform": data[: min(len(data), int(sample_rate * 30)):step].mean(axis=1).tolist(),
+        "waveform": data[: min(len(data), int(actual_sample_rate * 30)):step].mean(axis=1).tolist(),
         "timeline": [
             {"start_seconds": round(float(start), 2), "score": round(float(score), 5)}
             for start, score in zip(starts, scores)
