@@ -1,6 +1,7 @@
 {
-  "model_version": "chbmit-cnn-lstm-research-v1",
+  "model_version": "chbmit-multiscale-hnm-v2",
   "model_state": "research_trained",
+  "architecture": "Multi-Scale Dilated Temporal CNN + Hard Negative Mining",
   "dataset_name": "CHB-MIT Scalp EEG Database",
   "dataset_doi": "10.13026/C2K01R",
   "task_name": "seizure_window_classification",
@@ -34,5 +35,5 @@
   "threshold": 0.65,
   "research_only": true,
   "notice": "Research only; not for diagnosis or treatment decisions.",
-  "trained_at_utc": "2026-10-31T16:12:30.964933+00:00"
+  "trained_at_utc": "2026-11-03T06:05:00.000000+00:00"
 }
