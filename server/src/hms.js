@@ -185,8 +185,8 @@ router.post('/lab/orders', roles('admin','doctor'), wrap(async(req,res)=>{
 }));
 router.patch('/lab/orders/:id', roles('admin','lab_technician'), wrap(async(req,res)=>{
   const order=await HMSLabOrder.findById(req.params.id);if(!order)return res.status(404).json({error:'Lab order not found'});
-  const states=['ordered','sample_collected','processing','verified','cancelled'];
-  if(!states.includes(req.body.status))return res.status(400).json({error:'Valid lab status is required'});
+  const transitions={ordered:['sample_collected','cancelled'],sample_collected:['processing','cancelled'],processing:['verified','cancelled'],verified:[],cancelled:[]};
+  if(!transitions[order.status]?.includes(req.body.status))return res.status(409).json({error:'Invalid laboratory status transition'});
   if(req.body.status==='verified'&&!cleanText(req.body.result,10000))return res.status(400).json({error:'A result is required before verification'});
   order.status=req.body.status;
   if(req.body.result!==undefined)order.result=cleanText(req.body.result,10000);
