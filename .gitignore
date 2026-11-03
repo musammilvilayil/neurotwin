@@ -14,7 +14,10 @@ dist/
 .env
 __pycache__/
 *.pyc
-services/ml/artifacts/
+services/ml/artifacts/*
+!services/ml/artifacts/model.keras
+!services/ml/artifacts/metadata.json
+!services/ml/artifacts/evaluation.json
 services/ml/__pycache__/
 services/ml/tests/__pycache__/
 services/ml/data/

@@ -182,8 +182,7 @@ def main():
         keras.callbacks.TerminateOnNaN(),
     ]
 
-    print(f"
---- Phase 1: Training {model_name} ({args.epochs} epochs) ---")
+    print(f"\n--- Phase 1: Training {model_name} ({args.epochs} epochs) ---")
     history = model.fit(
         train_gen,
         validation_data=val_gen,
@@ -198,8 +197,7 @@ def main():
 
     # Optional Hard-Negative Mining fine-tuning
     if args.hard_negative_mining:
-        print("
---- Phase 2: Hard-Negative Mining Fine-Tuning ---")
+        print("\n--- Phase 2: Hard-Negative Mining Fine-Tuning ---")
         train_eval_gen = MemmapBatchSequence(X, y, train_idx, batch_size=args.batch_size, shuffle=False)
         train_preds = model.predict(train_eval_gen, verbose=0)[:, 1]
         
@@ -236,8 +234,7 @@ def main():
             model = keras.models.load_model(best_path)
 
     # Threshold selection strictly on validation set
-    print("
---- Validation Threshold Optimization ---")
+    print("\n--- Validation Threshold Optimization ---")
     val_prob = model.predict(val_gen, verbose=0)[:, 1]
     candidates = np.linspace(0.1, 0.9, 17)
     val_f1_scores = [f1_score(y[val_idx], val_prob >= t, zero_division=0) for t in candidates]
@@ -248,8 +245,7 @@ def main():
     print(f"Selected threshold on validation set: {threshold:.2f} (Val F1: {val_f1_scores[best_t_idx]:.4f})")
 
     # Evaluation on held-out test set
-    print("
---- Final Evaluation on Held-Out Test Set ---")
+    print("\n--- Final Evaluation on Held-Out Test Set ---")
     test_gen = MemmapBatchSequence(X, y, test_idx, batch_size=args.batch_size, shuffle=False)
     test_prob = model.predict(test_gen, verbose=0)[:, 1]
     raw_pred = (test_prob >= threshold).astype(int)
@@ -295,13 +291,11 @@ def main():
         "confusion_matrix": cm_conf.tolist(),
     }
 
-    print("
---- Raw Window Metrics on Test Set ---")
+    print("\n--- Raw Window Metrics on Test Set ---")
     print(f"Precision: {raw_metrics['precision']*100:.2f}% | Recall: {raw_metrics['recall']*100:.2f}% | F1: {raw_metrics['f1']*100:.2f}%")
     print(f"False Positives: {raw_metrics['false_positives']} ({fp_rate_raw:.2f} FP/hr) | ROC-AUC: {raw_metrics['roc_auc']*100:.2f}%")
 
-    print("
---- Consecutive Confirmed Metrics (min 2 windows) ---")
+    print("\n--- Consecutive Confirmed Metrics (min 2 windows) ---")
     print(f"Precision: {confirmed_metrics['precision']*100:.2f}% | Recall: {confirmed_metrics['recall']*100:.2f}% | F1: {confirmed_metrics['f1']*100:.2f}%")
     print(f"False Positives: {confirmed_metrics['false_positives']} ({fp_rate_conf:.2f} FP/hr) | False Negatives: {confirmed_metrics['false_negatives']}")
 
@@ -362,8 +356,7 @@ def main():
         "clinical_notice": "Research metrics only; not a clinical diagnostic validation.",
     }
     (output / "evaluation.json").write_text(json.dumps(full_evaluation, indent=2))
-    print(f"
-Artifacts successfully saved to {output.resolve()}")
+    print(f"\nArtifacts successfully saved to {output.resolve()}")
 
 
 if __name__ == "__main__":

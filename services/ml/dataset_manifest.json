@@ -1,0 +1,6085 @@
+{
+  "dataset_name": "CHB-MIT Scalp EEG Database",
+  "dataset_doi": "10.13026/C2K01R",
+  "total_subjects": 24,
+  "total_edf_files": 686,
+  "total_seizure_files": 141,
+  "total_seizure_events": 198,
+  "subjects": {
+    "chb01": {
+      "total_edfs": 42,
+      "seizure_files": 7,
+      "total_seizures": 7,
+      "files": [
+        {
+          "filename": "chb01_01.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_02.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_03.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2996,
+              "end": 3036
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb01_04.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1467,
+              "end": 1494
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb01_05.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_06.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_07.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_08.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_09.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_10.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_11.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_12.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_13.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_14.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_15.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1732,
+              "end": 1772
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb01_16.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1015,
+              "end": 1066
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb01_17.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_18.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1720,
+              "end": 1810
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb01_19.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_20.edf",
+          "size_mb": 29.91,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_21.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 327,
+              "end": 420
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb01_22.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_23.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_24.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_25.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_26.edf",
+          "size_mb": 26.12,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1862,
+              "end": 1963
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb01_27.edf",
+          "size_mb": 6.74,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_29.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_30.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_31.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_32.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_33.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_34.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_36.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_37.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_38.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_39.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_40.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_41.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_42.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_43.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb01_46.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb02": {
+      "total_edfs": 36,
+      "seizure_files": 3,
+      "total_seizures": 3,
+      "files": [
+        {
+          "filename": "chb02_01.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_02.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_03.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_04.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_05.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_06.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_07.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_08.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_09.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_10.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_11.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_12.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_13.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_14.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_15.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_16+.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2972,
+              "end": 3053
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb02_16.edf",
+          "size_mb": 10.78,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 130,
+              "end": 212
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb02_17.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_18.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_19.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3369,
+              "end": 3378
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb02_20.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_21.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_22.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_23.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_24.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_25.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_26.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_27.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_28.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_29.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_30.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_31.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_32.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_33.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_34.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb02_35.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb03": {
+      "total_edfs": 38,
+      "seizure_files": 7,
+      "total_seizures": 7,
+      "files": [
+        {
+          "filename": "chb03_01.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 362,
+              "end": 414
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb03_02.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 731,
+              "end": 796
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb03_03.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 432,
+              "end": 501
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb03_04.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2162,
+              "end": 2214
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb03_05.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_06.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_07.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_08.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_09.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_10.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_11.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_12.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_13.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_14.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_15.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_16.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_17.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_18.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_19.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_20.edf",
+          "size_mb": 40.5,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_21.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_22.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_23.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_24.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_25.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_26.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_27.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_28.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_29.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_30.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_31.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_32.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_33.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_34.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1982,
+              "end": 2029
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb03_35.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2592,
+              "end": 2656
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb03_36.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1725,
+              "end": 1778
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb03_37.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb03_38.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb04": {
+      "total_edfs": 42,
+      "seizure_files": 3,
+      "total_seizures": 4,
+      "files": [
+        {
+          "filename": "chb04_01.edf",
+          "size_mb": 161.7,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_02.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_03.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_04.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_05.edf",
+          "size_mb": 107.1,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 7804,
+              "end": 7853
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb04_06.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_07.edf",
+          "size_mb": 87.85,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_08.edf",
+          "size_mb": 168.76,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 6446,
+              "end": 6557
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb04_09.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_10.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_11.edf",
+          "size_mb": 56.63,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_12.edf",
+          "size_mb": 168.99,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_13.edf",
+          "size_mb": 168.73,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_14.edf",
+          "size_mb": 168.97,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_15.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_16.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_17.edf",
+          "size_mb": 160.93,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_18.edf",
+          "size_mb": 169.05,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_19.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_21.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_22.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_23.edf",
+          "size_mb": 125.21,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_24.edf",
+          "size_mb": 168.83,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_25.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_26.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_27.edf",
+          "size_mb": 169.07,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_28.edf",
+          "size_mb": 169.03,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 1679,
+              "end": 1781
+            },
+            {
+              "start": 3782,
+              "end": 3898
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb04_29.edf",
+          "size_mb": 168.79,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_30.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_31.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_32.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_33.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_34.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_35.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_36.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_37.edf",
+          "size_mb": 65.78,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_38.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_39.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_40.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_41.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_42.edf",
+          "size_mb": 68.24,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb04_43.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb05": {
+      "total_edfs": 39,
+      "seizure_files": 5,
+      "total_seizures": 5,
+      "files": [
+        {
+          "filename": "chb05_01.edf",
+          "size_mb": 40.55,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_02.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_03.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_04.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_05.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_06.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 417,
+              "end": 532
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb05_07.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_08.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_09.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_10.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_11.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_12.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_13.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1086,
+              "end": 1196
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb05_14.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_15.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_16.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2317,
+              "end": 2413
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb05_17.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2451,
+              "end": 2571
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb05_18.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_19.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_20.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_21.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_22.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2348,
+              "end": 2465
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb05_23.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_24.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_25.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_26.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_27.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_28.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_29.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_30.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_31.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_32.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_33.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_34.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_35.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_36.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_37.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_38.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb05_39.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb06": {
+      "total_edfs": 18,
+      "seizure_files": 7,
+      "total_seizures": 10,
+      "files": [
+        {
+          "filename": "chb06_01.edf",
+          "size_mb": 162.03,
+          "seizure_count": 3,
+          "intervals": [
+            {
+              "start": 1724,
+              "end": 1738
+            },
+            {
+              "start": 7461,
+              "end": 7476
+            },
+            {
+              "start": 13525,
+              "end": 13540
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb06_02.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_03.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_04.edf",
+          "size_mb": 148.93,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 327,
+              "end": 347
+            },
+            {
+              "start": 6211,
+              "end": 6231
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb06_05.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_06.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_07.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_08.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_09.edf",
+          "size_mb": 161.72,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 12500,
+              "end": 12516
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb06_10.edf",
+          "size_mb": 161.72,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 10833,
+              "end": 10845
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb06_12.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_13.edf",
+          "size_mb": 161.72,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 506,
+              "end": 519
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb06_14.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_15.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_16.edf",
+          "size_mb": 34.03,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_17.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb06_18.edf",
+          "size_mb": 89.04,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 7799,
+              "end": 7811
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb06_24.edf",
+          "size_mb": 161.72,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 9387,
+              "end": 9403
+            }
+          ],
+          "has_seizure": true
+        }
+      ]
+    },
+    "chb07": {
+      "total_edfs": 19,
+      "seizure_files": 3,
+      "total_seizures": 3,
+      "files": [
+        {
+          "filename": "chb07_01.edf",
+          "size_mb": 161.85,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_02.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_03.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_04.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_05.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_06.edf",
+          "size_mb": 55.26,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_07.edf",
+          "size_mb": 52.34,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_08.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_09.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_10.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_11.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_12.edf",
+          "size_mb": 161.72,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 4920,
+              "end": 5006
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb07_13.edf",
+          "size_mb": 41.85,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3285,
+              "end": 3381
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb07_14.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_15.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_16.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_17.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_18.edf",
+          "size_mb": 135.45,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb07_19.edf",
+          "size_mb": 161.85,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 13688,
+              "end": 13831
+            }
+          ],
+          "has_seizure": true
+        }
+      ]
+    },
+    "chb08": {
+      "total_edfs": 20,
+      "seizure_files": 5,
+      "total_seizures": 5,
+      "files": [
+        {
+          "filename": "chb08_02.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2670,
+              "end": 2841
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb08_03.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_04.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_05.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2856,
+              "end": 3046
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb08_10.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_11.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2988,
+              "end": 3122
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb08_12.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_13.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2417,
+              "end": 2577
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb08_14.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_15.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_16.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_17.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_18.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_19.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_20.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_21.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2083,
+              "end": 2347
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb08_22.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_23.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_24.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb08_29.edf",
+          "size_mb": 40.69,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb09": {
+      "total_edfs": 19,
+      "seizure_files": 3,
+      "total_seizures": 4,
+      "files": [
+        {
+          "filename": "chb09_01.edf",
+          "size_mb": 90.11,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_02.edf",
+          "size_mb": 168.74,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_03.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_04.edf",
+          "size_mb": 168.93,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_05.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_06.edf",
+          "size_mb": 168.74,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 12231,
+              "end": 12295
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb09_07.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_08.edf",
+          "size_mb": 168.76,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 2951,
+              "end": 3030
+            },
+            {
+              "start": 9196,
+              "end": 9267
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb09_09.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_10.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_11.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_12.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_13.edf",
+          "size_mb": 168.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_14.edf",
+          "size_mb": 168.89,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_15.edf",
+          "size_mb": 169.0,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_16.edf",
+          "size_mb": 159.28,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_17.edf",
+          "size_mb": 11.42,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_18.edf",
+          "size_mb": 168.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb09_19.edf",
+          "size_mb": 66.8,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 5299,
+              "end": 5361
+            }
+          ],
+          "has_seizure": true
+        }
+      ]
+    },
+    "chb10": {
+      "total_edfs": 25,
+      "seizure_files": 7,
+      "total_seizures": 7,
+      "files": [
+        {
+          "filename": "chb10_01.edf",
+          "size_mb": 81.09,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_02.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_03.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_04.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_05.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_06.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_07.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_08.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_12.edf",
+          "size_mb": 80.87,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 6313,
+              "end": 6348
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb10_13.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_14.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_15.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_16.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_17.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_18.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_19.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_20.edf",
+          "size_mb": 81.0,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 6888,
+              "end": 6958
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb10_21.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_22.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_27.edf",
+          "size_mb": 81.07,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2382,
+              "end": 2447
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb10_28.edf",
+          "size_mb": 80.87,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb10_30.edf",
+          "size_mb": 81.01,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3021,
+              "end": 3079
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb10_31.edf",
+          "size_mb": 81.1,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3801,
+              "end": 3877
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb10_38.edf",
+          "size_mb": 80.87,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 4618,
+              "end": 4707
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb10_89.edf",
+          "size_mb": 80.87,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1383,
+              "end": 1437
+            }
+          ],
+          "has_seizure": true
+        }
+      ]
+    },
+    "chb11": {
+      "total_edfs": 35,
+      "seizure_files": 3,
+      "total_seizures": 3,
+      "files": [
+        {
+          "filename": "chb11_01.edf",
+          "size_mb": 40.41,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_02.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_04.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_05.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_06.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_07.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_08.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_09.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_10.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_11.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_12.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_13.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_14.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_15.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_16.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_17.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_18.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_19.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_24.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_25.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_26.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_27.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_53.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_54.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_55.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_56.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_58.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_60.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_61.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_62.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_63.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb11_82.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 298,
+              "end": 320
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb11_92.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2695,
+              "end": 2727
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb11_99.edf",
+          "size_mb": 39.09,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1454,
+              "end": 2206
+            }
+          ],
+          "has_seizure": true
+        }
+      ]
+    },
+    "chb12": {
+      "total_edfs": 24,
+      "seizure_files": 13,
+      "total_seizures": 40,
+      "files": [
+        {
+          "filename": "chb12_06.edf",
+          "size_mb": 49.31,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 1665,
+              "end": 1726
+            },
+            {
+              "start": 3415,
+              "end": 3447
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_08.edf",
+          "size_mb": 49.23,
+          "seizure_count": 4,
+          "intervals": [
+            {
+              "start": 1426,
+              "end": 1439
+            },
+            {
+              "start": 1591,
+              "end": 1614
+            },
+            {
+              "start": 1957,
+              "end": 1977
+            },
+            {
+              "start": 2798,
+              "end": 2824
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_09.edf",
+          "size_mb": 49.39,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 3082,
+              "end": 3114
+            },
+            {
+              "start": 3503,
+              "end": 3535
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_10.edf",
+          "size_mb": 49.38,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 593,
+              "end": 625
+            },
+            {
+              "start": 811,
+              "end": 856
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_11.edf",
+          "size_mb": 33.24,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1085,
+              "end": 1122
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_19.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_20.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_21.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_23.edf",
+          "size_mb": 49.23,
+          "seizure_count": 3,
+          "intervals": [
+            {
+              "start": 253,
+              "end": 333
+            },
+            {
+              "start": 425,
+              "end": 522
+            },
+            {
+              "start": 630,
+              "end": 670
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_24.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_27.edf",
+          "size_mb": 50.98,
+          "seizure_count": 6,
+          "intervals": [
+            {
+              "start": 916,
+              "end": 951
+            },
+            {
+              "start": 1097,
+              "end": 1124
+            },
+            {
+              "start": 1728,
+              "end": 1753
+            },
+            {
+              "start": 1921,
+              "end": 1963
+            },
+            {
+              "start": 2388,
+              "end": 2440
+            },
+            {
+              "start": 2621,
+              "end": 2669
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_28.edf",
+          "size_mb": 50.98,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 181,
+              "end": 215
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_29.edf",
+          "size_mb": 51.32,
+          "seizure_count": 6,
+          "intervals": [
+            {
+              "start": 107,
+              "end": 146
+            },
+            {
+              "start": 554,
+              "end": 592
+            },
+            {
+              "start": 1163,
+              "end": 1199
+            },
+            {
+              "start": 1401,
+              "end": 1447
+            },
+            {
+              "start": 1884,
+              "end": 1921
+            },
+            {
+              "start": 3557,
+              "end": 3584
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_32.edf",
+          "size_mb": 50.98,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_33.edf",
+          "size_mb": 50.98,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 2185,
+              "end": 2206
+            },
+            {
+              "start": 2427,
+              "end": 2450
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_34.edf",
+          "size_mb": 50.98,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_35.edf",
+          "size_mb": 50.98,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_36.edf",
+          "size_mb": 50.98,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 653,
+              "end": 680
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_37.edf",
+          "size_mb": 51.21,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_38.edf",
+          "size_mb": 50.98,
+          "seizure_count": 5,
+          "intervals": [
+            {
+              "start": 1548,
+              "end": 1573
+            },
+            {
+              "start": 2798,
+              "end": 2821
+            },
+            {
+              "start": 2966,
+              "end": 3009
+            },
+            {
+              "start": 3146,
+              "end": 3201
+            },
+            {
+              "start": 3364,
+              "end": 3410
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb12_39.edf",
+          "size_mb": 50.98,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_40.edf",
+          "size_mb": 50.98,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_41.edf",
+          "size_mb": 50.98,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb12_42.edf",
+          "size_mb": 50.98,
+          "seizure_count": 5,
+          "intervals": [
+            {
+              "start": 699,
+              "end": 750
+            },
+            {
+              "start": 945,
+              "end": 973
+            },
+            {
+              "start": 1170,
+              "end": 1199
+            },
+            {
+              "start": 1676,
+              "end": 1701
+            },
+            {
+              "start": 2213,
+              "end": 2236
+            }
+          ],
+          "has_seizure": true
+        }
+      ]
+    },
+    "chb13": {
+      "total_edfs": 33,
+      "seizure_files": 8,
+      "total_seizures": 12,
+      "files": [
+        {
+          "filename": "chb13_02.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_04.edf",
+          "size_mb": 43.95,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_05.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_06.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_07.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_08.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_09.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_10.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_11.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_12.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_13.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_14.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_15.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_16.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_18.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_19.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2077,
+              "end": 2121
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb13_21.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 934,
+              "end": 1004
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb13_22.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_24.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_30.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_36.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_37.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_38.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_39.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_40.edf",
+          "size_mb": 38.68,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 142,
+              "end": 173
+            },
+            {
+              "start": 530,
+              "end": 594
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb13_47.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_55.edf",
+          "size_mb": 49.23,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 458,
+              "end": 478
+            },
+            {
+              "start": 2436,
+              "end": 2454
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb13_56.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb13_58.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2474,
+              "end": 2491
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb13_59.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3339,
+              "end": 3401
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb13_60.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 638,
+              "end": 660
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb13_62.edf",
+          "size_mb": 49.23,
+          "seizure_count": 3,
+          "intervals": [
+            {
+              "start": 851,
+              "end": 916
+            },
+            {
+              "start": 1626,
+              "end": 1691
+            },
+            {
+              "start": 2664,
+              "end": 2721
+            }
+          ],
+          "has_seizure": true
+        }
+      ]
+    },
+    "chb14": {
+      "total_edfs": 26,
+      "seizure_files": 7,
+      "total_seizures": 8,
+      "files": [
+        {
+          "filename": "chb14_01.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_02.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1986,
+              "end": 2000
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb14_04.edf",
+          "size_mb": 49.23,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 1372,
+              "end": 1392
+            },
+            {
+              "start": 2817,
+              "end": 2839
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb14_06.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1911,
+              "end": 1925
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb14_07.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_11.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1838,
+              "end": 1879
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb14_12.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_13.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_14.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_16.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_17.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3239,
+              "end": 3259
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb14_18.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1039,
+              "end": 1061
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb14_19.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_20.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_22.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_24.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_25.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_26.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_27.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2833,
+              "end": 2849
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb14_29.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_30.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_32.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_37.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_39.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb14_42.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb15": {
+      "total_edfs": 40,
+      "seizure_files": 14,
+      "total_seizures": 20,
+      "files": [
+        {
+          "filename": "chb15_01.edf",
+          "size_mb": 54.53,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_02.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_03.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_04.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_05.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_06.edf",
+          "size_mb": 66.81,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 272,
+              "end": 397
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_07.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_08.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_09.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_10.edf",
+          "size_mb": 66.81,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1082,
+              "end": 1113
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_11.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_12.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_13.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_14.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_15.edf",
+          "size_mb": 66.81,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1591,
+              "end": 1748
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_16.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_17.edf",
+          "size_mb": 66.81,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1925,
+              "end": 1960
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_19.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_20.edf",
+          "size_mb": 66.81,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 607,
+              "end": 662
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_22.edf",
+          "size_mb": 66.81,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 760,
+              "end": 965
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_26.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_28.edf",
+          "size_mb": 66.81,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 876,
+              "end": 1066
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_29.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_30.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_31.edf",
+          "size_mb": 66.81,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1751,
+              "end": 1871
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_32.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_33.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_35.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_37.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_40.edf",
+          "size_mb": 66.81,
+          "seizure_count": 3,
+          "intervals": [
+            {
+              "start": 834,
+              "end": 894
+            },
+            {
+              "start": 2378,
+              "end": 2497
+            },
+            {
+              "start": 3362,
+              "end": 3425
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_45.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_46.edf",
+          "size_mb": 66.81,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3322,
+              "end": 3429
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_49.edf",
+          "size_mb": 67.27,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1108,
+              "end": 1248
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_50.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_51.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_52.edf",
+          "size_mb": 66.97,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 778,
+              "end": 849
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_54.edf",
+          "size_mb": 66.81,
+          "seizure_count": 5,
+          "intervals": [
+            {
+              "start": 263,
+              "end": 318
+            },
+            {
+              "start": 843,
+              "end": 1020
+            },
+            {
+              "start": 1524,
+              "end": 1595
+            },
+            {
+              "start": 2179,
+              "end": 2250
+            },
+            {
+              "start": 3428,
+              "end": 3460
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_61.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb15_62.edf",
+          "size_mb": 66.81,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 751,
+              "end": 859
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb15_63.edf",
+          "size_mb": 66.81,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb16": {
+      "total_edfs": 19,
+      "seizure_files": 6,
+      "total_seizures": 10,
+      "files": [
+        {
+          "filename": "chb16_01.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_02.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_04.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_05.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_06.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_07.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_08.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_09.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_10.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2290,
+              "end": 2299
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb16_11.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1120,
+              "end": 1129
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb16_12.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_13.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_14.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1854,
+              "end": 1868
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb16_15.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb16_16.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1214,
+              "end": 1220
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb16_17.edf",
+          "size_mb": 49.23,
+          "seizure_count": 4,
+          "intervals": [
+            {
+              "start": 227,
+              "end": 236
+            },
+            {
+              "start": 1694,
+              "end": 1700
+            },
+            {
+              "start": 2162,
+              "end": 2170
+            },
+            {
+              "start": 3290,
+              "end": 3298
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb16_18.edf",
+          "size_mb": 38.68,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 627,
+              "end": 635
+            },
+            {
+              "start": 1909,
+              "end": 1916
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb16_19.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb17": {
+      "total_edfs": 21,
+      "seizure_files": 3,
+      "total_seizures": 3,
+      "files": [
+        {
+          "filename": "chb17a_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2282,
+              "end": 2372
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb17a_04.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3025,
+              "end": 3140
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb17a_05.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17a_06.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17a_08.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17b_57.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17b_58.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17b_59.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17b_60.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17b_63.edf",
+          "size_mb": 49.55,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3136,
+              "end": 3224
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb17b_67.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17b_68.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17b_69.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17c_02.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17c_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17c_04.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17c_05.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17c_06.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17c_07.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17c_08.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb17c_13.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb18": {
+      "total_edfs": 36,
+      "seizure_files": 6,
+      "total_seizures": 6,
+      "files": [
+        {
+          "filename": "chb18_01.edf",
+          "size_mb": 38.8,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_02.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_04.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_05.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_06.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_07.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_08.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_09.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_10.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_11.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_12.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_13.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_14.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_15.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_16.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_17.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_18.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_19.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_20.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_21.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_22.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_23.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_24.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_25.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_26.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_27.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_28.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_29.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3477,
+              "end": 3527
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb18_30.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 541,
+              "end": 571
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb18_31.edf",
+          "size_mb": 31.1,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2087,
+              "end": 2155
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb18_32.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1908,
+              "end": 1963
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb18_33.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_34.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb18_35.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2196,
+              "end": 2264
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb18_36.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 463,
+              "end": 509
+            }
+          ],
+          "has_seizure": true
+        }
+      ]
+    },
+    "chb19": {
+      "total_edfs": 30,
+      "seizure_files": 3,
+      "total_seizures": 3,
+      "files": [
+        {
+          "filename": "chb19_01.edf",
+          "size_mb": 38.68,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_02.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_04.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_05.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_06.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_07.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_08.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_09.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_10.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_11.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_12.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_13.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_14.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_15.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_16.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_17.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_18.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_19.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_20.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_21.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_22.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_23.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_24.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_25.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_26.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_27.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb19_28.edf",
+          "size_mb": 49.39,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 299,
+              "end": 377
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb19_29.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2964,
+              "end": 3041
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb19_30.edf",
+          "size_mb": 45.59,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3159,
+              "end": 3240
+            }
+          ],
+          "has_seizure": true
+        }
+      ]
+    },
+    "chb20": {
+      "total_edfs": 29,
+      "seizure_files": 6,
+      "total_seizures": 8,
+      "files": [
+        {
+          "filename": "chb20_01.edf",
+          "size_mb": 49.31,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_02.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_04.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_05.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_06.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_07.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_08.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_11.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_12.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 94,
+              "end": 123
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb20_13.edf",
+          "size_mb": 49.23,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 1440,
+              "end": 1470
+            },
+            {
+              "start": 2498,
+              "end": 2537
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb20_14.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1971,
+              "end": 2009
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb20_15.edf",
+          "size_mb": 49.23,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 390,
+              "end": 425
+            },
+            {
+              "start": 1689,
+              "end": 1738
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb20_16.edf",
+          "size_mb": 47.43,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2226,
+              "end": 2261
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb20_17.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_21.edf",
+          "size_mb": 49.47,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_22.edf",
+          "size_mb": 10.15,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_23.edf",
+          "size_mb": 40.53,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_25.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_26.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_27.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_28.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_29.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_30.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_31.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_34.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_59.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_60.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb20_68.edf",
+          "size_mb": 29.63,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1393,
+              "end": 1432
+            }
+          ],
+          "has_seizure": true
+        }
+      ]
+    },
+    "chb21": {
+      "total_edfs": 33,
+      "seizure_files": 4,
+      "total_seizures": 4,
+      "files": [
+        {
+          "filename": "chb21_01.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_02.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_04.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_05.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_06.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_07.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_08.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_09.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_10.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_11.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_12.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_13.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_14.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_15.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_16.edf",
+          "size_mb": 49.21,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_17.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_18.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_19.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1288,
+              "end": 1344
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb21_20.edf",
+          "size_mb": 40.89,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2627,
+              "end": 2677
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb21_21.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2003,
+              "end": 2084
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb21_22.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2553,
+              "end": 2565
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb21_23.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_24.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_25.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_26.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_27.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_28.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_29.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_30.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_31.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_32.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb21_33.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb22": {
+      "total_edfs": 31,
+      "seizure_files": 3,
+      "total_seizures": 3,
+      "files": [
+        {
+          "filename": "chb22_01.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_02.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_03.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_04.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_05.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_06.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_07.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_08.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_09.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_10.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_11.edf",
+          "size_mb": 49.38,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_15.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_16.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_17.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_18.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_19.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_20.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3367,
+              "end": 3425
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb22_21.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_22.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_23.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_24.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_25.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3139,
+              "end": 3213
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb22_26.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_27.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_28.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_29.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_30.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_38.edf",
+          "size_mb": 49.23,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1263,
+              "end": 1335
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb22_51.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_54.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb22_77.edf",
+          "size_mb": 49.23,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb23": {
+      "total_edfs": 9,
+      "seizure_files": 3,
+      "total_seizures": 7,
+      "files": [
+        {
+          "filename": "chb23_06.edf",
+          "size_mb": 84.08,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3962,
+              "end": 4075
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb23_07.edf",
+          "size_mb": 28.76,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb23_08.edf",
+          "size_mb": 116.15,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 325,
+              "end": 345
+            },
+            {
+              "start": 5104,
+              "end": 5151
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb23_09.edf",
+          "size_mb": 162.02,
+          "seizure_count": 4,
+          "intervals": [
+            {
+              "start": 2589,
+              "end": 2660
+            },
+            {
+              "start": 6885,
+              "end": 6947
+            },
+            {
+              "start": 8505,
+              "end": 8532
+            },
+            {
+              "start": 9580,
+              "end": 9664
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb23_10.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb23_16.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb23_17.edf",
+          "size_mb": 141.36,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb23_19.edf",
+          "size_mb": 161.72,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb23_20.edf",
+          "size_mb": 56.26,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    },
+    "chb24": {
+      "total_edfs": 22,
+      "seizure_files": 12,
+      "total_seizures": 16,
+      "files": [
+        {
+          "filename": "chb24_01.edf",
+          "size_mb": 40.44,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 480,
+              "end": 505
+            },
+            {
+              "start": 2451,
+              "end": 2476
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_02.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb24_03.edf",
+          "size_mb": 40.44,
+          "seizure_count": 2,
+          "intervals": [
+            {
+              "start": 231,
+              "end": 260
+            },
+            {
+              "start": 2883,
+              "end": 2908
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_04.edf",
+          "size_mb": 40.44,
+          "seizure_count": 3,
+          "intervals": [
+            {
+              "start": 1088,
+              "end": 1120
+            },
+            {
+              "start": 1411,
+              "end": 1438
+            },
+            {
+              "start": 1745,
+              "end": 1764
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_05.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb24_06.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1229,
+              "end": 1253
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_07.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 38,
+              "end": 60
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_08.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb24_09.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1745,
+              "end": 1764
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_10.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb24_11.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3527,
+              "end": 3597
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_12.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb24_13.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3288,
+              "end": 3304
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_14.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 1939,
+              "end": 1966
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_15.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3552,
+              "end": 3569
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_16.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb24_17.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 3515,
+              "end": 3581
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_18.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb24_19.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb24_20.edf",
+          "size_mb": 40.44,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        },
+        {
+          "filename": "chb24_21.edf",
+          "size_mb": 40.44,
+          "seizure_count": 1,
+          "intervals": [
+            {
+              "start": 2804,
+              "end": 2872
+            }
+          ],
+          "has_seizure": true
+        },
+        {
+          "filename": "chb24_22.edf",
+          "size_mb": 11.99,
+          "seizure_count": 0,
+          "intervals": [],
+          "has_seizure": false
+        }
+      ]
+    }
+  },
+  "cache_status": {
+    "chb01": {
+      "status": "cached",
+      "file_size_mb": 254.29,
+      "windows": 3112,
+      "seizures": 50,
+      "non_seizures": 3062
+    },
+    "chb02": {
+      "status": "cached",
+      "file_size_mb": 125.57,
+      "windows": 1535,
+      "seizures": 20,
+      "non_seizures": 1515
+    },
+    "chb03": {
+      "status": "cached",
+      "file_size_mb": 265.29,
+      "windows": 3240,
+      "seizures": 45,
+      "non_seizures": 3195
+    },
+    "chb04": {
+      "status": "cached",
+      "file_size_mb": 549.86,
+      "windows": 6714,
+      "seizures": 42,
+      "non_seizures": 6672
+    },
+    "chb05": {
+      "status": "cached",
+      "file_size_mb": 205.95,
+      "windows": 2521,
+      "seizures": 62,
+      "non_seizures": 2459
+    },
+    "chb06": {
+      "status": "cached",
+      "file_size_mb": 997.56,
+      "windows": 12200,
+      "seizures": 24,
+      "non_seizures": 12176
+    },
+    "chb07": {
+      "status": "cached",
+      "file_size_mb": 502.63,
+      "windows": 6134,
+      "seizures": 36,
+      "non_seizures": 6098
+    },
+    "chb08": {
+      "status": "cached",
+      "file_size_mb": 206.08,
+      "windows": 2520,
+      "seizures": 97,
+      "non_seizures": 2423
+    },
+    "chb09": {
+      "status": "cached",
+      "file_size_mb": 464.96,
+      "windows": 5690,
+      "seizures": 31,
+      "non_seizures": 5659
+    },
+    "chb10": {
+      "status": "cached",
+      "file_size_mb": 529.25,
+      "windows": 6487,
+      "seizures": 49,
+      "non_seizures": 6438
+    },
+    "chb11": {
+      "status": "cached",
+      "file_size_mb": 141.02,
+      "windows": 1724,
+      "seizures": 83,
+      "non_seizures": 1641
+    },
+    "chb12": {
+      "status": "cached",
+      "file_size_mb": 343.39,
+      "windows": 4205,
+      "seizures": 123,
+      "non_seizures": 4082
+    },
+    "chb13": {
+      "status": "cached",
+      "file_size_mb": 294.27,
+      "windows": 3600,
+      "seizures": 67,
+      "non_seizures": 3533
+    },
+    "chb14": {
+      "status": "cached",
+      "file_size_mb": 264.54,
+      "windows": 3240,
+      "seizures": 24,
+      "non_seizures": 3216
+    },
+    "chb15": {
+      "status": "cached",
+      "file_size_mb": 472.2,
+      "windows": 5762,
+      "seizures": 214,
+      "non_seizures": 5548
+    },
+    "chb16": {
+      "status": "cached",
+      "file_size_mb": 235.86,
+      "windows": 2880,
+      "seizures": 14,
+      "non_seizures": 2866
+    },
+    "chb17": {
+      "status": "cached",
+      "file_size_mb": 147.56,
+      "windows": 1802,
+      "seizures": 32,
+      "non_seizures": 1770
+    },
+    "chb18": {
+      "status": "cached",
+      "file_size_mb": 225.21,
+      "windows": 2748,
+      "seizures": 38,
+      "non_seizures": 2710
+    },
+    "chb19": {
+      "status": "cached",
+      "file_size_mb": 145.19,
+      "windows": 1774,
+      "seizures": 27,
+      "non_seizures": 1747
+    },
+    "chb20": {
+      "status": "cached",
+      "file_size_mb": 222.16,
+      "windows": 2722,
+      "seizures": 36,
+      "non_seizures": 2686
+    },
+    "chb21": {
+      "status": "cached",
+      "file_size_mb": 171.81,
+      "windows": 2099,
+      "seizures": 24,
+      "non_seizures": 2075
+    },
+    "chb22": {
+      "status": "cached",
+      "file_size_mb": 147.42,
+      "windows": 1800,
+      "seizures": 24,
+      "non_seizures": 1776
+    },
+    "chb23": {
+      "status": "cached",
+      "file_size_mb": 402.5,
+      "windows": 4920,
+      "seizures": 49,
+      "non_seizures": 4871
+    },
+    "chb24": {
+      "status": "cached",
+      "file_size_mb": 412.17,
+      "windows": 5040,
+      "seizures": 65,
+      "non_seizures": 4975
+    }
+  },
+  "total_cached_windows": 94469,
+  "total_cached_seizures": 1276
+}
