@@ -185,7 +185,7 @@ app.post('/api/eeg/upload', authenticate, allow('doctor', 'admin'), upload.singl
   }
 });
 
-app.get('/api/analyses', authenticate, ah(async (req, res) => {
+app.get('/api/analyses', authenticate, allow('admin', 'doctor', 'patient', 'caregiver'), ah(async (req, res) => {
   let patientFilter = {};
   if (req.user.role === 'doctor') {
     const docPatients = await Patient.find({ assignedDoctor: req.user.id }, '_id');
