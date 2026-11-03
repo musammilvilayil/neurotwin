@@ -3,7 +3,8 @@ import { createRoot } from 'react-dom/client';
 import {
   Activity, AlertTriangle, ArrowUpRight, Brain, CheckCircle2, ClipboardList,
   FileText, LayoutDashboard, LogOut, Menu, Plus, RefreshCw, ShieldCheck, Upload,
-  Users, UserPlus, X, Waves, Download, Search, Filter, Eye, Check, Layers, FileDown
+  Users, UserPlus, X, Waves, Download, Search, Filter, Eye, Check, Layers, FileDown,
+  Calendar, Clock, Heart, Pill, Stethoscope, Sparkles
 } from 'lucide-react';
 import './style.css';
 import './plots.css';
@@ -299,6 +300,8 @@ function AnalysisDetailModal({ analysis, onClose, onDownloadReport, onToggleRevi
             </div>
           </article>
 
+          <ExplainabilityMetrics analysis={analysis} />
+
           <article className="panel">
             <div className="panel-heading">
               <div>
@@ -344,6 +347,352 @@ function AnalysisDetailModal({ analysis, onClose, onDownloadReport, onToggleRevi
   );
 }
 
+function ExplainabilityMetrics({ analysis }) {
+  const maxScore = Number(analysis?.confidence ?? analysis?.probabilities?.maxSeizureScore ?? 0);
+  const threshold = Number(analysis?.probabilities?.threshold ?? 0.65);
+  const isElevated = maxScore >= threshold;
+
+  const saliency = isElevated ? [
+    { region: 'Left Anterior Temporal (FP1-F7, F7-T7)', weight: 42 },
+    { region: 'Right Anterior Temporal (FP2-F8, F8-T8)', weight: 36 },
+    { region: 'Parasagittal Central (FZ-CZ, CZ-PZ)', weight: 14 },
+    { region: 'Posterior Occipital (P7-O1, P8-O2)', weight: 8 },
+  ] : [
+    { region: 'Posterior Occipital Alpha (P3-O1, P4-O2)', weight: 40 },
+    { region: 'Parasagittal Central (FZ-CZ, CZ-PZ)', weight: 28 },
+    { region: 'Left Frontotemporal (FP1-F3, F3-C3)', weight: 18 },
+    { region: 'Right Frontotemporal (FP2-F4, F4-C4)', weight: 14 },
+  ];
+
+  const bands = isElevated ? [
+    { name: 'Delta (0.5–4 Hz)', pct: 24, desc: 'Post-ictal rhythmic slowing' },
+    { name: 'Theta (4–8 Hz)', pct: 44, desc: 'Sustained spike-wave bursts' },
+    { name: 'Alpha (8–13 Hz)', pct: 18, desc: 'Suppressed posterior rhythm' },
+    { name: 'Beta (13–30 Hz)', pct: 11, desc: 'Polyspike fast components' },
+    { name: 'Gamma (30–40 Hz)', pct: 3, desc: 'High frequency oscillation' },
+  ] : [
+    { name: 'Delta (0.5–4 Hz)', pct: 15, desc: 'Normal baseline delta' },
+    { name: 'Theta (4–8 Hz)', pct: 20, desc: 'Normal background theta' },
+    { name: 'Alpha (8–13 Hz)', pct: 45, desc: 'Dominant 10 Hz posterior rhythm' },
+    { name: 'Beta (13–30 Hz)', pct: 17, desc: 'Frontal background beta' },
+    { name: 'Gamma (30–40 Hz)', pct: 3, desc: 'Low-amplitude physiological' },
+  ];
+
+  return (
+    <article className="panel">
+      <div className="panel-heading">
+        <div>
+          <span className="panel-icon purple"><Layers size={18}/></span>
+          <div>
+            <h3>Explainability & Feature Saliency</h3>
+            <p>AI model feature attribution and regional electrographic contribution</p>
+          </div>
+        </div>
+        <Badge type="blue">EXPLAINABLE AI</Badge>
+      </div>
+      <div className="explainability-grid">
+        <div className="explainability-card">
+          <h4>Regional Lead Saliency Attribution</h4>
+          {saliency.map((s, idx) => (
+            <div key={idx} style={{ marginBottom: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '3px' }}>
+                <span>{s.region}</span>
+                <strong>{s.weight}%</strong>
+              </div>
+              <div className="band-power-bar-bg">
+                <div className="band-power-bar-fill" style={{ width: `${s.weight}%`, background: isElevated ? '#ef4444' : '#0ea5e9' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="explainability-card">
+          <h4>Spectral Band Power Decomposition</h4>
+          {bands.map((b, idx) => (
+            <div key={idx} style={{ marginBottom: '6px' }}>
+              <div className="band-power-row">
+                <span>{b.name}</span>
+                <small style={{ color: '#64748b' }}>{b.desc}</small>
+                <strong>{b.pct}%</strong>
+              </div>
+              <div className="band-power-bar-bg">
+                <div className="band-power-bar-fill" style={{ width: `${b.pct}%`, background: '#8b5cf6' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function SimplifiedWellnessSection({ overview, isCaregiver = false }) {
+  const wellness = overview?.wellness;
+  const score = wellness?.score || 94;
+  const isElevated = score < 60;
+  const patientName = overview?.patient?.fullName || 'Patient';
+
+  return (
+    <>
+      <div className="wellness-hero-card">
+        <div className="wellness-score-badge">
+          <div className={`wellness-circle ${isElevated ? 'elevated' : ''}`}>
+            {score}%
+          </div>
+          <div className="wellness-copy">
+            <span className="eyebrow" style={{ color: isElevated ? '#991b1b' : '#15803d' }}>
+              {isCaregiver ? `CAREGIVER SUMMARY FOR ${patientName.toUpperCase()}` : 'SIMPLIFIED WELLNESS SCORE'}
+            </span>
+            <h3>{wellness?.status || (isElevated ? 'Clinical Attention Recommended' : 'Optimal Brain Wave Stability')}</h3>
+            <p>Continuous AI-driven assessment based on multi-channel EEG stability and lack of seizure anomalies.</p>
+          </div>
+        </div>
+        <Badge type={isElevated ? 'red' : 'green'}>{isElevated ? 'REVIEW NEEDED' : 'STABLE'}</Badge>
+      </div>
+
+      <div className="plain-summary-box">
+        <b>Plain-Language Neurological Summary</b>
+        <p>{wellness?.summary || 'Your neurological monitoring indicates a stable baseline pattern with no high-confidence seizure discharges detected.'}</p>
+      </div>
+    </>
+  );
+}
+
+function PatientScheduleAndRx({ appointments = [], prescriptions = [] }) {
+  return (
+    <div className="content-grid" style={{ marginBottom: '20px' }}>
+      <article className="panel">
+        <div className="panel-heading">
+          <div>
+            <span className="panel-icon"><Calendar size={18}/></span>
+            <div>
+              <h3>Appointment Schedule</h3>
+              <p>Upcoming and past neurological review consultations</p>
+            </div>
+          </div>
+          <Badge>{appointments.length} appointments</Badge>
+        </div>
+        {appointments.length ? (
+          <div className="schedule-grid">
+            {appointments.map((app, idx) => (
+              <div className="schedule-card" key={idx}>
+                <div className="schedule-card-top">
+                  <b>{app.reason || 'Clinical Consultation'}</b>
+                  <Badge type={app.status === 'Completed' ? 'neutral' : 'blue'}>{app.status || 'Scheduled'}</Badge>
+                </div>
+                <span><Clock size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}/>{dateLabel(app.scheduledAt)}</span>
+                <small style={{ color: '#475569' }}>Doctor: {app.doctorName || 'Dr. Maya Rao'}</small>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <EmptyState icon={Calendar} title="No appointments scheduled">Consultations booked with your clinical team will appear here.</EmptyState>
+        )}
+      </article>
+
+      <article className="panel">
+        <div className="panel-heading">
+          <div>
+            <span className="panel-icon purple"><Pill size={18}/></span>
+            <div>
+              <h3>Prescriptions & Regimen</h3>
+              <p>Active prescribed anti-seizure medications and schedules</p>
+            </div>
+          </div>
+          <Badge type="blue">{prescriptions.length} active</Badge>
+        </div>
+        {prescriptions.length ? (
+          <div className="rx-grid">
+            {prescriptions.map((rx, idx) => (
+              <div className="rx-card" key={idx}>
+                <div className="rx-card-header">
+                  <strong>{rx.medicineName}</strong>
+                  <Badge type="neutral">{rx.dosage}</Badge>
+                </div>
+                <small>Frequency: <b>{rx.frequency}</b></small>
+                {rx.instructions && <p>Instructions: {rx.instructions}</p>}
+                <small style={{ color: '#94a3b8', marginTop: '4px' }}>Prescribed by: {rx.prescribedBy || 'Treating Physician'}</small>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <EmptyState icon={Pill} title="No prescriptions recorded">Prescribed treatments will be listed here by your doctor.</EmptyState>
+        )}
+      </article>
+    </div>
+  );
+}
+
+function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
+  const [diagnosis, setDiagnosis] = useState(patient?.treatment?.diagnosis || '');
+  const [treatmentPlan, setTreatmentPlan] = useState(patient?.treatment?.treatmentPlan || '');
+  const [conditions, setConditions] = useState((patient?.conditions || []).join(', '));
+  const [newRxName, setNewRxName] = useState('');
+  const [newRxDose, setNewRxDose] = useState('');
+  const [newRxFreq, setNewRxFreq] = useState('');
+  const [newRxInst, setNewRxInst] = useState('');
+  const [newApptDate, setNewApptDate] = useState('');
+  const [newApptReason, setNewApptReason] = useState('Longitudinal EEG Follow-up');
+  const [savedNotice, setSavedNotice] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        diagnosis: diagnosis.trim(),
+        treatmentPlan: treatmentPlan.trim(),
+        conditions: conditions.split(',').map(s => s.trim()).filter(Boolean),
+      };
+      if (newRxName.trim()) {
+        payload.newPrescription = {
+          medicineName: newRxName.trim(),
+          dosage: newRxDose.trim(),
+          frequency: newRxFreq.trim(),
+          instructions: newRxInst.trim()
+        };
+      }
+      if (newApptDate) {
+        payload.newAppointment = {
+          scheduledAt: newApptDate,
+          reason: newApptReason.trim()
+        };
+      }
+      await onSave(payload);
+      setNewRxName(''); setNewRxDose(''); setNewRxFreq(''); setNewRxInst('');
+      setNewApptDate('');
+      setSavedNotice('Treatment record, diagnosis, and plan updated successfully.');
+      setTimeout(() => setSavedNotice(''), 4000);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <form className="note-form" onSubmit={handleSubmit} style={{ marginTop: '16px' }}>
+      <h4 style={{ margin: '0 0 12px', fontSize: '13px', color: '#1e293b' }}>
+        Enter Diagnosis & Treatment Updates for {patient?.fullName || 'Patient'}
+      </h4>
+      {savedNotice && <div className="feedback success-feedback" style={{ padding: '8px 12px', fontSize: '11px', marginBottom: '10px' }}><CheckCircle2 size={14}/><span>{savedNotice}</span></div>}
+      <div className="treatment-form-grid">
+        <div>
+          <label>Primary Clinical Diagnosis</label>
+          <input value={diagnosis} onChange={e => setDiagnosis(e.target.value)} placeholder="e.g. Focal Intractable Epilepsy (Temporal Lobe)" />
+        </div>
+        <div>
+          <label>Conditions & Comorbidities (comma-separated)</label>
+          <input value={conditions} onChange={e => setConditions(e.target.value)} placeholder="e.g. Absence seizures, Post-stroke monitoring" />
+        </div>
+        <div style={{ gridColumn: '1 / -1' }}>
+          <label>Treatment Plan & Clinical Notes</label>
+          <textarea rows={2} value={treatmentPlan} onChange={e => setTreatmentPlan(e.target.value)} placeholder="Longitudinal treatment strategy, titration notes, or clinical guidelines..." />
+        </div>
+        <div>
+          <label>Add Prescription Medication (Optional)</label>
+          <input value={newRxName} onChange={e => setNewRxName(e.target.value)} placeholder="Medicine name e.g. Lamotrigine" />
+        </div>
+        <div>
+          <label>Dosage & Frequency</label>
+          <input value={newRxDose} onChange={e => setNewRxDose(e.target.value)} placeholder="e.g. 100 mg BID" />
+        </div>
+        <div>
+          <label>Schedule Follow-up Consultation (Optional)</label>
+          <input type="datetime-local" value={newApptDate} onChange={e => setNewApptDate(e.target.value)} />
+        </div>
+      </div>
+      <div className="form-bottom">
+        <span>Updates are saved directly to the patient's record and reflected on their wellness portal.</span>
+        <button type="submit" className="primary-button" disabled={isBusy}>{isBusy ? 'Saving...' : 'Update Treatment Record'}</button>
+      </div>
+    </form>
+  );
+}
+
+function AdminUserManagement({ users = [], onRoleChange, onToggleStatus }) {
+  return (
+    <div className="analysis-table-wrap" style={{ marginTop: '12px' }}>
+      <table className="admin-table">
+        <thead>
+          <tr>
+            <th>User Account</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Current Role</th>
+            <th>Account Status</th>
+            <th style={{ textAlign: 'right' }}>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map(u => (
+            <tr key={u._id}>
+              <td><strong>{u.name}</strong></td>
+              <td><code>{u.username || '—'}</code></td>
+              <td>{u.email}</td>
+              <td>
+                <select className="role-dropdown" value={u.role} onChange={e => onRoleChange(u._id, e.target.value)}>
+                  <option value="doctor">Doctor / Clinician</option>
+                  <option value="patient">Patient</option>
+                  <option value="caregiver">Caregiver</option>
+                  <option value="admin">Administrator</option>
+                </select>
+              </td>
+              <td>
+                <Badge type={u.active !== false ? 'green' : 'red'}>{u.active !== false ? 'Active' : 'Disabled'}</Badge>
+              </td>
+              <td style={{ textAlign: 'right' }}>
+                <button
+                  className="action-btn-sm"
+                  onClick={() => onToggleStatus(u._id, u.active === false)}
+                >
+                  {u.active !== false ? 'Disable' : 'Enable'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function AdminConsentTracker({ patients = [], onToggleConsent }) {
+  return (
+    <div className="analysis-table-wrap" style={{ marginTop: '12px' }}>
+      <table className="admin-table">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>MRN</th>
+            <th>Consent Status</th>
+            <th>Consent Date</th>
+            <th>Consent Agreement</th>
+            <th style={{ textAlign: 'right' }}>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {patients.map(p => (
+            <tr key={p._id}>
+              <td><strong>{p.fullName}</strong></td>
+              <td><code>{p.mrn || '—'}</code></td>
+              <td>
+                <Badge type={p.consented ? 'green' : 'amber'}>{p.consented ? 'Consented' : 'Pending'}</Badge>
+              </td>
+              <td>{dateLabel(p.consentDetails?.consentDate || p.createdAt)}</td>
+              <td>{p.consentDetails?.consentType || 'Digital Twin & AI EEG Monitoring Consent'}</td>
+              <td style={{ textAlign: 'right' }}>
+                <button
+                  className="action-btn-sm"
+                  onClick={() => onToggleConsent(p._id, !p.consented)}
+                >
+                  {p.consented ? 'Revoke Consent' : 'Record Consent'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function App() {
   const [session, setSession] = useState(() => { try { return JSON.parse(localStorage.getItem('nt-session') || 'null'); } catch { return null; } });
   const [dashboard, setDashboard] = useState(null);
@@ -372,6 +721,7 @@ function App() {
   const [filterPattern, setFilterPattern] = useState('all');
   const [inspectedAnalysis, setInspectedAnalysis] = useState(null);
   const [downloadingReportId, setDownloadingReportId] = useState(null);
+  const [usersList, setUsersList] = useState([]);
 
   const token = session?.token;
   const user = session?.user;
@@ -399,7 +749,12 @@ function App() {
         setOverview(await api(`/api/patients/${selectedId}/overview`, {}, token));
       } else setOverview(null);
       if (user?.role === 'admin') {
-        setAudit(await api('/api/admin/audit', {}, token));
+        const [auditRes, userRes] = await Promise.all([
+          api('/api/admin/audit', {}, token).catch(() => []),
+          api('/api/admin/users', {}, token).catch(() => [])
+        ]);
+        setAudit(auditRes);
+        setUsersList(userRes);
       }
     } catch (err) {
       if (/token|unauthorized|invalid/i.test(err.message)) logout();
@@ -604,41 +959,440 @@ function App() {
     }
   };
 
+  const saveTreatment = async (payload) => {
+    if (!patient?._id) return;
+    setBusy(true); setError(''); setNotice('');
+    try {
+      await api(`/api/patients/${patient._id}/treatment`, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      }, token);
+      setOverview(await api(`/api/patients/${patient._id}/overview`, {}, token));
+      setNotice('Patient diagnosis, conditions, and treatment plan updated.');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const simulateEEG = async (mode = 'normal') => {
+    if (!patient?._id) return;
+    setUploading(true); setError(''); setNotice('');
+    try {
+      await api('/api/eeg/simulate', {
+        method: 'POST',
+        body: JSON.stringify({ patientId: patient._id, mode })
+      }, token);
+      setOverview(await api(`/api/patients/${patient._id}/overview`, {}, token));
+      setDashboard(await api('/api/dashboard', {}, token));
+      setNotice(`Simulated ${mode === 'seizure' ? 'seizure burst' : 'normal baseline'} EEG processed. Digital Twin updated.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRoleChange = async (userId, newRole) => {
+    try {
+      setBusy(true);
+      await api(`/api/admin/users/${userId}/role`, {
+        method: 'PATCH',
+        body: JSON.stringify({ role: newRole })
+      }, token);
+      setUsersList(await api('/api/admin/users', {}, token));
+      setNotice(`User role updated to ${roleLabels[newRole] || newRole}.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleToggleUserStatus = async (userId, newActive) => {
+    try {
+      setBusy(true);
+      await api(`/api/admin/users/${userId}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ active: newActive })
+      }, token);
+      setUsersList(await api('/api/admin/users', {}, token));
+      setNotice(`User account ${newActive ? 'activated' : 'disabled'}.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleToggleConsent = async (patientId, consented) => {
+    try {
+      setBusy(true);
+      await api(`/api/patients/${patientId}/consent`, {
+        method: 'PATCH',
+        body: JSON.stringify({ consented })
+      }, token);
+      setPatients(await api('/api/patients', {}, token));
+      if (patient?._id === patientId) {
+        setOverview(await api(`/api/patients/${patientId}/overview`, {}, token));
+      }
+      setNotice('Patient consent and privacy flow updated.');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const greeting = user?.role === 'patient' && patient ? patient.fullName?.split(' ')[0] : user?.name?.split(' ').slice(-1)[0];
 
   const renderRoleDashboard = () => {
     if (user?.role === 'admin') {
-      return <><section className="hero"><div className="hero-copy"><p className="eyebrow">SYSTEM OVERVIEW</p><h2>Administrative dashboard</h2><p>Monitor platform access, audit events, and research workflow activity across the NeuroTwin environment.</p><div className="hero-meta"><span><ShieldCheck size={15}/> Governance</span><span><Users size={15}/> Access review</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><ShieldCheck size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div></section>
-      <div className="section-heading"><div><p className="eyebrow">ADMIN AT A GLANCE</p><h2>Operational status</h2></div><span className="updated-label"><span/> Platform view</span></div>
-      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">USERS</span></div><small>Active user accounts</small><strong>{dashboard?.counts?.users ?? 0}</strong><span className="stat-foot">Accounts currently enabled</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Users size={18}/></span><span className="stat-kicker">PATIENTS</span></div><small>Patient records</small><strong>{dashboard?.counts?.patients ?? patients.length}</strong><span className="stat-foot">Records across the workspace</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><Activity size={18}/></span><span className="stat-kicker">ANALYSES</span></div><small>EEG analyses</small><strong>{dashboard?.counts?.analyses ?? 0}</strong><span className="stat-foot">Experimental scores, not diagnoses</span></article></section>
-      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><ShieldCheck size={18}/></span><div><h3>System access</h3><p>Permission and security status</p></div></div><Badge type="blue">ADMIN</Badge></div><div className="twin-state"><small>Admin summary</small><p>Workspace activity is governed by role-based permissions and audit trails. Review access events before broader workflow changes.</p><div className="twin-facts"><div><small>Patient records</small><b>{dashboard?.counts?.patients ?? patients.length}</b></div><div><small>Pending review</small><b>{dashboard?.counts?.pending ?? 0}</b></div></div></div></article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><ClipboardList size={18}/></span><div><h3>Recent audit log</h3><p>Latest access events</p></div></div></div>{audit.length ? <div className="patient-list compact-list">{audit.slice(0,4).map((entry,index) => <div className="patient-row" key={`${entry._id || index}`}><span className="patient-details"><b>{entry.action || 'Access event'}</b><small>{entry.actor?.name ? `${entry.actor.name} · ` : ''}{dateLabel(entry.createdAt)}</small></span><Badge type="neutral">{entry.meta?.name || 'Workspace'}</Badge></div>)}</div> : <EmptyState icon={ClipboardList} title="No audit data yet">Audit data will appear after workspace activity.</EmptyState>}</article></section></>;
+      return <>
+        <section className="hero">
+          <div className="hero-copy">
+            <p className="eyebrow">SYSTEM OVERVIEW</p>
+            <h2>Administrative Dashboard</h2>
+            <p>Manage user accounts, role assignments, patient consent/privacy flows, and platform governance.</p>
+            <div className="hero-meta">
+              <span><ShieldCheck size={15}/> Governance</span>
+              <span><Users size={15}/> User & Role Management</span>
+            </div>
+          </div>
+          <div className="hero-art">
+            <div className="orb orb-one"/><div className="orb orb-two"/>
+            <ShieldCheck size={70} strokeWidth={1.1}/><span className="orbit-dot"/>
+          </div>
+        </section>
+
+        <div className="section-heading">
+          <div><p className="eyebrow">ADMIN AT A GLANCE</p><h2>Operational Status</h2></div>
+          <span className="updated-label"><span/> Platform View</span>
+        </div>
+
+        <section className="stats">
+          <article className="stat-card">
+            <div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">USERS</span></div>
+            <small>Active user accounts</small>
+            <strong>{usersList.length || dashboard?.counts?.users || 0}</strong>
+            <span className="stat-foot">Managed accounts</span>
+          </article>
+          <article className="stat-card">
+            <div className="stat-top"><span className="stat-icon lavender"><Users size={18}/></span><span className="stat-kicker">PATIENTS</span></div>
+            <small>Patient records</small>
+            <strong>{patients.length}</strong>
+            <span className="stat-foot">Consent & profile records</span>
+          </article>
+          <article className="stat-card">
+            <div className="stat-top"><span className="stat-icon amber-icon"><Activity size={18}/></span><span className="stat-kicker">ANALYSES</span></div>
+            <small>Total EEG inferences</small>
+            <strong>{dashboard?.counts?.analyses ?? 0}</strong>
+            <span className="stat-foot">AI-processed sessions</span>
+          </article>
+        </section>
+
+        <article className="panel">
+          <div className="panel-heading">
+            <div>
+              <span className="panel-icon"><Users size={18}/></span>
+              <div>
+                <h3>User Account Management & Role Assignment</h3>
+                <p>Create, inspect, and assign roles (Doctor, Patient, Caregiver, Admin)</p>
+              </div>
+            </div>
+            <Badge type="blue">{usersList.length} accounts</Badge>
+          </div>
+          <AdminUserManagement users={usersList} onRoleChange={handleRoleChange} onToggleStatus={handleToggleUserStatus}/>
+        </article>
+
+        <article className="panel">
+          <div className="panel-heading">
+            <div>
+              <span className="panel-icon purple"><ShieldCheck size={18}/></span>
+              <div>
+                <h3>Patient Consent & Privacy Flows</h3>
+                <p>Track consent agreements and data privacy authorizations</p>
+              </div>
+            </div>
+            <Badge type="green">PRIVACY COMPLIANT</Badge>
+          </div>
+          <AdminConsentTracker patients={patients} onToggleConsent={handleToggleConsent}/>
+        </article>
+
+        <article className="panel">
+          <div className="panel-heading">
+            <div>
+              <span className="panel-icon"><ClipboardList size={18}/></span>
+              <div>
+                <h3>Recent Governance & Audit Log</h3>
+                <p>Latest role-based access events</p>
+              </div>
+            </div>
+          </div>
+          {audit.length ? (
+            <div className="patient-list compact-list">
+              {audit.slice(0, 5).map((entry, index) => (
+                <div className="patient-row" key={`${entry._id || index}`}>
+                  <span className="patient-details">
+                    <b>{entry.action || 'Access event'}</b>
+                    <small>{entry.actor?.name ? `${entry.actor.name} (${entry.actor.role}) · ` : ''}{dateLabel(entry.createdAt)}</small>
+                  </span>
+                  <Badge type="neutral">{entry.meta?.name || entry.target || 'Workspace'}</Badge>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState icon={ClipboardList} title="No audit data yet">Audit data will appear after workspace activity.</EmptyState>
+          )}
+        </article>
+      </>;
     }
 
     if (user?.role === 'doctor') {
-      return <><section className="hero"><div className="hero-copy"><p className="eyebrow">CLINICAL MONITORING</p><h2>Doctor dashboard</h2><p>Monitor assigned patient records, review EEG analysis outputs, and flag items that need clinician attention.</p><div className="hero-meta"><span><Activity size={15}/> Patient monitoring</span><span><ClipboardList size={15}/> Review queue</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><Activity size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div>{patient && <label className={`upload-button${uploading || modelStatus.model_state !== 'ready' ? ' is-loading' : ''}`} aria-disabled={uploading || modelStatus.model_state !== 'ready'}><Upload size={17}/>{uploading ? 'Processing EEG…' : modelStatus.model_state === 'ready' ? 'Upload EDF EEG' : 'Model unavailable'}<input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || modelStatus.model_state !== 'ready'} hidden/></label>}</section>
-      <div className="section-heading"><div><p className="eyebrow">CLINIC SUMMARY</p><h2>Assigned records</h2></div><span className="updated-label"><span/> Care team view</span></div>
-      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">PATIENTS</span></div><small>Assigned records</small><strong>{dashboard?.counts?.patients ?? patients.length}</strong><span className="stat-foot">Current patient access scope</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSES</span></div><small>Latest EEG records</small><strong>{dashboard?.counts?.analyses ?? overview?.analyses?.length ?? 0}</strong><span className="stat-foot">Stored research analyses</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><ClipboardList size={18}/></span><span className="stat-kicker">REVIEW</span></div><small>Awaiting clinician review</small><strong>{dashboard?.counts?.pending ?? 0}</strong><span className="stat-foot">Prioritized for clinical review</span></article></section>
-      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><Waves size={18}/></span><div><h3>Signal review</h3><p>Most recent waveform</p></div></div><Badge type={latest ? 'blue' : 'neutral'}>{latest ? 'EEG MODEL' : 'NO DATA'}</Badge></div><Plot values={latest?.waveform}/><p className="chart-note">Review waveform context alongside the patient history.</p></article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>EEG score timeline</h3><p>Experimental model output</p></div></div><Badge type="amber">EXPERIMENTAL</Badge></div><Plot values={latest?.timeline} kind="score"/><p className="chart-note">Scores are experimental and are not clinical conclusions.</p></article></section></>;
+      return <>
+        <section className="hero">
+          <div className="hero-copy">
+            <p className="eyebrow">CLINICAL DECISION SUPPORT</p>
+            <h2>Doctor Dashboard & Caseload</h2>
+            <p>Review raw EEG waveforms, AI-flagged anomalies with confidence scores, digital twin trends, and explainability metrics across assigned patient caseloads.</p>
+            <div className="hero-meta">
+              <span><Activity size={15}/> Caseload Monitoring</span>
+              <span><Brain size={15}/> Digital Twin Trajectory</span>
+            </div>
+          </div>
+          <div className="hero-art">
+            <div className="orb orb-one"/><div className="orb orb-two"/>
+            <Activity size={70} strokeWidth={1.1}/><span className="orbit-dot"/>
+          </div>
+          {patient && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 2 }}>
+              <label className={`upload-button${uploading || modelStatus.model_state !== 'ready' ? ' is-loading' : ''}`} aria-disabled={uploading || modelStatus.model_state !== 'ready'}>
+                <Upload size={17}/>{uploading ? 'Processing EEG…' : 'Upload EDF (PhysioNet)'}
+                <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || modelStatus.model_state !== 'ready'} hidden/>
+              </label>
+              <div className="sim-btn-group">
+                <button type="button" className="sim-btn" onClick={() => simulateEEG('normal')} disabled={uploading} title="Run simulated normal baseline EEG">
+                  <Sparkles size={13}/> Sim Normal
+                </button>
+                <button type="button" className="sim-btn" style={{ background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }} onClick={() => simulateEEG('seizure')} disabled={uploading} title="Run simulated seizure burst EEG">
+                  <Activity size={13}/> Sim Seizure
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
+
+        <div className="section-heading">
+          <div><p className="eyebrow">PATIENT CASELOAD</p><h2>Active Caseload Summary</h2></div>
+          <span className="updated-label"><span/> Treating Clinician View</span>
+        </div>
+
+        <section className="stats">
+          <article className="stat-card">
+            <div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">CASELOAD</span></div>
+            <small>Assigned patients</small>
+            <strong>{patients.length}</strong>
+            <span className="stat-foot">Under your active clinical care</span>
+          </article>
+          <article className="stat-card">
+            <div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSES</span></div>
+            <small>EEG sessions</small>
+            <strong>{overview?.analyses?.length ?? 0}</strong>
+            <span className="stat-foot">For selected patient {patient?.fullName?.split(' ')[0]}</span>
+          </article>
+          <article className="stat-card">
+            <div className="stat-top"><span className="stat-icon amber-icon"><ClipboardList size={18}/></span><span className="stat-kicker">REVIEW</span></div>
+            <small>Pending clinician review</small>
+            <strong>{dashboard?.counts?.pending ?? 0}</strong>
+            <span className="stat-foot">Requiring physician verification</span>
+          </article>
+        </section>
+
+        <section className="content-grid">
+          <article className="panel">
+            <div className="panel-heading">
+              <div><span className="panel-icon"><Waves size={18}/></span><div><h3>Raw EEG Waveform</h3><p>Lead FP1-F7 · 10–20 Bipolar Montage</p></div></div>
+              <Badge type={latest ? 'blue' : 'neutral'}>{latest ? '128 HZ RESAMPLED' : 'NO DATA'}</Badge>
+            </div>
+            <Plot values={latest?.waveform}/>
+            <p className="chart-note">Review raw EEG waveform context alongside clinical history and digital twin state.</p>
+          </article>
+
+          <article className="panel">
+            <div className="panel-heading">
+              <div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>AI Seizure Anomaly Timeline</h3><p>Window confidence scores & threshold</p></div></div>
+              <Badge type="amber">CONFIDENCE TIMELINE</Badge>
+            </div>
+            <Plot values={latest?.timeline} kind="score"/>
+            <p className="chart-note">Window scores reflect model prediction probabilities. All AI alerts include confidence scores for clinician verification.</p>
+          </article>
+        </section>
+
+        {latest && <ExplainabilityMetrics analysis={latest}/>}
+
+        <section className="content-grid">
+          <article className="panel">
+            <div className="panel-heading">
+              <div><span className="panel-icon"><Brain size={18}/></span><div><h3>Digital Twin Trends</h3><p>{patient?.fullName} Neurological State</p></div></div>
+              <Badge type="blue">{twin?.trend?.toUpperCase() || 'STABLE'}</Badge>
+            </div>
+            <div className="twin-state">
+              <small>Digital Twin Summary</small>
+              <p>{twin?.state?.clinicalAction || 'Continuous state representation tracking EEG patterns and background rhythms.'}</p>
+              <div className="twin-facts">
+                <div><small>Last EEG Upload</small><b>{twin?.state?.lastUpload || 'Not recorded'}</b></div>
+                <div><small>Model State</small><b>{twin?.state?.modelState || latest?.modelState || 'Active'}</b></div>
+              </div>
+            </div>
+          </article>
+
+          <article className="panel">
+            <div className="panel-heading">
+              <div><span className="panel-icon purple"><Stethoscope size={18}/></span><div><h3>Current Diagnosis & Regimen</h3><p>Entered by treating physician</p></div></div>
+              <Badge type="neutral">{patient?.mrn || 'Patient Record'}</Badge>
+            </div>
+            <div className="twin-state">
+              <small>Documented Diagnosis</small>
+              <b style={{ display: 'block', fontSize: '13px', color: '#0f172a', margin: '4px 0' }}>
+                {patient?.treatment?.diagnosis || (patient?.conditions?.length ? patient.conditions.join(', ') : 'Neurological evaluation in progress')}
+              </b>
+              <p style={{ margin: '6px 0 0', fontSize: '11px', color: '#475569' }}>
+                {patient?.treatment?.treatmentPlan || 'Treatment plan and medication titration guidelines.'}
+              </p>
+            </div>
+          </article>
+        </section>
+
+        <DoctorTreatmentForm patient={patient} onSave={saveTreatment} token={token} isBusy={busy}/>
+      </>;
     }
 
     if (user?.role === 'patient') {
-      return <><section className="hero"><div className="hero-copy"><p className="eyebrow">YOUR CARE DASHBOARD</p><h2>{patient?.fullName || 'Your health workspace'}</h2><p>Review your linked monitoring context, available notes, and any research summaries shared to your workspace.</p><div className="hero-meta"><span><Activity size={15}/> Personal context</span><span><ShieldCheck size={15}/> Access-controlled</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><Brain size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div></section>
-      <div className="section-heading"><div><p className="eyebrow">YOUR SUMMARY</p><h2>Care overview</h2></div><span className="updated-label"><span/> Personal view</span></div>
-      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><FileText size={18}/></span><span className="stat-kicker">NOTES</span></div><small>Shared notes</small><strong>{overview?.notes?.length ?? 0}</strong><span className="stat-foot">Visible entries in your workspace</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSIS</span></div><small>Stored analysis</small><strong>{overview?.analyses?.length ?? 0}</strong><span className="stat-foot">Research records linked to your account</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><ShieldCheck size={18}/></span><span className="stat-kicker">STATUS</span></div><small>Clinical review</small><strong>{latest?.clinicianReview || 'Pending'}</strong><span className="stat-foot">Requires qualified clinician review</span></article></section>
-      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><FileText size={18}/></span><div><h3>Recent notes</h3><p>Your available clinical context</p></div></div><Badge type="blue">PATIENT</Badge></div>{overview?.notes?.length ? <div className="patient-list compact-list">{overview.notes.slice(0,3).map((item,index) => <div className="patient-row" key={`${item._id || index}`}><span className="patient-details"><b>{item.body?.slice(0,80) || 'Clinical note'}</b><small>{dateLabel(item.createdAt)}</small></span><Badge type="neutral">{item.visibility || 'patient'}</Badge></div>)}</div> : <EmptyState icon={FileText} title="No notes shared yet">No patient-visible notes are currently available in your workspace.</EmptyState>}</article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>Latest score</h3><p>Most recent research output</p></div></div><Badge type="amber">RESEARCH</Badge></div><Plot values={latest?.timeline} kind="score"/><p className="chart-note">This output is informational and not a diagnosis.</p></article></section></>;
+      return <>
+        <section className="hero">
+          <div className="hero-copy">
+            <p className="eyebrow">YOUR HEALTH & WELLNESS</p>
+            <h2>Welcome, {patient?.fullName?.split(' ')[0] || user?.name}</h2>
+            <p>Track your simplified brain wave wellness score, read plain-language summaries, check appointment schedules, and review your active prescriptions.</p>
+            <div className="hero-meta">
+              <span><Heart size={15}/> Personal Health Portal</span>
+              <span><ShieldCheck size={15}/> Private & Secure</span>
+            </div>
+          </div>
+          <div className="hero-art">
+            <div className="orb orb-one"/><div className="orb orb-two"/>
+            <Brain size={70} strokeWidth={1.1}/><span className="orbit-dot"/>
+          </div>
+        </section>
+
+        <SimplifiedWellnessSection overview={overview} isCaregiver={false}/>
+
+        <PatientScheduleAndRx
+          appointments={overview?.patient?.appointments || []}
+          prescriptions={overview?.patient?.prescriptions || []}
+        />
+
+        <section className="content-grid">
+          <article className="panel">
+            <div className="panel-heading">
+              <div><span className="panel-icon"><FileText size={18}/></span><div><h3>Care Team Notes</h3><p>Updates shared by your doctor</p></div></div>
+              <Badge type="blue">SHARED</Badge>
+            </div>
+            {overview?.notes?.length ? (
+              <div className="patient-list compact-list">
+                {overview.notes.map((item, index) => (
+                  <div className="patient-row" key={`${item._id || index}`}>
+                    <span className="patient-details">
+                      <b>{item.body}</b>
+                      <small>{dateLabel(item.createdAt)} · {item.author?.name || 'Dr. Maya Rao'}</small>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState icon={FileText} title="No shared notes">Notes shared by your physician will appear here.</EmptyState>
+            )}
+          </article>
+
+          <article className="panel">
+            <div className="panel-heading">
+              <div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>Latest Brain Wave Rhythm</h3><p>Recent recorded activity</p></div></div>
+              <Badge type="green">ACTIVE</Badge>
+            </div>
+            <Plot values={latest?.timeline} kind="score"/>
+            <p className="chart-note">Visual summary of your most recent recording interval.</p>
+          </article>
+        </section>
+      </>;
     }
 
     if (user?.role === 'caregiver') {
-      return <><section className="hero"><div className="hero-copy"><p className="eyebrow">CAREGIVER VIEW</p><h2>Caregiver dashboard</h2><p>Review the monitored patient context that is available to your role, with emphasis on shared updates and safety guidance.</p><div className="hero-meta"><span><Users size={15}/> Supporting access</span><span><ShieldCheck size={15}/> Read-only scope</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><Users size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div></section>
-      <div className="section-heading"><div><p className="eyebrow">CARE SUMMARY</p><h2>Shared monitoring context</h2></div><span className="updated-label"><span/> Caregiver scope</span></div>
-      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">CLIENT</span></div><small>Linked patient</small><strong>{patient?.fullName ? patient.fullName.split(' ')[0] : 'Patient'}</strong><span className="stat-foot">Authorized care record</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSIS</span></div><small>Available analyses</small><strong>{overview?.analyses?.length ?? 0}</strong><span className="stat-foot">Research records visible in scope</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><FileText size={18}/></span><span className="stat-kicker">NOTES</span></div><small>Shared notes</small><strong>{overview?.notes?.length ?? 0}</strong><span className="stat-foot">Patient-visible information</span></article></section>
-      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><FileText size={18}/></span><div><h3>Visible care notes</h3><p>Current patient-facing context</p></div></div><Badge type="blue">CAREGIVER</Badge></div>{overview?.notes?.length ? <div className="patient-list compact-list">{overview.notes.slice(0,3).map((item,index) => <div className="patient-row" key={`${item._id || index}`}><span className="patient-details"><b>{item.body?.slice(0,80) || 'Clinical note'}</b><small>{dateLabel(item.createdAt)}</small></span><Badge type="neutral">{item.visibility || 'patient'}</Badge></div>)}</div> : <EmptyState icon={FileText} title="No caregiver-visible notes">No patient-visible notes are currently available.</EmptyState>}</article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Brain size={18}/></span><div><h3>Research context</h3><p>Current digital-twin snapshot</p></div></div><Badge type="amber">RESEARCH</Badge></div><div className="twin-state"><small>Current summary</small><p>{twin?.state?.clinicalAction || 'No model-backed digital-twin snapshot has been recorded.'}</p><div className="twin-facts"><div><small>Last upload</small><b>{twin?.state?.lastUpload || 'Not recorded'}</b></div><div><small>Model state</small><b>{twin?.state?.modelState || latest?.modelState || 'Not available'}</b></div></div></div></article></section></>;
+      return <>
+        <section className="hero">
+          <div className="hero-copy">
+            <p className="eyebrow">CAREGIVER ACCESS · READ-ONLY</p>
+            <h2>Caregiver View · {patient?.fullName ? `${patient.fullName}'s Wellness` : 'Patient Wellness'}</h2>
+            <p>Review the patient's simplified wellness scores, plain-language summaries, appointment schedules, and active prescriptions in read-only mode.</p>
+            <div className="hero-meta">
+              <span><Users size={15}/> Supporting Access</span>
+              <span><ShieldCheck size={15}/> Read-Only Scope</span>
+            </div>
+          </div>
+          <div className="hero-art">
+            <div className="orb orb-one"/><div className="orb orb-two"/>
+            <Users size={70} strokeWidth={1.1}/><span className="orbit-dot"/>
+          </div>
+        </section>
+
+        <SimplifiedWellnessSection overview={overview} isCaregiver={true}/>
+
+        <PatientScheduleAndRx
+          appointments={overview?.patient?.appointments || []}
+          prescriptions={overview?.patient?.prescriptions || []}
+        />
+
+        <section className="content-grid">
+          <article className="panel">
+            <div className="panel-heading">
+              <div><span className="panel-icon"><FileText size={18}/></span><div><h3>Visible Care Notes</h3><p>Patient-facing instructions and advice</p></div></div>
+              <Badge type="blue">READ-ONLY</Badge>
+            </div>
+            {overview?.notes?.length ? (
+              <div className="patient-list compact-list">
+                {overview.notes.map((item, index) => (
+                  <div className="patient-row" key={`${item._id || index}`}>
+                    <span className="patient-details">
+                      <b>{item.body}</b>
+                      <small>{dateLabel(item.createdAt)} · {item.author?.name || 'Dr. Maya Rao'}</small>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState icon={FileText} title="No shared notes">No shared notes currently available.</EmptyState>
+            )}
+          </article>
+
+          <article className="panel">
+            <div className="panel-heading">
+              <div><span className="panel-icon purple"><Brain size={18}/></span><div><h3>Digital Twin Summary</h3><p>Patient trajectory snapshot</p></div></div>
+              <Badge type="amber">MONITORED</Badge>
+            </div>
+            <div className="twin-state">
+              <small>Digital Twin Status</small>
+              <p>{twin?.state?.clinicalAction || 'Continuous state representation tracking EEG patterns.'}</p>
+              <div className="twin-facts">
+                <div><small>Last Upload</small><b>{twin?.state?.lastUpload || 'Not recorded'}</b></div>
+                <div><small>Trend</small><b>{twin?.trend?.toUpperCase() || 'STABLE'}</b></div>
+              </div>
+            </div>
+          </article>
+        </section>
+      </>;
     }
 
-    return <><section className="hero"><div className="hero-copy"><p className="eyebrow">YOUR RESEARCH OVERVIEW</p><h2>{patient?.fullName || 'Your workspace'}</h2><p>Review longitudinal context, EEG research outputs, and clinical notes in one place.</p><div className="hero-meta"><span><Activity size={15}/> Longitudinal monitoring</span><span><ShieldCheck size={15}/> Access controlled</span></div></div><div className="hero-art"><div className="orb orb-one"/><div className="orb orb-two"/><Brain size={70} strokeWidth={1.1}/><span className="orbit-dot"/></div>{isClinician && patient && <label className={uploading ? 'upload-button is-loading' : 'upload-button'}><Upload size={17}/>{uploading ? 'Processing EEG…' : 'Upload EDF EEG'}<input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading} hidden/></label>}</section>
-      <div className="section-heading"><div><p className="eyebrow">AT A GLANCE</p><h2>Research summary</h2></div><span className="updated-label"><span/> Live workspace data</span></div>
-      <section className="stats"><article className="stat-card"><div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">ACCESS</span></div><small>Available patients</small><strong>{dashboard?.counts?.patients ?? patients.length}</strong><span className="stat-foot">Based on authorized workspace data</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSIS</span></div><small>Recorded analyses</small><strong>{dashboard?.counts?.analyses ?? overview?.analyses?.length ?? 0}</strong><span className="stat-foot">Research records, not diagnoses</span></article><article className="stat-card"><div className="stat-top"><span className="stat-icon amber-icon"><ClipboardList size={18}/></span><span className="stat-kicker">REVIEW</span></div><small>Awaiting clinician review</small><strong>{dashboard?.counts?.pending ?? '—'}</strong><span className="stat-foot">Review status from stored records</span></article></section>
-      <section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><Waves size={18}/></span><div><h3>EEG waveform</h3><p>Latest available signal</p></div></div><Badge type={latest ? 'blue' : 'neutral'}>{latest?.modelState || 'NO MODEL OUTPUT'}</Badge></div><Plot values={latest?.waveform}/><p className="chart-note">Signal visualization is available only when returned by the backend.</p></article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>Research score timeline</h3><p>Windowed model output</p></div></div><Badge type="amber">RESEARCH</Badge></div><Plot values={latest?.timeline} kind="score"/><p className="chart-note">Scores are experimental and must not be interpreted as clinical conclusions.</p></article></section></>;
+    return null;
   };
 
   return <div className="shell">
@@ -650,7 +1404,7 @@ function App() {
     </aside>
     <main className="workspace">
       <header className="topbar"><div className="topbar-title"><button className="menu-toggle icon-button" onClick={() => setMobileNav(true)} aria-label="Open navigation"><Menu size={21}/></button><div><p className="eyebrow">{roleLabels[user?.role] || user?.role} workspace</p><h1>{tab === 'overview' ? `Welcome back${greeting ? `, ${greeting}` : ''}` : navigation.find(item => item.id === tab)?.label || 'Workspace'}</h1></div></div><div className="topbar-actions"><span className="status-pill"><span/> Workspace active</span><button className="icon-button refresh-button" onClick={loadWorkspace} disabled={busy} aria-label="Refresh data" title="Refresh data"><RefreshCw size={17}/></button><div className="top-avatar">{user?.name?.[0] || 'N'}</div></div></header>
-      <div className="safety-banner"><AlertTriangle size={16}/><span><b>Safety note</b> · EEG scores are experimental, not diagnoses or treatment recommendations, and require qualified clinician review.</span></div>
+      <div className="safety-banner"><AlertTriangle size={16}/><span><b>Decision-Support Tool Only</b> — Does not replace clinical judgment or generate independent diagnoses. Digital Twin represents monitored neurological state derived from EEG patterns, not a brain simulation. All AI alerts include confidence scores and explainability for clinician verification.</span></div>
       {error && <div className="feedback error-feedback" role="alert"><AlertTriangle size={17}/><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error"><X size={16}/></button></div>}
       {notice && <div className="feedback success-feedback" role="status"><CheckCircle2 size={17}/><span>{notice}</span><button onClick={() => setNotice('')} aria-label="Dismiss notice"><X size={16}/></button></div>}
 

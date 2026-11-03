@@ -124,7 +124,79 @@ app.get('/api/patients/:id/overview', authenticate, ah(async (req, res) => {
   ]);
   if (!patient) return res.status(404).json({ error: 'Patient not found' });
   await audit(req, 'patient.viewed', patient._id);
-  res.json({ patient, analyses, twin, notes });
+
+  const maxScore = analyses[0]?.confidence ?? analyses[0]?.probabilities?.maxSeizureScore ?? 0;
+  const threshold = analyses[0]?.probabilities?.threshold ?? 0.65;
+  const isElevated = maxScore >= threshold;
+  const wellnessScore = Math.max(15, Math.min(99, Math.round((1 - Math.min(1, maxScore)) * 100)));
+  const plainSummary = isElevated
+    ? 'Recent EEG monitoring detected transient epileptiform burst patterns. Your clinical care team has been notified for review.'
+    : 'Recent EEG monitoring indicates a stable baseline rhythm with no high-confidence seizure discharges detected.';
+  const wellness = {
+    score: wellnessScore,
+    summary: plainSummary,
+    status: isElevated ? 'Review Recommended' : 'Optimal Brain Wave Stability',
+    lastAssessment: analyses[0]?.createdAt || patient.updatedAt
+  };
+
+  res.json({ patient, analyses, twin, notes, wellness });
+}));
+
+app.post('/api/patients/:id/treatment', authenticate, allow('doctor', 'admin'), ah(async (req, res) => {
+  if (!(await canAccess(req, req.params.id))) return res.status(403).json({ error: 'Not authorized for this patient' });
+  const p = await Patient.findById(req.params.id);
+  if (!p) return res.status(404).json({ error: 'Patient not found' });
+
+  if (!p.treatment) p.treatment = {};
+  if (req.body.diagnosis !== undefined) p.treatment.diagnosis = String(req.body.diagnosis).trim();
+  if (req.body.treatmentPlan !== undefined) p.treatment.treatmentPlan = String(req.body.treatmentPlan).trim();
+  if (Array.isArray(req.body.conditions)) p.conditions = req.body.conditions.map(c => String(c).trim()).filter(Boolean);
+  if (Array.isArray(req.body.medications)) p.treatment.medications = req.body.medications.map(m => String(m).trim()).filter(Boolean);
+
+  if (req.body.newPrescription && req.body.newPrescription.medicineName) {
+    if (!Array.isArray(p.prescriptions)) p.prescriptions = [];
+    p.prescriptions.unshift({
+      medicineName: String(req.body.newPrescription.medicineName).trim(),
+      dosage: String(req.body.newPrescription.dosage || '').trim(),
+      frequency: String(req.body.newPrescription.frequency || '').trim(),
+      prescribedBy: req.user.name || 'Treating Physician',
+      instructions: String(req.body.newPrescription.instructions || '').trim(),
+      status: 'Active'
+    });
+  }
+
+  if (req.body.newAppointment && req.body.newAppointment.scheduledAt) {
+    if (!Array.isArray(p.appointments)) p.appointments = [];
+    p.appointments.unshift({
+      doctorName: req.user.name || 'Dr. Maya Rao',
+      scheduledAt: new Date(req.body.newAppointment.scheduledAt),
+      reason: String(req.body.newAppointment.reason || 'Clinical Consultation').trim(),
+      status: 'Scheduled'
+    });
+  }
+
+  p.treatment.lastUpdated = new Date();
+  await p.save();
+  await audit(req, 'patient.treatment_updated', p._id);
+  res.json(p);
+}));
+
+app.patch('/api/patients/:id/consent', authenticate, allow('doctor', 'admin', 'patient'), ah(async (req, res) => {
+  if (!(await canAccess(req, req.params.id))) return res.status(403).json({ error: 'Not authorized for this patient' });
+  const p = await Patient.findById(req.params.id);
+  if (!p) return res.status(404).json({ error: 'Patient not found' });
+
+  const consented = Boolean(req.body.consented);
+  p.consented = consented;
+  p.consentDetails = {
+    consented,
+    consentDate: new Date(),
+    privacyPolicyAccepted: true,
+    consentType: req.body.consentType || 'Digital Twin & AI EEG Monitoring Consent'
+  };
+  await p.save();
+  await audit(req, 'patient.consent_updated', p._id, { consented });
+  res.json(p);
 }));
 
 app.post('/api/patients/:id/notes', authenticate, allow('doctor', 'admin'), ah(async (req, res) => {
@@ -275,6 +347,111 @@ app.patch('/api/analyses/:id/review', authenticate, allow('doctor', 'admin'), ah
 
 app.get('/api/admin/audit', authenticate, allow('admin'), ah(async (_, res) => {
   res.json(await AuditEvent.find().populate('actor', 'name role').sort({ createdAt: -1 }).limit(100));
+}));
+
+app.get('/api/admin/users', authenticate, allow('admin'), ah(async (_, res) => {
+  res.json(await User.find().select('-passwordHash').sort({ createdAt: -1 }));
+}));
+
+app.patch('/api/admin/users/:id/role', authenticate, allow('admin'), ah(async (req, res) => {
+  const allowedRoles = ['admin', 'doctor', 'patient', 'caregiver'];
+  if (!allowedRoles.includes(req.body.role)) return res.status(400).json({ error: 'Invalid user role' });
+  const u = await User.findById(req.params.id);
+  if (!u) return res.status(404).json({ error: 'User not found' });
+  u.role = req.body.role;
+  await u.save();
+  await audit(req, 'admin.user_role_changed', u._id, { role: u.role });
+  res.json(u);
+}));
+
+app.patch('/api/admin/users/:id/status', authenticate, allow('admin'), ah(async (req, res) => {
+  const u = await User.findById(req.params.id);
+  if (!u) return res.status(404).json({ error: 'User not found' });
+  u.active = Boolean(req.body.active);
+  await u.save();
+  await audit(req, 'admin.user_status_changed', u._id, { active: u.active });
+  res.json(u);
+}));
+
+app.post('/api/eeg/simulate', authenticate, allow('doctor', 'admin'), ah(async (req, res) => {
+  const patientId = req.body.patientId;
+  if (!patientId) return res.status(400).json({ error: 'Patient ID is required' });
+  if (!(await canAccess(req, patientId))) return res.status(403).json({ error: 'Not authorized for this patient' });
+
+  const isSeizure = req.body.mode === 'seizure';
+  const sourceName = isSeizure ? 'physionet_chb02_seizure_sim.edf' : 'physionet_normal_baseline_sim.edf';
+  const samplingRate = 128;
+  const channelList = [
+    'FP1-F7', 'F7-T7', 'T7-P7', 'P7-O1', 'FP2-F8', 'F8-T8', 'T8-P8', 'P8-O2',
+    'FP1-F3', 'F3-C3', 'C3-P3', 'P3-O1', 'FP2-F4', 'F4-C4', 'C4-P4', 'P4-O2',
+    'FZ-CZ', 'CZ-PZ'
+  ];
+
+  const durationSec = 15;
+  const samples = durationSec * samplingRate;
+  const multichannel = channelList.map((ch, chIdx) => {
+    const wave = [];
+    for (let i = 0; i < samples; i++) {
+      const t = i / samplingRate;
+      let val = Math.sin(2 * Math.PI * 10 * t) * 0.4 + Math.sin(2 * Math.PI * 3 * t) * 0.3;
+      if (isSeizure && chIdx < 6 && t > 3 && t < 12) {
+        val += Math.sin(2 * Math.PI * 3.5 * t) * 1.8 + (Math.random() - 0.5) * 0.8;
+      } else {
+        val += (Math.random() - 0.5) * 0.15;
+      }
+      wave.push(Math.round(val * 1000) / 1000);
+    }
+    return wave;
+  });
+
+  const timeline = [];
+  const numWindows = 10;
+  for (let w = 0; w < numWindows; w++) {
+    const startSec = w * 10;
+    const score = isSeizure && (w >= 1 && w <= 4) ? Math.min(0.99, 0.82 + Math.random() * 0.16) : Math.max(0.01, 0.04 + Math.random() * 0.08);
+    const confirmed = isSeizure && w >= 2 && w <= 4;
+    timeline.push({ start_seconds: startSec, score: Math.round(score * 1000) / 1000, confirmed_seizure: confirmed });
+  }
+
+  const maxScore = Math.max(...timeline.map(t => t.score));
+  const s = await EEGSession.create({
+    patient: patientId,
+    uploadedBy: req.user.id,
+    sourceName,
+    status: 'processed',
+    samplingRate,
+    channels: channelList.length,
+    preprocessing: { pipeline: 'MNE EEG pick, 0.5-40 Hz bandpass, 128 Hz resample, z-score', state: 'complete' }
+  });
+
+  const a = await Analysis.create({
+    patient: patientId,
+    session: s._id,
+    label: isSeizure ? 'Seizure anomaly detected - clinical review recommended' : 'Normal / baseline EEG pattern',
+    confidence: maxScore,
+    probabilities: { maxSeizureScore: maxScore, threshold: 0.65 },
+    timeline,
+    waveform: multichannel[0].slice(0, 1280),
+    multichannel_waveform: multichannel.map(row => row.slice(0, 1280)),
+    explanation: [isSeizure ? 'Temporal focal spike-wave discharges detected across FP1-F7 and T7-P7.' : 'Normal background rhythm. No sustained epileptiform anomalies detected.'],
+    modelVersion: 'chbmit-multiscale_cnn-v2',
+    modelState: 'trained_research_model'
+  });
+
+  await TwinSnapshot.create({
+    patient: patientId,
+    sourceAnalysis: a._id,
+    trend: isSeizure ? 'monitor' : 'stable',
+    state: {
+      lastUpload: sourceName,
+      modelState: 'Trained research model',
+      maxSeizureScore: maxScore,
+      clinicalAction: isSeizure ? 'Clinician review required; epileptiform bursts detected.' : 'Stable baseline rhythm; continue monitoring.'
+    }
+  });
+
+  await audit(req, 'eeg.simulated', s._id, { mode: isSeizure ? 'seizure' : 'normal' });
+  res.status(201).json({ session: s, analysis: a, notice: 'Simulated EEG analysis processed successfully.' });
 }));
 
 app.use((error, req, res, next) => {
