@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 const sections = [
   ['summary','Overview'],['appointments','Appointments'],['encounters','OPD'],
   ['admissions','IPD Admissions'],['beds','Beds'],['lab','Laboratory'],['pharmacy','Pharmacy'],
-  ['prescriptions','Prescriptions'],['billing','Billing'],['departments','Departments'],['staff','Staff']
+  ['prescriptions','Prescriptions'],['billing','Billing'],['departments','Departments'],['doctors','Doctors'],['staff','Staff']
 ];
 const urls = {
   summary:'/api/hms/summary',appointments:'/api/hms/appointments',encounters:'/api/hms/encounters',
   admissions:'/api/hms/admissions',beds:'/api/hms/beds',lab:'/api/hms/lab/orders',
   pharmacy:'/api/hms/pharmacy/medicines',prescriptions:'/api/hms/pharmacy/prescriptions',billing:'/api/hms/billing/invoices',
-  departments:'/api/hms/departments',staff:'/api/hms/staff'
+  departments:'/api/hms/departments',doctors:'/api/hms/doctors',staff:'/api/hms/staff'
 };
 const stamp = v => v ? new Date(v).toLocaleString() : '—';
 const rupees = v => new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(Number(v)||0);
@@ -18,16 +18,16 @@ const allowed = {
   appointments:['admin','doctor','receptionist','nurse'],encounters:['admin','doctor','nurse'],
   admissions:['admin','doctor','nurse','receptionist','billing'],beds:['admin','doctor','nurse','receptionist'],lab:['admin','doctor','lab_technician','nurse'],
   pharmacy:['admin','doctor','pharmacist','nurse'],prescriptions:['admin','doctor','pharmacist','nurse'],billing:['admin','billing','receptionist','doctor'],
-  departments:['admin','doctor','receptionist','nurse'],staff:['admin']
+  departments:['admin','doctor','receptionist','nurse'],doctors:['admin','doctor','receptionist'],staff:['admin']
 };
 
 export default function HMSWorkspace({token,user}) {
   const [section,setSection]=useState('summary'),[data,setData]=useState([]),[summary,setSummary]=useState(null);
   const [busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
-  const [form,setForm]=useState({}),[showForm,setShowForm]=useState(false),[patientChoices,setPatientChoices]=useState([]),[doctorChoices,setDoctorChoices]=useState([]),[medicineChoices,setMedicineChoices]=useState([]),[bedChoices,setBedChoices]=useState([]);
+  const [form,setForm]=useState({}),[showForm,setShowForm]=useState(false),[patientChoices,setPatientChoices]=useState([]),[doctorChoices,setDoctorChoices]=useState([]),[medicineChoices,setMedicineChoices]=useState([]),[bedChoices,setBedChoices]=useState([]),[departmentChoices,setDepartmentChoices]=useState([]);
   const role=user?.role,canAdmin=role==='admin',canDoctor=['admin','doctor'].includes(role);
   const canLab=['admin','lab_technician'].includes(role),canPharmacy=['admin','pharmacist'].includes(role),canBilling=['admin','billing'].includes(role);
-  const canCreate={appointments:['admin','doctor','receptionist'].includes(role),encounters:canDoctor,admissions:canDoctor,lab:canDoctor,pharmacy:canPharmacy,prescriptions:canDoctor,billing:canBilling,departments:canAdmin,staff:canAdmin,beds:canAdmin};
+  const canCreate={appointments:['admin','doctor','receptionist'].includes(role),encounters:canDoctor,admissions:canDoctor,lab:canDoctor,pharmacy:canPharmacy,prescriptions:canDoctor,billing:canBilling,departments:canAdmin,doctors:canAdmin,staff:canAdmin,beds:canAdmin};
   const api=async(path,options={})=>{
     const response=await fetch(path,{...options,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token}});
     const result=await response.json().catch(()=>({}));
@@ -38,13 +38,14 @@ export default function HMSWorkspace({token,user}) {
     setBusy(true);setError('');
     try{
       if(key==='summary'){setSummary(await api(urls.summary));setData([]);}
-      else setData(await api(urls[key]));
+      else {const result=await api(urls[key]);setData(result);if(key==='doctors')setDoctorChoices(result.map(x=>({value:x.user._id,label:x.user.name+' · '+x.user.email})));}
       if(['appointments','encounters','admissions','lab','billing','prescriptions'].includes(key)){
         const p=await api('/api/hms/patients');
         setPatientChoices(p.map(x=>({value:x._id,label:x.fullName+' · '+(x.mrn||'No MRN')})));
         if(key==='appointments'){const d=await api('/api/hms/doctors');setDoctorChoices(d.filter(x=>role!=='doctor'||x.user._id===user.id).map(x=>({value:x.user._id,label:x.user.name})));}
         if(key==='prescriptions'){const m=await api('/api/hms/pharmacy/medicines');setMedicineChoices(m.map(x=>({value:x._id,label:x.name+' · '+x.sku})));}
         if(key==='admissions'){const beds=await api('/api/hms/beds');setBedChoices(beds.filter(x=>x.status==='available').map(x=>({value:x._id,label:x.ward+' · '+x.bedNumber+' · '+x.category})));}
+        if(key==='doctors'){const d=await api('/api/hms/departments');setDepartmentChoices(d.map(x=>({value:x._id,label:x.name+' · '+x.code})));}
       }
     }catch(e){setError(e.message);setData([]);}
     finally{setBusy(false);}
@@ -56,6 +57,7 @@ export default function HMSWorkspace({token,user}) {
     try{
       let path=urls[section],body={...form};
       if(section==='appointments')body.scheduledAt=new Date(body.scheduledAt).toISOString();
+      if(section==='doctors'){path='/api/hms/doctors/'+body.userId+'/profile';delete body.userId;}
       if(section==='billing')body.items=[{description:body.description,quantity:Number(body.quantity)||1,unitPrice:Number(body.unitPrice)||0}];
       if(section==='prescriptions')body.items=[{medicine:body.medicine,quantity:Number(body.quantity)||1,dosage:body.dosage,frequency:body.frequency,duration:body.duration,instructions:body.instructions}];
       await api(path,{method:'POST',body:JSON.stringify(body)});
@@ -78,6 +80,7 @@ export default function HMSWorkspace({token,user}) {
     if(section==='prescriptions')return <><Field name="patient" label="Patient" required options={patientChoices} forceSelect/><Field name="medicine" label="Medicine" required options={medicineChoices} forceSelect/><Field name="quantity" label="Quantity" type="number" required/><Field name="dosage" label="Dosage" required/><Field name="frequency" label="Frequency" required/><Field name="duration" label="Duration"/><Field name="instructions" label="Instructions"/></>;
     if(section==='billing')return <><Field name="patient" label="Patient" required options={patientChoices} forceSelect/><Field name="description" label="Charge description" required/><Field name="quantity" label="Quantity" type="number"/><Field name="unitPrice" label="Unit price" type="number" required/><Field name="discount" label="Discount" type="number"/></>;
     if(section==='departments')return <><Field name="name" label="Department name" required/><Field name="code" label="Department code" required/><Field name="description" label="Description"/></>;
+    if(section==='doctors')return <><Field name="userId" label="Doctor account" required options={doctorChoices} forceSelect/><Field name="department" label="Department" required options={departmentChoices} forceSelect/><Field name="registrationNumber" label="Medical registration number"/><Field name="qualification" label="Qualification"/><Field name="specialization" label="Specialization"/><Field name="consultationFee" label="Consultation fee" type="number"/></>;
     if(section==='staff')return <><Field name="name" label="Full name" required/><Field name="email" label="Email" type="email" required/><Field name="username" label="Username" required/><Field name="password" label="Temporary password (10+ characters)" type="password" required/><Field name="role" label="Role" options={['doctor','receptionist','nurse','lab_technician','pharmacist','billing','admin']}/></>;
     return null;
   };
@@ -100,6 +103,7 @@ export default function HMSWorkspace({token,user}) {
       {section==='prescriptions'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{(x.patient?.fullName||'Patient')+' · Prescription'}</b><span>{stamp(x.createdAt)+' · '+x.items.map(i=>i.medicineName+' × '+i.quantity).join(', ')+' · '+x.status}</span></div>{canPharmacy&&x.status!=='dispensed'&&<button className="secondary-btn" onClick={()=>{if(window.confirm('Dispense the remaining prescription quantity and deduct it from stock?'))patch('/api/hms/pharmacy/prescriptions/'+x._id+'/dispense',{},'Prescription dispensed and stock updated');}}>Dispense</button>}</article>)}
       {section==='billing'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.invoiceNumber+' · '+(x.patient?.fullName||'Patient')}</b><span>{stamp(x.createdAt)+' · Total '+rupees(x.total)+' · Paid '+rupees(x.paid)+' · '+x.status}</span></div>{canBilling&&x.status!=='paid'&&<button className="secondary-btn" onClick={()=>{const amount=window.prompt('Outstanding '+rupees(x.total-x.paid)+'. Enter payment amount');if(amount&&Number.isFinite(Number(amount))&&Number(amount)>0){const method=window.prompt('Payment method: cash, card, upi, bank_transfer or insurance','upi');if(method)patch('/api/hms/billing/invoices/'+x._id+'/payments',{amount:Number(amount),method:method.trim().toLowerCase()},'Payment recorded');}}}>Record payment</button>}</article>)}
       {section==='departments'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.name}</b><span>{x.code+' · '+(x.description||'No description')}</span></div></article>)}
+       {section==='doctors'&&data.map(x=><article className="record-row" key={x.user._id}><div className="record-copy"><b>{x.user.name}</b><span>{x.user.email+' · '+(x.profile?.specialization||'Profile not configured')+' · '+(x.profile?.department?.name||'No department assigned')+' · Fee '+rupees(x.profile?.consultationFee)}</span></div></article>)}
       {section==='staff'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.name}</b><span>{x.email+' · '+x.username+' · '+x.role+' · '+(x.active===false?'Inactive':'Active')}</span></div></article>)}
       {data.length===0&&<p className="muted">No records found for this section yet.</p>}
     </div>}
