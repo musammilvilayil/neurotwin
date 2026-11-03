@@ -266,3 +266,118 @@ test('18. EEG upload RBAC: patients and caregivers are forbidden from upload end
     assert.equal(res.status, 403, `Role ${role} should be forbidden from EEG upload`);
   }
 });
+
+test('19. GET /api/analyses: returns analyses and filters by patientId', async () => {
+  const session = await EEGSession.create({
+    patient: seededPatient._id,
+    uploadedBy: (await User.findOne({ username: 'admin' }))._id,
+    sourceName: 'chb01_03.edf',
+    fileSize: 1024,
+    status: 'completed'
+  });
+
+  const analysis = await Analysis.create({
+    patient: seededPatient._id,
+    session: session._id,
+    label: 'Epileptiform / Seizure Activity Detected',
+    confidence: 0.88,
+    modelState: 'trained_research_model',
+    clinicianReview: 'pending',
+    timeline: [
+      { start_seconds: 0, score: 0.12, confirmed_seizure: false },
+      { start_seconds: 10, score: 0.88, confirmed_seizure: true },
+      { start_seconds: 20, score: 0.85, confirmed_seizure: true }
+    ],
+    probabilities: { threshold: 0.65, maxSeizureScore: 0.88, meanScore: 0.61 },
+    multichannel_waveform: [[0.1, 0.2], [0.3, 0.4]],
+    channels: ['FP1-F7', 'F7-T7']
+  });
+
+  const res = await request(app)
+    .get('/api/analyses')
+    .set('Authorization', `Bearer ${tokens.doctor}`);
+  assert.equal(res.status, 200);
+  assert.ok(Array.isArray(res.body.analyses));
+  assert.ok(res.body.analyses.length >= 1);
+
+  // Filter by patientId
+  const resFiltered = await request(app)
+    .get(`/api/analyses?patientId=${seededPatient._id}`)
+    .set('Authorization', `Bearer ${tokens.doctor}`);
+  assert.equal(resFiltered.status, 200);
+  assert.ok(resFiltered.body.analyses.some(a => a._id.toString() === analysis._id.toString()));
+});
+
+test('20. GET /api/analyses/:id: returns full details and enforces patient isolation', async () => {
+  const analysis = await Analysis.findOne({ patient: seededPatient._id });
+  assert.ok(analysis, 'Analysis not found for seeded patient');
+
+  // Doctor assigned to seededPatient can access
+  const resDoc = await request(app)
+    .get(`/api/analyses/${analysis._id}`)
+    .set('Authorization', `Bearer ${tokens.doctor}`);
+  assert.equal(resDoc.status, 200);
+  assert.equal(resDoc.body._id.toString(), analysis._id.toString());
+  assert.ok(resDoc.body.patient);
+  assert.equal(resDoc.body.patient.fullName, seededPatient.fullName);
+
+  // Other unassigned doctor cannot access
+  const otherDoctor = await User.create({
+    name: 'Unassigned Doctor',
+    username: 'other_doc_2',
+    email: 'other_doc_2@neurotwin.demo',
+    passwordHash: await bcrypt.hash('DemoPass123!', 10),
+    role: 'doctor',
+    active: true
+  });
+  const loginRes = await request(app)
+    .post('/api/auth/login')
+    .send({ identifier: 'other_doc_2', password: 'DemoPass123!' });
+  const otherToken = loginRes.body.token;
+
+  const resForbidden = await request(app)
+    .get(`/api/analyses/${analysis._id}`)
+    .set('Authorization', `Bearer ${otherToken}`);
+  assert.equal(resForbidden.status, 403);
+});
+
+test('21. PATCH /api/analyses/:id/review: toggles review state and logs audit event', async () => {
+  const analysis = await Analysis.findOne({ patient: seededPatient._id });
+  assert.ok(analysis);
+
+  // Patient cannot review
+  const resPatient = await request(app)
+    .patch(`/api/analyses/${analysis._id}/review`)
+    .set('Authorization', `Bearer ${tokens.patient}`)
+    .send({ status: 'reviewed' });
+  assert.equal(resPatient.status, 403);
+
+  // Doctor can review
+  const resDoc = await request(app)
+    .patch(`/api/analyses/${analysis._id}/review`)
+    .set('Authorization', `Bearer ${tokens.doctor}`)
+    .send({ status: 'reviewed' });
+  assert.equal(resDoc.status, 200);
+  assert.equal(resDoc.body.clinicianReview, 'reviewed');
+
+  // Verify AuditEvent was created
+  const audit = await AuditEvent.findOne({ action: 'analysis.reviewed' });
+  assert.ok(audit, 'AuditEvent for analysis_reviewed was not created');
+  assert.equal(audit.meta.status, 'reviewed');
+});
+
+test('22. GET /api/analyses/:id/report: generates valid clinical research PDF report', async () => {
+  const analysis = await Analysis.findOne({ patient: seededPatient._id });
+  assert.ok(analysis);
+
+  const res = await request(app)
+    .get(`/api/analyses/${analysis._id}/report`)
+    .set('Authorization', `Bearer ${tokens.doctor}`);
+
+  assert.equal(res.status, 200);
+  assert.equal(res.headers['content-type'], 'application/pdf');
+  assert.ok(res.headers['content-disposition'].includes('.pdf'));
+  assert.ok(Buffer.isBuffer(res.body));
+  assert.ok(res.body.length > 500, 'PDF buffer is too small to be valid');
+  assert.equal(res.body.subarray(0, 4).toString(), '%PDF', 'Buffer does not begin with %PDF header');
+});

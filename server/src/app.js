@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { authenticate, allow, sign } from './auth.js';
 import { User, Patient, EEGSession, Analysis, TwinSnapshot, ClinicalNote, AuditEvent } from './models.js';
+import { generateReportPdf } from './report.js';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -163,6 +164,7 @@ app.post('/api/eeg/upload', authenticate, allow('doctor', 'admin'), upload.singl
       probabilities: { maxSeizureScore: result.summary.max_score, threshold: result.summary.threshold },
       timeline: result.timeline,
       waveform: result.waveform,
+      multichannel_waveform: result.multichannel_waveform,
       explanation: [result.notice],
       modelVersion: result.model_version || 'artifact-backed',
       modelState: result.model_state
@@ -179,6 +181,94 @@ app.post('/api/eeg/upload', authenticate, allow('doctor', 'admin'), upload.singl
     next(error);
   }
 });
+
+app.get('/api/analyses', authenticate, ah(async (req, res) => {
+  let patientFilter = {};
+  if (req.user.role === 'doctor') {
+    const docPatients = await Patient.find({ assignedDoctor: req.user.id }, '_id');
+    patientFilter = { patient: { $in: docPatients.map((p) => p._id) } };
+  } else if (req.user.role === 'patient') {
+    const u = await User.findById(req.user.id);
+    patientFilter = { patient: u?.linkedPatient };
+  } else if (req.user.role === 'caregiver') {
+    const carePatients = await Patient.find({ caregiverUsers: req.user.id }, '_id');
+    patientFilter = { patient: { $in: carePatients.map((p) => p._id) } };
+  }
+
+  if (req.query.patientId) {
+    if (!(await canAccess(req, req.query.patientId))) {
+      return res.status(403).json({ error: 'Not authorized for this patient' });
+    }
+    patientFilter = { patient: req.query.patientId };
+  }
+
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
+  const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
+
+  const [analyses, total] = await Promise.all([
+    Analysis.find(patientFilter)
+      .populate('patient', 'fullName mrn assignedDoctor')
+      .populate('session', 'sourceName samplingRate createdAt')
+      .sort({ createdAt: -1 })
+      .skip(offset)
+      .limit(limit),
+    Analysis.countDocuments(patientFilter)
+  ]);
+
+  res.json({ analyses, total, limit, offset });
+}));
+
+app.get('/api/analyses/:id', authenticate, ah(async (req, res) => {
+  const analysis = await Analysis.findById(req.params.id)
+    .populate('patient', 'fullName mrn assignedDoctor dob conditions')
+    .populate('session');
+  if (!analysis) return res.status(404).json({ error: 'Analysis not found' });
+  if (!(await canAccess(req, analysis.patient?._id || analysis.patient))) {
+    return res.status(403).json({ error: 'Not authorized for this patient analysis' });
+  }
+  res.json(analysis);
+}));
+
+app.get('/api/analyses/:id/report', authenticate, ah(async (req, res) => {
+  const analysis = await Analysis.findById(req.params.id)
+    .populate('patient')
+    .populate('session');
+  if (!analysis) return res.status(404).json({ error: 'Analysis not found' });
+  if (!(await canAccess(req, analysis.patient?._id || analysis.patient))) {
+    return res.status(403).json({ error: 'Not authorized for this report' });
+  }
+
+  const [twin, notes, totalAnalyses] = await Promise.all([
+    TwinSnapshot.findOne({ patient: analysis.patient._id }).sort({ date: -1 }),
+    ClinicalNote.find({ patient: analysis.patient._id }).populate('author', 'name').sort({ createdAt: -1 }),
+    Analysis.countDocuments({ patient: analysis.patient._id })
+  ]);
+
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="neurotwin-report-${analysis._id}.pdf"`);
+
+  generateReportPdf({
+    patient: analysis.patient,
+    session: analysis.session,
+    analysis,
+    twin,
+    notes,
+    totalAnalyses,
+    clinicianName: req.user.name
+  }, res);
+}));
+
+app.patch('/api/analyses/:id/review', authenticate, allow('doctor', 'admin'), ah(async (req, res) => {
+  const analysis = await Analysis.findById(req.params.id);
+  if (!analysis) return res.status(404).json({ error: 'Analysis not found' });
+  if (!(await canAccess(req, analysis.patient))) return res.status(403).json({ error: 'Not authorized for this patient' });
+
+  const reviewState = req.body.status === 'reviewed' ? 'reviewed' : 'pending';
+  analysis.clinicianReview = reviewState;
+  await analysis.save();
+  await audit(req, 'analysis.reviewed', analysis._id, { status: reviewState });
+  res.json(analysis);
+}));
 
 app.get('/api/admin/audit', authenticate, allow('admin'), ah(async (_, res) => {
   res.json(await AuditEvent.find().populate('actor', 'name role').sort({ createdAt: -1 }).limit(100));
