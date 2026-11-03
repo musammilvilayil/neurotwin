@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Activity, AlertTriangle, ArrowUpRight, Brain, CheckCircle2, ClipboardList,
-  FileText, LayoutDashboard, LogOut, Menu, RefreshCw, ShieldCheck, Upload,
-  Users, X, Waves
+  FileText, LayoutDashboard, LogOut, Menu, Plus, RefreshCw, ShieldCheck, Upload,
+  Users, UserPlus, X, Waves
 } from 'lucide-react';
 import './style.css';
 import './plots.css';
@@ -157,7 +157,14 @@ function App() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [note, setNote] = useState('');
+  const [noteVisibility, setNoteVisibility] = useState('clinical');
+  const [showNewPatient, setShowNewPatient] = useState(false);
+  const [newPatientName, setNewPatientName] = useState('');
+  const [newPatientMrn, setNewPatientMrn] = useState('');
+  const [newPatientDob, setNewPatientDob] = useState('');
+  const [newPatientConditions, setNewPatientConditions] = useState('');
   const [mobileNav, setMobileNav] = useState(false);
+
   const token = session?.token;
   const user = session?.user;
   const isClinician = ['doctor', 'admin'].includes(user?.role);
@@ -234,10 +241,51 @@ function App() {
   const saveNote = async event => {
     event.preventDefault(); if (!note.trim() || !patient?._id) return;
     setBusy(true); setError(''); setNotice('');
-    try { await api(`/api/patients/${patient._id}/notes`, { method: 'POST', body: JSON.stringify({ body: note.trim(), visibility: 'clinical' }) }, token); setNote(''); setOverview(await api(`/api/patients/${patient._id}/overview`, {}, token)); setNotice('Clinical note saved.'); }
-    catch (err) { setError(err.message); }
+    try {
+      await api(`/api/patients/${patient._id}/notes`, {
+        method: 'POST',
+        body: JSON.stringify({ body: note.trim(), visibility: noteVisibility })
+      }, token);
+      setNote('');
+      setOverview(await api(`/api/patients/${patient._id}/overview`, {}, token));
+      setNotice(`Clinical note saved (${noteVisibility === 'patient' ? 'shared with patient' : 'clinical only'}).`);
+    } catch (err) { setError(err.message); }
     finally { setBusy(false); }
   };
+
+  const registerPatient = async event => {
+    event.preventDefault();
+    if (!newPatientName.trim()) { setError('Patient full name is required'); return; }
+    setBusy(true); setError(''); setNotice('');
+    try {
+      const conditions = newPatientConditions.split(',').map(s => s.trim()).filter(Boolean);
+      const created = await api('/api/patients', {
+        method: 'POST',
+        body: JSON.stringify({
+          fullName: newPatientName.trim(),
+          mrn: newPatientMrn.trim() || undefined,
+          dob: newPatientDob || undefined,
+          conditions: conditions.length ? conditions : undefined,
+          consented: true
+        })
+      }, token);
+      const updatedList = await api('/api/patients', {}, token);
+      setPatients(updatedList);
+      setOverview(await api(`/api/patients/${created._id}/overview`, {}, token));
+      setDashboard(await api('/api/dashboard', {}, token));
+      setShowNewPatient(false);
+      setNewPatientName('');
+      setNewPatientMrn('');
+      setNewPatientDob('');
+      setNewPatientConditions('');
+      setNotice(`Patient record created for ${created.fullName}.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const greeting = user?.role === 'patient' && patient ? patient.fullName?.split(' ')[0] : user?.name?.split(' ').slice(-1)[0];
 
   const renderRoleDashboard = () => {
@@ -305,11 +353,125 @@ function App() {
 
       {tab === 'overview' && renderRoleDashboard()}
 
-      {tab === 'patients' && <section className="panel page-panel"><div className="section-heading inside"><div><p className="eyebrow">AUTHORIZED RECORDS</p><h2>Patients</h2><p className="muted">Only records available to your account are listed.</p></div><Badge>{patients.length} records</Badge></div>{patients.length ? <div className="patient-list">{patients.map((item,index) => <button className={patient?._id === item._id ? 'patient-row selected' : 'patient-row'} key={item._id} onClick={async () => { setBusy(true); setError(''); try { setOverview(await api(`/api/patients/${item._id}/overview`, {}, token)); setTab('overview'); } catch(err) { setError(err.message); } finally { setBusy(false); } }}><span className="patient-avatar">{item.fullName?.[0] || 'P'}</span><span className="patient-details"><b>{item.fullName || 'Unnamed patient'}</b><small>{item.mrn ? `Record ID · ${item.mrn}` : 'Patient research record'}</small></span><Badge type="blue">{item._id === patient?._id ? 'Selected' : 'Record'}</Badge><ArrowUpRight size={17}/></button> )}</div> : <EmptyState icon={Users} title="No patient records">No patients are currently available for this account.</EmptyState>}</section>}
+      {tab === 'patients' && <section className="panel page-panel">
+        <div className="section-heading inside">
+          <div>
+            <p className="eyebrow">AUTHORIZED RECORDS</p>
+            <h2>Patients</h2>
+            <p className="muted">Only records available to your account are listed.</p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {isClinician && <button className="primary-button" onClick={() => setShowNewPatient(!showNewPatient)} style={{ padding: '8px 12px' }}>
+              <UserPlus size={15}/> {showNewPatient ? 'Cancel' : 'Enroll patient'}
+            </button>}
+            <Badge>{patients.length} records</Badge>
+          </div>
+        </div>
+
+        {showNewPatient && isClinician && <form className="new-patient-panel" onSubmit={registerPatient}>
+          <h3 style={{ margin: '0 0 12px', fontSize: '13px' }}>Enroll new patient record</h3>
+          <div className="new-patient-grid">
+            <div>
+              <label htmlFor="new-name">Full Name *</label>
+              <input id="new-name" value={newPatientName} onChange={e => setNewPatientName(e.target.value)} placeholder="e.g. Robin Taylor" required />
+            </div>
+            <div>
+              <label htmlFor="new-mrn">Record ID / MRN</label>
+              <input id="new-mrn" value={newPatientMrn} onChange={e => setNewPatientMrn(e.target.value)} placeholder="e.g. NT-1002" />
+            </div>
+            <div>
+              <label htmlFor="new-dob">Date of Birth</label>
+              <input id="new-dob" type="date" value={newPatientDob} onChange={e => setNewPatientDob(e.target.value)} />
+            </div>
+            <div>
+              <label htmlFor="new-conditions">Conditions (comma separated)</label>
+              <input id="new-conditions" value={newPatientConditions} onChange={e => setNewPatientConditions(e.target.value)} placeholder="e.g. Focal epilepsy, Monitoring" />
+            </div>
+          </div>
+          <div className="new-patient-actions">
+            <button type="button" className="secondary-btn" onClick={() => setShowNewPatient(false)}>Cancel</button>
+            <button type="submit" className="primary-button" disabled={busy || !newPatientName.trim()}>{busy ? 'Enrolling…' : 'Save patient'}</button>
+          </div>
+        </form>}
+
+        {patients.length ? <div className="patient-list">
+          {patients.map(item => (
+            <button
+              className={patient?._id === item._id ? 'patient-row selected' : 'patient-row'}
+              key={item._id}
+              onClick={async () => {
+                setBusy(true); setError('');
+                try {
+                  setOverview(await api(`/api/patients/${item._id}/overview`, {}, token));
+                  setTab('overview');
+                } catch(err) {
+                  setError(err.message);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              <span className="patient-avatar">{item.fullName?.[0] || 'P'}</span>
+              <span className="patient-details">
+                <b>{item.fullName || 'Unnamed patient'}</b>
+                <small>{item.mrn ? `Record ID · ${item.mrn}` : 'Patient research record'}{item.assignedDoctor?.name ? ` · Assigned to: ${item.assignedDoctor.name}` : ''}</small>
+                {Array.isArray(item.conditions) && item.conditions.length > 0 && (
+                  <span className="chip-row">
+                    {item.conditions.map((c, i) => <span className="chip" key={i}>{c}</span>)}
+                  </span>
+                )}
+              </span>
+              <Badge type="blue">{item._id === patient?._id ? 'Selected' : 'Record'}</Badge>
+              <ArrowUpRight size={17}/>
+            </button>
+          ))}
+        </div> : <EmptyState icon={Users} title="No patient records">No patients are currently available for this account.</EmptyState>}
+      </section>}
 
       {tab === 'twin' && <><section className="hero compact-hero"><div><p className="eyebrow">LONGITUDINAL RESEARCH CONTEXT</p><h2>Digital Twin snapshot</h2><p>A research representation assembled from stored records and model-backed outputs when available.</p></div><span className="hero-icon"><Brain size={34}/></span></section><section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><Brain size={18}/></span><div><h3>Current research state</h3><p>{patient?.fullName || 'No patient selected'}</p></div></div><Badge type="amber">{twin?.trend || 'NO SNAPSHOT'}</Badge></div><div className="twin-state"><small>Research summary</small><p>{twin?.state?.clinicalAction || 'No model-backed digital-twin snapshot has been recorded.'}</p><div className="twin-facts"><div><small>Last EEG upload</small><b>{twin?.state?.lastUpload || 'Not recorded'}</b></div><div><small>Model state</small><b>{twin?.state?.modelState || latest?.modelState || 'Not available'}</b></div></div></div></article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>EEG signal</h3><p>Most recent recorded waveform</p></div></div></div><Plot values={latest?.waveform}/></article></section><section className="panel"><div className="panel-heading"><div><h3>Analysis history</h3><p>Stored research analyses for the selected record</p></div><Badge>{overview?.analyses?.length || 0} entries</Badge></div>{overview?.analyses?.length ? overview.analyses.map(item => <div className="record-row" key={item._id}><div className="record-status"><Activity size={17}/></div><div className="record-copy"><b>{item.label || 'EEG research analysis'}</b><span>{dateLabel(item.createdAt)} · {item.modelState || 'Model state unavailable'}</span></div><Badge type="amber">{item.clinicianReview || 'Review required'}</Badge></div>) : <EmptyState icon={ClipboardList} title="No analysis history">Recorded analysis entries will appear here after a successful backend inference.</EmptyState>}</section></>}
 
-      {tab === 'notes' && <section className="panel page-panel"><div className="section-heading inside"><div><p className="eyebrow">LONGITUDINAL RECORD</p><h2>Clinical notes</h2><p className="muted">Notes shown here follow the visibility rules enforced by the API.</p></div><Badge>{overview?.notes?.length || 0} notes</Badge></div>{isClinician && patient && <form className="note-form" onSubmit={saveNote}><label htmlFor="clinical-note">Add a clinical note</label><textarea id="clinical-note" value={note} onChange={e => setNote(e.target.value)} placeholder="Record relevant clinical context for authorized review…" rows={4} required/><div className="form-bottom"><span>Saved to the selected patient record.</span><button className="primary-button" disabled={busy || !note.trim()}>{busy ? 'Saving…' : 'Save note'} <ArrowUpRight size={16}/></button></div></form>}{overview?.notes?.length ? <div className="notes-list">{overview.notes.map(item => <article className="note-card" key={item._id}><div className="note-card-top"><span className="panel-icon"><FileText size={17}/></span><span>{dateLabel(item.createdAt)}</span><Badge>{item.visibility || 'clinical'}</Badge></div><p>{item.body}</p><small>Author: {item.author?.name || 'Authorized workspace user'}</small></article>)}</div> : <EmptyState icon={FileText} title="No notes recorded">No notes are available for the selected patient and your access level.</EmptyState>}</section>}
+      {tab === 'notes' && <section className="panel page-panel">
+        <div className="section-heading inside">
+          <div>
+            <p className="eyebrow">LONGITUDINAL RECORD</p>
+            <h2>Clinical notes</h2>
+            <p className="muted">Notes shown here follow the visibility rules enforced by the API.</p>
+          </div>
+          <Badge>{overview?.notes?.length || 0} notes</Badge>
+        </div>
+
+        {isClinician && patient && <form className="note-form" onSubmit={saveNote}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <label htmlFor="clinical-note" style={{ margin: 0 }}>Add a note for {patient.fullName}</label>
+            <div className="note-visibility-selector">
+              <label htmlFor="note-vis">Scope:</label>
+              <select id="note-vis" value={noteVisibility} onChange={e => setNoteVisibility(e.target.value)}>
+                <option value="clinical">Clinical only (Care team)</option>
+                <option value="patient">Shared with patient & caregiver</option>
+              </select>
+            </div>
+          </div>
+          <textarea id="clinical-note" value={note} onChange={e => setNote(e.target.value)} placeholder="Record relevant clinical context for authorized review…" rows={4} required/>
+          <div className="form-bottom">
+            <span>{noteVisibility === 'patient' ? 'Visible to patient and authorized caregivers.' : 'Visible only to authorized clinical staff.'}</span>
+            <button className="primary-button" disabled={busy || !note.trim()}>{busy ? 'Saving…' : 'Save note'} <ArrowUpRight size={16}/></button>
+          </div>
+        </form>}
+
+        {overview?.notes?.length ? <div className="notes-list">
+          {overview.notes.map(item => (
+            <article className="note-card" key={item._id}>
+              <div className="note-card-top">
+                <span className="panel-icon"><FileText size={17}/></span>
+                <span>{dateLabel(item.createdAt)}</span>
+                <Badge type={item.visibility === 'patient' ? 'blue' : 'neutral'}>{item.visibility || 'clinical'}</Badge>
+              </div>
+              <p>{item.body}</p>
+              <small>Author: {item.author?.name || 'Authorized workspace user'}</small>
+            </article>
+          ))}
+        </div> : <EmptyState icon={FileText} title="No notes recorded">No notes are available for the selected patient and your access level.</EmptyState>}
+      </section>}
 
       {tab === 'admin' && user?.role === 'admin' && <section className="panel page-panel"><div className="section-heading inside"><div><p className="eyebrow">GOVERNANCE</p><h2>Audit & access</h2><p className="muted">Recent audit events returned by the administration API.</p></div><Badge>{audit.length} events</Badge></div>{audit.length ? <div className="audit-list">{audit.map(item => <div className="audit-row" key={item._id}><span className="audit-icon"><ShieldCheck size={17}/></span><div><b>{item.action || 'Workspace event'}</b><small>{item.actor?.name || 'System'} · {item.actor?.role || 'unknown role'}</small></div><time>{dateLabel(item.createdAt)}</time></div>)}</div> : <EmptyState icon={ShieldCheck} title="No audit events available">Audit events will appear here when returned by the server.</EmptyState>}<p className="chart-note">This view displays API-provided events; it does not modify user roles or permissions.</p></section>}
       <footer className="app-footer"><div className="footer-brand"><Brain size={16}/> NeuroTwin</div><span>Academic research prototype · Not for diagnosis</span><button onClick={loadWorkspace} className="text-button"><RefreshCw size={14}/> Refresh workspace</button></footer>
