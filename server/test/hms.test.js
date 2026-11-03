@@ -42,6 +42,10 @@ test('department creation is admin-only',async()=>{
   assert.equal(forbidden.status,403);
   const created=await request(app).post('/api/hms/departments').set('Authorization','Bearer '+tokens.admin).send({name:'Neurology',code:'NEU'});
   assert.equal(created.status,201);assert.equal(created.body.code,'NEU');
+  const profile=await request(app).post('/api/hms/doctors/'+doctor._id+'/profile').set('Authorization','Bearer '+tokens.admin).send({
+    department:String(created.body._id),registrationNumber:'MED-TEST-01',qualification:'MBBS',specialization:'Neurology',consultationFee:350
+  });
+  assert.equal(profile.status,200);assert.equal(profile.body.consultationFee,350);
 });
 
 test('appointment booking validates patient, doctor and conflicting slot',async()=>{
