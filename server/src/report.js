@@ -171,3 +171,4 @@ function formatTime(totalSeconds) {
   const s = Math.floor(totalSeconds % 60);
   return `${m}m ${s < 10 ? '0' : ''}${s}s`;
 }
+

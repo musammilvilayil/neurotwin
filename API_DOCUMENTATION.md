@@ -257,3 +257,4 @@ Runs end-to-end preprocessing, windowing, deep learning prediction, and temporal
 3. **HTTP Header Hardening:** `helmet` applies Content Security Policy (CSP), Strict Transport Security (HSTS), X-Frame-Options (`DENY`), and X-Content-Type-Options (`nosniff`).
 4. **CORS Whitelisting:** Restricted to authorized frontends via `CLIENT_ORIGIN`.
 5. **Auditing:** Every patient access, note creation, EEG upload, and clinician review event creates an immutable `AuditEvent` with actor ID, timestamp, and metadata.
+
