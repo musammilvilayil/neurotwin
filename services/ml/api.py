@@ -254,6 +254,7 @@ async def infer(file: UploadFile = File(...)):
         "sampling_rate": actual_sample_rate,
         "channels": cleaned.ch_names,
         "waveform": data[: min(len(data), int(actual_sample_rate * 30)):step].mean(axis=1).tolist(),
+        "multichannel_waveform": data[: min(len(data), int(actual_sample_rate * 15)):step].T.tolist(),
         "timeline": [
             {
                 "start_seconds": round(float(start), 2),
