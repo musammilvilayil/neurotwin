@@ -19,3 +19,9 @@ services/ml/__pycache__/
 services/ml/tests/__pycache__/
 services/ml/data/
 services/ml/prepared/
+
+scratch/
+*.npz
+*.npy
+data/processed-full/
+services/ml/data/processed-full/
