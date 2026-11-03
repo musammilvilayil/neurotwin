@@ -1,16 +1,6 @@
 name: NeuroTwin HMS and application checks
 
 on:
-  push:
-    branches:
-      - feat/hospital-management-system
-    paths:
-      - 'server/**'
-      - 'client/**'
-      - 'docs/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/neurotwin-ci.yml'
   pull_request:
     branches:
       - main
