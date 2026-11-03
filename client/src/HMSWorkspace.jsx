@@ -24,7 +24,7 @@ const allowed = {
 export default function HMSWorkspace({token,user}) {
   const [section,setSection]=useState('summary'),[data,setData]=useState([]),[summary,setSummary]=useState(null);
   const [busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
-  const [form,setForm]=useState({}),[showForm,setShowForm]=useState(false);
+  const [form,setForm]=useState({}),[showForm,setShowForm]=useState(false),[patientChoices,setPatientChoices]=useState([]),[doctorChoices,setDoctorChoices]=useState([]);
   const role=user?.role,canAdmin=role==='admin',canDoctor=['admin','doctor'].includes(role);
   const canLab=['admin','lab_technician'].includes(role),canPharmacy=['admin','pharmacist'].includes(role),canBilling=['admin','billing'].includes(role);
   const canCreate={appointments:['admin','doctor','receptionist'].includes(role),encounters:canDoctor,admissions:canDoctor,lab:canDoctor,pharmacy:canPharmacy,billing:canBilling,departments:canAdmin,staff:canAdmin,beds:canAdmin};
@@ -40,6 +40,11 @@ export default function HMSWorkspace({token,user}) {
       if(key==='summary'){setSummary(await api(urls.summary));setData([]);}
       else if(key==='admissions'){const pair=await Promise.all([api(urls.admissions),api(urls.beds)]);setData(pair[0].map(x=>({...x,kind:'admission'})).concat(pair[1].map(x=>({...x,kind:'bed'}))));}
       else setData(await api(urls[key]));
+      if(key==='appointments'){
+        const [p,d]=await Promise.all([api('/api/hms/patients'),api('/api/hms/doctors')]);
+        setPatientChoices(p.map(x=>({value:x._id,label:x.fullName+' · '+(x.mrn||'No MRN')})));
+        setDoctorChoices(d.map(x=>({value:x.user._id,label:x.user.name})));
+      }
     }catch(e){setError(e.message);setData([]);}
     finally{setBusy(false);}
   };
@@ -60,9 +65,9 @@ export default function HMSWorkspace({token,user}) {
     try{await api(path,{method:'PATCH',body:JSON.stringify(body)});setNotice(message);await load(section);}
     catch(err){setError(err.message);}finally{setBusy(false);}
   };
-  const Field=({name,label,type='text',required=false,options=[]})=><label className="hms-field">{label}{options.length?<select required={required} value={form[name]||''} onChange={e=>field(name,e.target.value)}><option value="">Select {label}</option>{options.map(o=><option key={o} value={o}>{o}</option>)}</select>:<input required={required} type={type} value={form[name]||''} onChange={e=>field(name,e.target.value)}/>}</label>;
+  const Field=({name,label,type='text',required=false,options=[]})=><label className="hms-field">{label}{options.length?<select required={required} value={form[name]||''} onChange={e=>field(name,e.target.value)}><option value="">Select {label}</option>{options.map(o=><option key={o.value||o} value={o.value||o}>{o.label||o}</option>)}</select>:<input required={required} type={type} value={form[name]||''} onChange={e=>field(name,e.target.value)}/>}</label>;
   const renderForm=()=>{
-    if(section==='appointments')return <><Field name="patient" label="Patient record ID" required/><Field name="doctor" label="Doctor user ID" required/><Field name="scheduledAt" label="Date & time" type="datetime-local" required/><Field name="reason" label="Reason"/></>;
+    if(section==='appointments')return <><Field name="patient" label="Patient" required options={patientChoices}/><Field name="doctor" label="Doctor" required options={doctorChoices}/><Field name="scheduledAt" label="Date & time" type="datetime-local" required/><Field name="reason" label="Reason"/></>;
     if(section==='encounters')return <><Field name="patient" label="Patient record ID" required/><Field name="type" label="Type" options={['OPD','emergency','follow_up']}/><Field name="chiefComplaint" label="Chief complaint" required/><Field name="diagnosis" label="Diagnosis"/><Field name="examination" label="Examination"/><Field name="plan" label="Plan"/></>;
     if(section==='admissions')return <><Field name="patient" label="Patient record ID" required/><Field name="bed" label="Available bed ID" required/><Field name="admissionReason" label="Admission reason"/></>;
     if(section==='beds')return <><Field name="ward" label="Ward" required/><Field name="bedNumber" label="Bed number" required/><Field name="room" label="Room"/><Field name="category" label="Category" options={['general','semi_private','private','icu','emergency']}/><Field name="dailyRate" label="Daily rate" type="number"/></>;
