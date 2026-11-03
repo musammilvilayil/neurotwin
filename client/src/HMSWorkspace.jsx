@@ -27,7 +27,7 @@ export default function HMSWorkspace({token,user}) {
   const [form,setForm]=useState({}),[showForm,setShowForm]=useState(false),[patientChoices,setPatientChoices]=useState([]),[doctorChoices,setDoctorChoices]=useState([]);
   const role=user?.role,canAdmin=role==='admin',canDoctor=['admin','doctor'].includes(role);
   const canLab=['admin','lab_technician'].includes(role),canPharmacy=['admin','pharmacist'].includes(role),canBilling=['admin','billing'].includes(role);
-  const canCreate={appointments:['admin','doctor','receptionist'].includes(role),encounters:canDoctor,admissions:canDoctor,beds:canAdmin,lab:canDoctor,pharmacy:canPharmacy,billing:canBilling,departments:canAdmin,staff:canAdmin,beds:canAdmin};
+  const canCreate={appointments:['admin','doctor','receptionist'].includes(role),encounters:canDoctor,admissions:canDoctor,lab:canDoctor,pharmacy:canPharmacy,billing:canBilling,departments:canAdmin,staff:canAdmin,beds:canAdmin};
   const api=async(path,options={})=>{
     const response=await fetch(path,{...options,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token}});
     const result=await response.json().catch(()=>({}));
@@ -38,12 +38,12 @@ export default function HMSWorkspace({token,user}) {
     setBusy(true);setError('');
     try{
       if(key==='summary'){setSummary(await api(urls.summary));setData([]);}
-      else if(key==='admissions'){const pair=await Promise.all([api(urls.admissions),api(urls.beds)]);setData(pair[0].map(x=>({...x,kind:'admission'})).concat(pair[1].map(x=>({...x,kind:'bed'}))));}
       else setData(await api(urls[key]));
-      if(key==='appointments'){
-        const [p,d]=await Promise.all([api('/api/hms/patients'),api('/api/hms/doctors')]);
+      else setData(await api(urls[key]));
+      if(['appointments','encounters','admissions','lab','billing'].includes(key)){
+        const p=await api('/api/hms/patients');
         setPatientChoices(p.map(x=>({value:x._id,label:x.fullName+' · '+(x.mrn||'No MRN')})));
-        setDoctorChoices(d.map(x=>({value:x.user._id,label:x.user.name})));
+        if(key==='appointments'){const d=await api('/api/hms/doctors');setDoctorChoices(d.map(x=>({value:x.user._id,label:x.user.name})));}
       }
     }catch(e){setError(e.message);setData([]);}
     finally{setBusy(false);}
@@ -69,7 +69,7 @@ export default function HMSWorkspace({token,user}) {
   const renderForm=()=>{
     if(section==='appointments')return <><Field name="patient" label="Patient" required options={patientChoices}/><Field name="doctor" label="Doctor" required options={doctorChoices}/><Field name="scheduledAt" label="Date & time" type="datetime-local" required/><Field name="reason" label="Reason"/></>;
     if(section==='encounters')return <><Field name="patient" label="Patient" required options={patientChoices}/><Field name="type" label="Type" options={['OPD','emergency','follow_up']}/><Field name="chiefComplaint" label="Chief complaint" required/><Field name="diagnosis" label="Diagnosis"/><Field name="examination" label="Examination"/><Field name="plan" label="Plan"/></>;
-    if(section==='admissions')return <><Field name="patient" label="Patient record ID" required/><Field name="bed" label="Available bed ID" required/><Field name="admissionReason" label="Admission reason"/></>;
+    if(section==='admissions')return <><Field name="patient" label="Patient" required options={patientChoices}/><Field name="bed" label="Available bed ID" required/><Field name="admissionReason" label="Admission reason"/></>;
     if(section==='beds')return <><Field name="ward" label="Ward" required/><Field name="bedNumber" label="Bed number" required/><Field name="room" label="Room"/><Field name="category" label="Category" options={['general','semi_private','private','icu','emergency']}/><Field name="dailyRate" label="Daily rate" type="number"/></>;
     if(section==='lab')return <><Field name="patient" label="Patient record ID" required/><Field name="testName" label="Test name" required/><Field name="priority" label="Priority" options={['routine','urgent']}/></>;
     if(section==='pharmacy')return <><Field name="name" label="Medicine name" required/><Field name="sku" label="SKU" required/><Field name="genericName" label="Generic name"/><Field name="batchNumber" label="Batch number"/><Field name="quantity" label="Opening stock" type="number"/><Field name="reorderLevel" label="Reorder level" type="number"/><Field name="unitPrice" label="Unit price" type="number"/><Field name="expiryDate" label="Expiry date" type="date"/></>;
