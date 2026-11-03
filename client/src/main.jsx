@@ -1417,10 +1417,24 @@ function App() {
           </select>
         </div>
         <ModelStatus status={modelStatus}/>
-        {user?.role === 'admin' && <label className={`upload-button workflow-upload${uploading || !patient || modelStatus.model_state !== 'ready' ? ' is-loading' : ''}`} aria-disabled={uploading || !patient || modelStatus.model_state !== 'ready'}>
-          <Upload size={17}/>{uploading ? `Processing ${uploadingFile}…` : 'Upload EDF EEG'}
-          <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || !patient || modelStatus.model_state !== 'ready'} hidden/>
-        </label>}
+        {isClinician && (
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <label className={`upload-button workflow-upload${uploading || !patient || modelStatus.model_state !== 'ready' ? ' is-loading' : ''}`} aria-disabled={uploading || !patient || modelStatus.model_state !== 'ready'}>
+              <Upload size={17}/>{uploading ? `Processing ${uploadingFile}…` : 'Upload EDF (PhysioNet)'}
+              <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || !patient || modelStatus.model_state !== 'ready'} hidden/>
+            </label>
+            {patient && (
+              <div className="sim-btn-group">
+                <button type="button" className="sim-btn" onClick={() => simulateEEG('normal')} disabled={uploading} title="Run simulated normal baseline EEG">
+                  <Sparkles size={13}/> Sim Normal
+                </button>
+                <button type="button" className="sim-btn" style={{ background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }} onClick={() => simulateEEG('seizure')} disabled={uploading} title="Run simulated seizure burst EEG">
+                  <Activity size={13}/> Sim Seizure
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </section>}
 
       {tab === 'overview' && isResearchWorkspace && renderRoleDashboard()}
@@ -1555,6 +1569,20 @@ function App() {
             <p className="muted">Multi-channel EEG waveforms, model seizure timelines, and clinician review governance.</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {isClinician && patient && (
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <label className={`action-btn-sm action-btn-primary${uploading || modelStatus.model_state !== 'ready' ? ' is-loading' : ''}`} style={{ cursor: 'pointer', padding: '7px 12px' }}>
+                  <Upload size={14}/> {uploading ? 'Processing…' : 'Upload EDF'}
+                  <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || modelStatus.model_state !== 'ready'} hidden/>
+                </label>
+                <button type="button" className="sim-btn" style={{ padding: '6px 10px', fontSize: '10px' }} onClick={() => simulateEEG('normal')} disabled={uploading}>
+                  <Sparkles size={12}/> Sim Normal
+                </button>
+                <button type="button" className="sim-btn" style={{ padding: '6px 10px', fontSize: '10px', background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }} onClick={() => simulateEEG('seizure')} disabled={uploading}>
+                  <Activity size={12}/> Sim Seizure
+                </button>
+              </div>
+            )}
             <Badge type="blue">{filteredAnalyses.length} of {analysesList.length} analyses</Badge>
           </div>
         </div>
