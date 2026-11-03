@@ -7,7 +7,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import app from '../src/app.js';
 import { seed } from '../src/seed.js';
 import { User, Patient } from '../src/models.js';
-import { HMSBed, HMSAppointment, HMSAdmission, HMSInvoice } from '../src/hms-models.js';
+import { HMSBed, HMSAppointment, HMSAdmission, HMSInvoice, HMSMedicine } from '../src/hms-models.js';
 
 let mongo, tokens={}, patient, doctor;
 before(async()=>{
@@ -63,6 +63,18 @@ test('admission allocates a free bed and discharge releases it',async()=>{
   const discharged=await request(app).patch('/api/hms/admissions/'+created.body._id+'/discharge').set('Authorization','Bearer '+tokens.doctor).send({dischargeSummary:'Discharged after review'});
   assert.equal(discharged.status,200);
   assert.equal((await HMSBed.findById(bed._id)).status,'available');
+});
+
+
+test('medicine stock adjustment rejects negative stock and applies valid adjustments',async()=>{
+  const medicine=await HMSMedicine.create({name:'Test saline',sku:'TEST-SALINE',quantity:4,reorderLevel:2});
+  const denied=await request(app).patch('/api/hms/pharmacy/medicines/'+medicine._id+'/stock').set('Authorization','Bearer '+tokens.doctor).send({quantityChange:2});
+  assert.equal(denied.status,403);
+  const insufficient=await request(app).patch('/api/hms/pharmacy/medicines/'+medicine._id+'/stock').set('Authorization','Bearer '+tokens.admin).send({quantityChange:-5});
+  assert.equal(insufficient.status,409);
+  const adjusted=await request(app).patch('/api/hms/pharmacy/medicines/'+medicine._id+'/stock').set('Authorization','Bearer '+tokens.admin).send({quantityChange:3});
+  assert.equal(adjusted.status,200);
+  assert.equal(adjusted.body.quantity,7);
 });
 
 test('billing creates invoice and records payment against outstanding balance',async()=>{
