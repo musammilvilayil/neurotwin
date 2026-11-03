@@ -21,7 +21,7 @@ before(async()=>{
     assert.equal(login.status,200);tokens[role]=login.body.token;
   }
   const hash=await bcrypt.hash('HospitalTest123!',10);
-  for(const role of ['receptionist','billing','lab_technician']){
+  for(const role of ['receptionist','billing','lab_technician','pharmacist']){
     const user=await User.create({name:role,email:role+'@test.local',username:role,passwordHash:hash,role});
     const login=await request(app).post('/api/auth/login').send({identifier:role,password:'HospitalTest123!'});
     assert.equal(login.status,200);tokens[role]=login.body.token;
@@ -65,6 +65,21 @@ test('admission allocates a free bed and discharge releases it',async()=>{
   assert.equal((await HMSBed.findById(bed._id)).status,'available');
 });
 
+
+
+test('prescription dispensing deducts stock and is restricted to pharmacy staff',async()=>{
+  const medicine=await HMSMedicine.create({name:'Test tablets',sku:'TEST-TABS',quantity:12,reorderLevel:3});
+  const created=await request(app).post('/api/hms/pharmacy/prescriptions').set('Authorization','Bearer '+tokens.doctor).send({
+    patient:String(patient._id),items:[{medicine:String(medicine._id),quantity:3,dosage:'1 tablet',frequency:'Once daily',duration:'3 days'}]
+  });
+  assert.equal(created.status,201);
+  const forbidden=await request(app).post('/api/hms/pharmacy/prescriptions/'+created.body._id+'/dispense').set('Authorization','Bearer '+tokens.doctor).send({});
+  assert.equal(forbidden.status,403);
+  const dispensed=await request(app).post('/api/hms/pharmacy/prescriptions/'+created.body._id+'/dispense').set('Authorization','Bearer '+tokens.pharmacist).send({});
+  assert.equal(dispensed.status,200);
+  assert.equal((await HMSMedicine.findById(medicine._id)).quantity,9);
+  assert.equal(dispensed.body.status,'dispensed');
+});
 
 test('medicine stock adjustment rejects negative stock and applies valid adjustments',async()=>{
   const medicine=await HMSMedicine.create({name:'Test saline',sku:'TEST-SALINE',quantity:4,reorderLevel:2});
