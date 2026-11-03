@@ -39,7 +39,7 @@ export default function HMSWorkspace({token,user}) {
     try{
       if(key==='summary'){setSummary(await api(urls.summary));setData([]);}
       else {const result=await api(urls[key]);setData(result);if(key==='doctors')setDoctorChoices(result.map(x=>({value:x.user._id,label:x.user.name+' · '+x.user.email})));}
-      if(['appointments','encounters','admissions','lab','billing','prescriptions'].includes(key)){
+      if(['appointments','encounters','admissions','lab','billing','prescriptions','doctors'].includes(key)){
         const p=await api('/api/hms/patients');
         setPatientChoices(p.map(x=>({value:x._id,label:x.fullName+' · '+(x.mrn||'No MRN')})));
         if(key==='appointments'){const d=await api('/api/hms/doctors');setDoctorChoices(d.filter(x=>role!=='doctor'||x.user._id===user.id).map(x=>({value:x.user._id,label:x.user.name})));}
