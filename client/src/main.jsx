@@ -406,6 +406,58 @@ function App() {
   }, [token, user?.role, user?.linkedPatient, isClinician, logout]);
 
   useEffect(() => { loadWorkspace(); }, [loadWorkspace]);
+
+  const loadAnalyses = useCallback(async () => {
+    if (!token) return;
+    try {
+      let q = '/api/analyses?limit=100';
+      if (filterPatientId) q += `&patientId=${filterPatientId}`;
+      const res = await api(q, {}, token);
+      setAnalysesList(res.analyses || []);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [token, filterPatientId]);
+
+  useEffect(() => {
+    if (tab === 'analyses' || tab === 'overview') {
+      loadAnalyses();
+    }
+  }, [tab, loadAnalyses]);
+
+  const filteredAnalyses = useMemo(() => {
+    return analysesList.filter(item => {
+      if (filterPatientId && (item.patientId?._id || item.patientId || item.patient?._id) !== filterPatientId) {
+        return false;
+      }
+      if (filterStatus === 'reviewed' && item.clinicianReview !== 'reviewed') {
+        return false;
+      }
+      if (filterStatus === 'pending' && item.clinicianReview === 'reviewed') {
+        return false;
+      }
+      const maxScore = Number(item.confidence ?? item.probabilities?.maxSeizureScore ?? 0);
+      const isSeizure = maxScore >= (item.probabilities?.threshold ?? 0.65) || item.label?.toLowerCase().includes('seizure');
+      if (filterPattern === 'seizure' && !isSeizure) {
+        return false;
+      }
+      if (filterPattern === 'normal' && isSeizure) {
+        return false;
+      }
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const patientName = (item.patient?.fullName || item.patientId?.fullName || '').toLowerCase();
+        const mrn = (item.patient?.mrn || item.patientId?.mrn || '').toLowerCase();
+        const file = (item.session?.sourceName || item.metadata?.originalFileName || item.edfFileName || '').toLowerCase();
+        const label = (item.label || '').toLowerCase();
+        if (!patientName.includes(q) && !mrn.includes(q) && !file.includes(q) && !label.includes(q)) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }, [analysesList, filterPatientId, filterStatus, filterPattern, searchQuery]);
+
   if (!session) return <PublicSite onLogin={value => { localStorage.setItem('nt-session', JSON.stringify(value)); setSession(value); }}/>;
   if (!dashboard && busy) return <div className="loading"><span className="loading-mark"><Brain size={25}/></span><b>Preparing your workspace</b><p>Loading authorized research data…</p></div>;
 
@@ -494,24 +546,6 @@ function App() {
     }
   };
 
-  const loadAnalyses = useCallback(async () => {
-    if (!token) return;
-    try {
-      let q = '/api/analyses?limit=100';
-      if (filterPatientId) q += `&patientId=${filterPatientId}`;
-      const res = await api(q, {}, token);
-      setAnalysesList(res.analyses || []);
-    } catch (err) {
-      console.error(err);
-    }
-  }, [token, filterPatientId]);
-
-  useEffect(() => {
-    if (tab === 'analyses' || tab === 'overview') {
-      loadAnalyses();
-    }
-  }, [tab, loadAnalyses]);
-
   const downloadReport = async (analysisId, patientName) => {
     try {
       setDownloadingReportId(analysisId);
@@ -548,39 +582,6 @@ function App() {
       setBusy(false);
     }
   };
-
-  const filteredAnalyses = useMemo(() => {
-    return analysesList.filter(item => {
-      if (filterPatientId && (item.patientId?._id || item.patientId || item.patient?._id) !== filterPatientId) {
-        return false;
-      }
-      if (filterStatus === 'reviewed' && item.clinicianReview !== 'reviewed') {
-        return false;
-      }
-      if (filterStatus === 'pending' && item.clinicianReview === 'reviewed') {
-        return false;
-      }
-      const maxScore = Number(item.confidence ?? item.probabilities?.maxSeizureScore ?? 0);
-      const isSeizure = maxScore >= (item.probabilities?.threshold ?? 0.65) || item.label?.toLowerCase().includes('seizure');
-      if (filterPattern === 'seizure' && !isSeizure) {
-        return false;
-      }
-      if (filterPattern === 'normal' && isSeizure) {
-        return false;
-      }
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        const patientName = (item.patient?.fullName || item.patientId?.fullName || '').toLowerCase();
-        const mrn = (item.patient?.mrn || item.patientId?.mrn || '').toLowerCase();
-        const file = (item.session?.sourceName || item.metadata?.originalFileName || item.edfFileName || '').toLowerCase();
-        const label = (item.label || '').toLowerCase();
-        if (!patientName.includes(q) && !mrn.includes(q) && !file.includes(q) && !label.includes(q)) {
-          return false;
-        }
-      }
-      return true;
-    });
-  }, [analysesList, filterPatientId, filterStatus, filterPattern, searchQuery]);
 
   const toggleReviewStatus = async (analysisId, currentStatus) => {
     try {
