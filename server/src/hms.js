@@ -47,7 +47,7 @@ router.get('/summary', roles('admin','doctor','receptionist','nurse','lab_techni
     Patient.countDocuments(),
     HMSAppointment.countDocuments({scheduledAt:{$gte:new Date(new Date().setHours(0,0,0,0)),$lt:new Date(new Date().setHours(24,0,0,0))},status:{$nin:['cancelled','no_show']}}),
     HMSAdmission.countDocuments({status:'admitted'}),
-    HMSLabOrder.countDocuments({status:{$in:['ordered','sample_collected','processing'}}),
+    HMSLabOrder.countDocuments({status:{$in:['ordered','sample_collected','processing']}}),
     HMSMedicine.countDocuments({active:true,$expr:{$lte:['$quantity','$reorderLevel']}}),
     HMSInvoice.countDocuments({status:{$in:['unpaid','partially_paid']}})
   ]);
