@@ -257,9 +257,11 @@ router.get('/billing/invoices', roles('admin','billing','receptionist','doctor')
 router.post('/billing/invoices', roles('admin','billing'), wrap(async(req,res)=>{
   if(!validId(req.body.patient)||!(await Patient.exists({_id:req.body.patient})))return res.status(400).json({error:'Valid patient is required'});
   if(!Array.isArray(req.body.items)||!req.body.items.length)return res.status(400).json({error:'Invoice items are required'});
-  const items=req.body.items.map(i=>({description:cleanText(i.description,160),quantity:Math.max(1,Math.floor(Number(i.quantity)||1)),unitPrice:Math.max(0,Number(i.unitPrice)||0),amount:Math.max(1,Math.floor(Number(i.quantity)||1))*Math.max(0,Number(i.unitPrice)||0)}));
-  if(items.some(i=>!i.description))return res.status(400).json({error:'Every invoice item needs a description'});
-  const subtotal=items.reduce((sum,i)=>sum+i.amount,0),discount=Math.max(0,Number(req.body.discount)||0);
+  const normalized=req.body.items.map(i=>({description:cleanText(i.description,160),quantity:Number(i.quantity??1),unitPrice:Number(i.unitPrice)}));
+  if(normalized.some(i=>!i.description||!Number.isInteger(i.quantity)||i.quantity<1||!Number.isFinite(i.unitPrice)||i.unitPrice<0))return res.status(400).json({error:'Each invoice item needs a description, positive whole quantity and non-negative unit price'});
+  const items=normalized.map(i=>({...i,amount:i.quantity*i.unitPrice}));
+  const subtotal=items.reduce((sum,i)=>sum+i.amount,0),discount=Number(req.body.discount??0);
+  if(!Number.isFinite(discount)||discount<0)return res.status(400).json({error:'Discount must be a non-negative amount'});
   if(discount>subtotal)return res.status(400).json({error:'Discount cannot exceed subtotal'});
   const invoice=await HMSInvoice.create({patient:req.body.patient,invoiceNumber:'NTI-'+Date.now()+'-'+Math.floor(Math.random()*900+100),items,subtotal,discount,total:subtotal-discount,createdBy:req.user.id});
   await record(req,'hms.invoice.created',invoice._id);res.status(201).json(invoice);
