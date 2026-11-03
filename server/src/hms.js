@@ -208,6 +208,10 @@ router.patch('/pharmacy/medicines/:id/stock', roles('admin','pharmacist'), wrap(
   if(item.quantity+delta<0)return res.status(409).json({error:'Insufficient stock'});
   item.quantity+=delta;await item.save();await record(req,'hms.medicine.stock_adjusted',item._id,{delta});res.json(item);
 }));
+router.get('/pharmacy/prescriptions', roles('admin','doctor','pharmacist','nurse'), wrap(async(req,res)=>{
+  const filter=req.user.role==='doctor'?{prescribedBy:req.user.id}:{};
+  res.json(await HMSPrescription.find(filter).populate('patient','fullName mrn').populate('prescribedBy','name').populate('items.medicine','name sku').sort({createdAt:-1}).limit(500));
+}));
 router.post('/pharmacy/prescriptions', roles('admin','doctor'), wrap(async(req,res)=>{
   if(!validId(req.body.patient)||!(await patientAccess(req,req.body.patient)))return res.status(403).json({error:'Patient access denied'});
   if(!Array.isArray(req.body.items)||!req.body.items.length)return res.status(400).json({error:'At least one prescription item is required'});
