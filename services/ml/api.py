@@ -12,7 +12,7 @@ from preprocessing import load_edf, preprocess, windows
 
 app = FastAPI(title="NeuroTwin ML Service", version="1.2.1")
 ARTIFACT_DIR = Path(os.getenv("MODEL_ARTIFACT_DIR", "artifacts"))
-MAX_EDF_BYTES = 50 * 1024 * 1024
+MAX_EDF_BYTES = 100 * 1024 * 1024
 UPLOAD_CHUNK_BYTES = 1024 * 1024
 _MODEL = None
 _MODEL_KEY = None
@@ -86,7 +86,7 @@ async def save_upload(file: UploadFile, destination: Path):
                 break
             total += len(chunk)
             if total > MAX_EDF_BYTES:
-                raise HTTPException(413, "EDF file exceeds the 50 MB upload limit.")
+                raise HTTPException(413, "EDF file exceeds the 100 MB upload limit.")
             output.write(chunk)
     if total == 0:
         raise HTTPException(400, "The uploaded EDF file is empty.")

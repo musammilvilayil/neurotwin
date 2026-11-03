@@ -11,7 +11,7 @@ import hmsRouter from './hms.js';
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 50 * 1024 * 1024 },
+  limits: { fileSize: 100 * 1024 * 1024 },
   fileFilter: (_, file, cb) => cb(null, file.originalname.toLowerCase().endsWith('.edf'))
 });
 

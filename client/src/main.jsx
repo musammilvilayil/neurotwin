@@ -833,7 +833,7 @@ function App() {
     const file = event.target.files?.[0]; event.target.value = '';
     if (!file || !patient?._id) return;
     if (!file.name.toLowerCase().endsWith('.edf')) { setError('Please select an EDF EEG file.'); return; }
-    if (file.size > 50 * 1024 * 1024) { setError('The EDF file exceeds the 50 MB upload limit. Choose a smaller file.'); return; }
+    if (file.size > 100 * 1024 * 1024) { setError('The EDF file exceeds the 100 MB upload limit. Choose a smaller file.'); return; }
     if (modelStatus?.model_state !== 'ready') { setError('EDF upload is unavailable because the EEG model service is not ready. Refresh the workspace after the service is running.'); return; }
     setUploading(true); setError(''); setNotice('');
     setUploadingFile(file.name);
