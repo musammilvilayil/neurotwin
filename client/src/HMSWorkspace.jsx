@@ -39,7 +39,6 @@ export default function HMSWorkspace({token,user}) {
     try{
       if(key==='summary'){setSummary(await api(urls.summary));setData([]);}
       else setData(await api(urls[key]));
-      else setData(await api(urls[key]));
       if(['appointments','encounters','admissions','lab','billing'].includes(key)){
         const p=await api('/api/hms/patients');
         setPatientChoices(p.map(x=>({value:x._id,label:x.fullName+' · '+(x.mrn||'No MRN')})));
