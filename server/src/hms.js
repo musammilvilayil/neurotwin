@@ -80,10 +80,13 @@ router.post('/doctors/:userId/profile', roles('admin'), wrap(async(req,res)=>{
   const user=await User.findOne({_id:req.params.userId,role:'doctor'});
   if(!user) return res.status(404).json({error:'Doctor account not found'});
   if(!validId(req.body.department)) return res.status(400).json({error:'A valid department is required'});
+  if(!(await HMSDepartment.exists({_id:req.body.department,active:true})))return res.status(404).json({error:'Active department not found'});
+  const consultationFee=Number(req.body.consultationFee??0);
+  if(!Number.isFinite(consultationFee)||consultationFee<0)return res.status(400).json({error:'Consultation fee must be a non-negative amount'});
   const profile=await HMSDoctorProfile.findOneAndUpdate({user:user._id},{
     department:req.body.department,registrationNumber:cleanText(req.body.registrationNumber,80)||undefined,
     qualification:cleanText(req.body.qualification,200),specialization:cleanText(req.body.specialization,200),
-    consultationFee:Math.max(0,Number(req.body.consultationFee)||0),active:true
+    consultationFee,active:true
   },{upsert:true,new:true,runValidators:true}).populate('department','name code');
   await record(req,'hms.doctor_profile.updated',profile._id); res.json(profile);
 }));
