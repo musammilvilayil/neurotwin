@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react';
 const sections = [
   ['summary','Overview'],['appointments','Appointments'],['encounters','OPD'],
   ['admissions','IPD Admissions'],['beds','Beds'],['lab','Laboratory'],['pharmacy','Pharmacy'],
-  ['billing','Billing'],['departments','Departments'],['staff','Staff']
+  ['prescriptions','Prescriptions'],['billing','Billing'],['departments','Departments'],['staff','Staff']
 ];
 const urls = {
   summary:'/api/hms/summary',appointments:'/api/hms/appointments',encounters:'/api/hms/encounters',
   admissions:'/api/hms/admissions',beds:'/api/hms/beds',lab:'/api/hms/lab/orders',
-  pharmacy:'/api/hms/pharmacy/medicines',billing:'/api/hms/billing/invoices',
+  pharmacy:'/api/hms/pharmacy/medicines',prescriptions:'/api/hms/pharmacy/prescriptions',billing:'/api/hms/billing/invoices',
   departments:'/api/hms/departments',staff:'/api/hms/staff'
 };
 const stamp = v => v ? new Date(v).toLocaleString() : '—';
@@ -17,14 +17,14 @@ const allowed = {
   summary:['admin','doctor','receptionist','nurse','lab_technician','pharmacist','billing'],
   appointments:['admin','doctor','receptionist','nurse'],encounters:['admin','doctor','nurse'],
   admissions:['admin','doctor','nurse','receptionist','billing'],beds:['admin','doctor','nurse','receptionist'],lab:['admin','doctor','lab_technician','nurse'],
-  pharmacy:['admin','doctor','pharmacist','nurse'],billing:['admin','billing','receptionist','doctor'],
+  pharmacy:['admin','doctor','pharmacist','nurse'],prescriptions:['admin','doctor','pharmacist','nurse'],billing:['admin','billing','receptionist','doctor'],
   departments:['admin','doctor','receptionist','nurse'],staff:['admin']
 };
 
 export default function HMSWorkspace({token,user}) {
   const [section,setSection]=useState('summary'),[data,setData]=useState([]),[summary,setSummary]=useState(null);
   const [busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
-  const [form,setForm]=useState({}),[showForm,setShowForm]=useState(false),[patientChoices,setPatientChoices]=useState([]),[doctorChoices,setDoctorChoices]=useState([]);
+  const [form,setForm]=useState({}),[showForm,setShowForm]=useState(false),[patientChoices,setPatientChoices]=useState([]),[doctorChoices,setDoctorChoices]=useState([]),[medicineChoices,setMedicineChoices]=useState([]);
   const role=user?.role,canAdmin=role==='admin',canDoctor=['admin','doctor'].includes(role);
   const canLab=['admin','lab_technician'].includes(role),canPharmacy=['admin','pharmacist'].includes(role),canBilling=['admin','billing'].includes(role);
   const canCreate={appointments:['admin','doctor','receptionist'].includes(role),encounters:canDoctor,admissions:canDoctor,lab:canDoctor,pharmacy:canPharmacy,billing:canBilling,departments:canAdmin,staff:canAdmin,beds:canAdmin};
@@ -39,10 +39,11 @@ export default function HMSWorkspace({token,user}) {
     try{
       if(key==='summary'){setSummary(await api(urls.summary));setData([]);}
       else setData(await api(urls[key]));
-      if(['appointments','encounters','admissions','lab','billing'].includes(key)){
+      if(['appointments','encounters','admissions','lab','billing','prescriptions'].includes(key)){
         const p=await api('/api/hms/patients');
         setPatientChoices(p.map(x=>({value:x._id,label:x.fullName+' · '+(x.mrn||'No MRN')})));
         if(key==='appointments'){const d=await api('/api/hms/doctors');setDoctorChoices(d.map(x=>({value:x.user._id,label:x.user.name})));}
+        if(key==='prescriptions'){const m=await api('/api/hms/pharmacy/medicines');setMedicineChoices(m.map(x=>({value:x._id,label:x.name+' · '+x.sku})));}
       }
     }catch(e){setError(e.message);setData([]);}
     finally{setBusy(false);}
@@ -55,6 +56,7 @@ export default function HMSWorkspace({token,user}) {
       let path=urls[section],body={...form};
       if(section==='appointments')body.scheduledAt=new Date(body.scheduledAt).toISOString();
       if(section==='billing')body.items=[{description:body.description,quantity:Number(body.quantity)||1,unitPrice:Number(body.unitPrice)||0}];
+      if(section==='prescriptions')body.items=[{medicine:body.medicine,quantity:Number(body.quantity)||1,dosage:body.dosage,frequency:body.frequency,duration:body.duration,instructions:body.instructions}];
       await api(path,{method:'POST',body:JSON.stringify(body)});
       setForm({});setShowForm(false);setNotice('Record saved successfully.');await load(section);
     }catch(err){setError(err.message);}finally{setBusy(false);}
@@ -93,6 +95,7 @@ export default function HMSWorkspace({token,user}) {
       {section==='beds'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.ward+' · Bed '+x.bedNumber}</b><span>{x.category+' · '+rupees(x.dailyRate)+'/day · '+x.status}</span></div></article>)}
       {section==='lab'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.testName+' · '+(x.patient?.fullName||'Patient')}</b><span>{stamp(x.createdAt)+' · '+x.priority+' · '+x.status+(x.result?' · Result: '+x.result:'')}</span></div>{canLab&&x.status!=='verified'&&<button className="secondary-btn" onClick={()=>{const result=window.prompt('Enter result for this test');if(result)patch('/api/hms/lab/orders/'+x._id,{status:'verified',result},'Lab result verified');}}>Enter result</button>}</article>)}
       {section==='pharmacy'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.name+' · '+x.sku}</b><span>{(x.genericName||'')+' · Stock: '+x.quantity+' '+x.unit+' · Reorder at '+x.reorderLevel+' · '+rupees(x.unitPrice)}</span></div><span className="badge">{x.quantity<=x.reorderLevel?'Low stock':'In stock'}</span></article>)}
+      {section==='prescriptions'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{(x.patient?.fullName||'Patient')+' · Prescription'}</b><span>{stamp(x.createdAt)+' · '+x.items.map(i=>i.medicineName+' × '+i.quantity).join(', ')+' · '+x.status}</span></div>{canPharmacy&&x.status!=='dispensed'&&<button className="secondary-btn" onClick={()=>patch('/api/hms/pharmacy/prescriptions/'+x._id+'/dispense',{},'Prescription dispensed and stock updated')}>Dispense</button>}</article>)}
       {section==='billing'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.invoiceNumber+' · '+(x.patient?.fullName||'Patient')}</b><span>{stamp(x.createdAt)+' · Total '+rupees(x.total)+' · Paid '+rupees(x.paid)+' · '+x.status}</span></div>{canBilling&&x.status!=='paid'&&<button className="secondary-btn" onClick={()=>{const amount=window.prompt('Outstanding '+rupees(x.total-x.paid)+'. Enter payment amount');if(amount)patch('/api/hms/billing/invoices/'+x._id+'/payments',{amount:Number(amount),method:'upi'},'Payment recorded');}}>Record payment</button>}</article>)}
       {section==='departments'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.name}</b><span>{x.code+' · '+(x.description||'No description')}</span></div></article>)}
       {section==='staff'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.name}</b><span>{x.email+' · '+x.username+' · '+x.role+' · '+(x.active===false?'Inactive':'Active')}</span></div></article>)}
