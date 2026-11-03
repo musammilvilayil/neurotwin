@@ -67,6 +67,21 @@ test('admission allocates a free bed and discharge releases it',async()=>{
 
 
 
+
+test('laboratory orders follow sample collection, processing and verification states',async()=>{
+  const created=await request(app).post('/api/hms/lab/orders').set('Authorization','Bearer '+tokens.doctor).send({patient:String(patient._id),testName:'CBC'});
+  assert.equal(created.status,201);
+  const skip=await request(app).patch('/api/hms/lab/orders/'+created.body._id).set('Authorization','Bearer '+tokens.lab_technician).send({status:'verified',result:'Normal'});
+  assert.equal(skip.status,409);
+  const collected=await request(app).patch('/api/hms/lab/orders/'+created.body._id).set('Authorization','Bearer '+tokens.lab_technician).send({status:'sample_collected'});
+  assert.equal(collected.status,200);
+  const processing=await request(app).patch('/api/hms/lab/orders/'+created.body._id).set('Authorization','Bearer '+tokens.lab_technician).send({status:'processing'});
+  assert.equal(processing.status,200);
+  const verified=await request(app).patch('/api/hms/lab/orders/'+created.body._id).set('Authorization','Bearer '+tokens.lab_technician).send({status:'verified',result:'Within reference range'});
+  assert.equal(verified.status,200);
+  assert.ok(verified.body.verifiedAt);
+});
+
 test('prescription dispensing deducts stock and is restricted to pharmacy staff',async()=>{
   const medicine=await HMSMedicine.create({name:'Test tablets',sku:'TEST-TABS',quantity:12,reorderLevel:3});
   const created=await request(app).post('/api/hms/pharmacy/prescriptions').set('Authorization','Bearer '+tokens.doctor).send({
