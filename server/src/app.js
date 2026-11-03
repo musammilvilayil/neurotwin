@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import { authenticate, allow, sign } from './auth.js';
 import { User, Patient, EEGSession, Analysis, TwinSnapshot, ClinicalNote, AuditEvent } from './models.js';
 import { generateReportPdf } from './report.js';
+import hmsRouter from './hms.js';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -34,6 +35,8 @@ const canAccess = async (req, id) => {
   if (req.user.role === 'caregiver') return (p.caregiverUsers || []).some((x) => String(x) === String(req.user.id));
   return false;
 };
+
+app.use('/api/hms', authenticate, hmsRouter);
 
 app.get('/api/health', (_, res) => res.json({ status: 'ok', clinicalBoundary: 'Decision support only; not a diagnostic device.' }));
 
@@ -182,7 +185,7 @@ app.post('/api/eeg/upload', authenticate, allow('doctor', 'admin'), upload.singl
   }
 });
 
-app.get('/api/analyses', authenticate, ah(async (req, res) => {
+app.get('/api/analyses', authenticate, allow('admin', 'doctor', 'patient', 'caregiver'), ah(async (req, res) => {
   let patientFilter = {};
   if (req.user.role === 'doctor') {
     const docPatients = await Patient.find({ assignedDoctor: req.user.id }, '_id');

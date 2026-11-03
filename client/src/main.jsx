@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import './style.css';
 import './plots.css';
+import HMSWorkspace from './HMSWorkspace.jsx';
 
 const api = async (path, opts = {}, token) => {
   const headers = { ...(opts.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }), ...(token ? { Authorization: `Bearer ${token}` } : {}) };
@@ -375,6 +376,7 @@ function App() {
   const token = session?.token;
   const user = session?.user;
   const isClinician = ['doctor', 'admin'].includes(user?.role);
+  const isResearchWorkspace = ['doctor','admin','patient','caregiver'].includes(user?.role);
   const logout = useCallback(() => { localStorage.removeItem('nt-session'); setSession(null); setDashboard(null); setOverview(null); }, []);
 
   const loadWorkspace = useCallback(async () => {
@@ -467,10 +469,9 @@ function App() {
   const navigation = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     ...(isClinician ? [{ id: 'patients', label: 'Patients', icon: Users }] : []),
-    { id: 'analyses', label: 'EEG Analyses', icon: Activity },
-    { id: 'twin', label: 'Digital Twin', icon: Brain },
-    { id: 'notes', label: 'Clinical notes', icon: FileText },
-    ...(user?.role === 'admin' ? [{ id: 'admin', label: 'Audit & access', icon: ShieldCheck }] : [])
+    ...(isResearchWorkspace ? [{ id: 'analyses', label: 'EEG Analyses', icon: Activity },{ id: 'twin', label: 'Digital Twin', icon: Brain },{ id: 'notes', label: 'Clinical notes', icon: FileText }] : []),
+    ...(user?.role === 'admin' ? [{ id: 'admin', label: 'Audit & access', icon: ShieldCheck }] : []),
+    ...(['admin','doctor','receptionist','nurse','lab_technician','pharmacist','billing'].includes(user?.role) ? [{ id: 'hms', label: 'Hospital Management', icon: ClipboardList }] : [])
   ];
   const chooseTab = id => { setTab(id); setMobileNav(false); setError(''); setNotice(''); };
   const upload = async event => {
@@ -668,7 +669,8 @@ function App() {
         </label>}
       </section>}
 
-      {tab === 'overview' && renderRoleDashboard()}
+      {tab === 'overview' && isResearchWorkspace && renderRoleDashboard()}
+      {tab === 'overview' && !isResearchWorkspace && <HMSWorkspace token={token} user={user} patients={patients} />}
 
       {tab === 'patients' && <section className="panel page-panel">
         <div className="section-heading inside">
@@ -946,6 +948,8 @@ function App() {
           </EmptyState>
         )}
       </section>}
+
+      {tab === 'hms' && <HMSWorkspace token={token} user={user} patients={patients}/>}
 
       {tab === 'admin' && user?.role === 'admin' && <section className="panel page-panel"><div className="section-heading inside"><div><p className="eyebrow">GOVERNANCE</p><h2>Audit & access</h2><p className="muted">Recent audit events returned by the administration API.</p></div><Badge>{audit.length} events</Badge></div>{audit.length ? <div className="audit-list">{audit.map(item => <div className="audit-row" key={item._id}><span className="audit-icon"><ShieldCheck size={17}/></span><div><b>{item.action || 'Workspace event'}</b><small>{item.actor?.name || 'System'} · {item.actor?.role || 'unknown role'}</small></div><time>{dateLabel(item.createdAt)}</time></div>)}</div> : <EmptyState icon={ShieldCheck} title="No audit events available">Audit events will appear here when returned by the server.</EmptyState>}<p className="chart-note">This view displays API-provided events; it does not modify user roles or permissions.</p></section>}
       
