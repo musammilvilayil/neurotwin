@@ -3,7 +3,8 @@ from types import SimpleNamespace
 
 from fastapi import HTTPException
 
-from api import select_model_channels
+from api import select_model_channels, temporal_consecutive_confirmation
+import numpy as np
 
 
 class RawStub:
@@ -32,6 +33,26 @@ class ChannelSelectionTests(unittest.TestCase):
 
         self.assertEqual(raised.exception.status_code, 422)
         self.assertEqual(raised.exception.detail["missing_channels"], ["T8-P8"])
+
+
+class TemporalPostProcessingTests(unittest.TestCase):
+    def test_filters_isolated_single_window_transient_spikes(self):
+        # Window 2 is an isolated spike (e.g. muscle EMG / electrode pop)
+        scores = np.array([0.1, 0.2, 0.85, 0.15, 0.3])
+        confirmed = temporal_consecutive_confirmation(scores, threshold=0.65, min_consecutive=2)
+        self.assertEqual(confirmed.tolist(), [0, 0, 0, 0, 0])
+
+    def test_confirms_sustained_multi_window_seizure_activity(self):
+        # Windows 2, 3, 4 form a sustained 30-second seizure discharge
+        scores = np.array([0.1, 0.2, 0.85, 0.90, 0.75, 0.2, 0.1])
+        confirmed = temporal_consecutive_confirmation(scores, threshold=0.65, min_consecutive=2)
+        self.assertEqual(confirmed.tolist(), [0, 0, 1, 1, 1, 0, 0])
+
+    def test_handles_multiple_discrete_seizure_events(self):
+        # Two distinct seizure events separated by baseline
+        scores = np.array([0.9, 0.8, 0.1, 0.1, 0.7, 0.85, 0.8, 0.1])
+        confirmed = temporal_consecutive_confirmation(scores, threshold=0.65, min_consecutive=2)
+        self.assertEqual(confirmed.tolist(), [1, 1, 0, 0, 1, 1, 1, 0])
 
 
 if __name__ == "__main__":

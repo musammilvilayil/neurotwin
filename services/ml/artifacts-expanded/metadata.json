@@ -1,7 +1,7 @@
 {
   "model_version": "chbmit-multiscale-hnm-v2",
   "model_state": "research_trained",
-  "architecture": "Multi-Scale Dilated Temporal CNN + Hard Negative Mining",
+  "architecture": "Multi-Scale Dilated Temporal CNN + Hard Negative Mining + Consecutive Temporal Confirmation",
   "dataset_name": "CHB-MIT Scalp EEG Database",
   "dataset_doi": "10.13026/C2K01R",
   "task_name": "seizure_window_classification",
@@ -33,6 +33,8 @@
     "seizure"
   ],
   "threshold": 0.65,
+  "min_consecutive_windows": 2,
+  "temporal_post_processing": "consecutive_window_confirmation",
   "research_only": true,
   "notice": "Research only; not for diagnosis or treatment decisions.",
   "trained_at_utc": "2026-11-03T06:05:00.000000+00:00"

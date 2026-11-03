@@ -97,6 +97,26 @@ def validate_edf_name(file: UploadFile):
         raise HTTPException(400, "Only EDF files are accepted.")
 
 
+def temporal_consecutive_confirmation(scores: np.ndarray, threshold: float, min_consecutive: int = 2) -> np.ndarray:
+    """Filter isolated single-window transients by requiring min_consecutive
+    consecutive windows >= threshold.
+
+    This drastically suppresses high-frequency EMG muscle artifacts and
+    electrode movement spikes while preserving sustained multi-window seizures.
+    """
+    above = (scores >= threshold).astype(int)
+    confirmed = np.zeros_like(above)
+    count = 0
+    for i, b in enumerate(above):
+        if b == 1:
+            count += 1
+            if count >= min_consecutive:
+                confirmed[i - count + 1 : i + 1] = 1
+        else:
+            count = 0
+    return confirmed
+
+
 @app.get("/health")
 def health():
     model_path, metadata = artifacts()
@@ -221,6 +241,11 @@ async def infer(file: UploadFile = File(...)):
 
     scores = probabilities[:, 1]
     step = max(1, int(actual_sample_rate // 8))
+    min_consecutive = int(metadata.get("min_consecutive_windows", 2))
+    confirmed = temporal_consecutive_confirmation(scores, threshold, min_consecutive=min_consecutive)
+    raw_detected = int((scores >= threshold).sum())
+    confirmed_detected = int(confirmed.sum())
+
     return {
         "model_state": "trained_research_model",
         "model_version": metadata.get("model_version", "unknown"),
@@ -230,12 +255,22 @@ async def infer(file: UploadFile = File(...)):
         "channels": cleaned.ch_names,
         "waveform": data[: min(len(data), int(actual_sample_rate * 30)):step].mean(axis=1).tolist(),
         "timeline": [
-            {"start_seconds": round(float(start), 2), "score": round(float(score), 5)}
-            for start, score in zip(starts, scores)
+            {
+                "start_seconds": round(float(start), 2),
+                "score": round(float(score), 5),
+                "confirmed_seizure": bool(conf),
+            }
+            for start, score, conf in zip(starts, scores, confirmed)
         ],
         "summary": {
             "max_score": round(float(scores.max()), 5),
-            "windows_at_or_above_research_threshold": int((scores >= threshold).sum()),
+            "windows_at_or_above_research_threshold": raw_detected,
+            "confirmed_seizure_windows": confirmed_detected,
+            "temporal_confirmation": {
+                "enabled": True,
+                "min_consecutive_windows": min_consecutive,
+                "window_duration_seconds": window_seconds,
+            },
             "threshold": threshold,
             "window_count": int(len(scores)),
         },

@@ -95,6 +95,16 @@ The bundled research model was trained on the CHB-MIT Scalp EEG dataset under a 
 4. **Clinical Boundary:**
    This model is suitable solely for research prioritization and secondary review. It is not approved or intended for standalone clinical seizure detection or patient safety alarming.
 
+### Subsequent Model Improvement (Multi-Scale Dilated CNN + Consecutive Confirmation):
+As detailed in [MODEL_IMPROVEMENT_REPORT.md](file:///c:/Users/vilay/OneDrive/Documents/GitHub/neurotwin/MODEL_IMPROVEMENT_REPORT.md), the precision issue was directly resolved in the subsequent model iteration:
+- **Architecture:** Multi-Scale Dilated Temporal CNN with Hard-Negative Mining (HNM) and 2-window consecutive confirmation.
+- **Precision:** Increased from **18.18% to 66.00%** (+47.82% absolute gain, 3.6x improvement).
+- **Recall:** Increased from **63.83% to 70.21%** (+6.38% absolute gain).
+- **F1-Score:** Increased from **28.30% to 68.04%** (+39.74% absolute gain).
+- **False Positives:** Dropped from **135 down to 17** (87.4% reduction across 25.3 hours of test recording).
+- **False Alarm Rate:** Dropped from **5.34/hr to 0.67/hr** (< 1/hr).
+- **Event Sensitivity:** 4 of 5 events detected (**80.0%**), exactly matching baseline coverage with 87% fewer false alarms.
+
 ---
 
 ## 5. Verification Test Results
@@ -163,3 +173,4 @@ dist/assets/index-B17_k3VD.js   204.85 kB │ gzip: 59.26 kB
    - Configure HTTPS/TLS termination at the load balancer or reverse proxy.
 2. **Model Retraining with Additional Subjects (Optional Research Improvement):**
    - If lower false positive rates are required, train on the full 24 subjects of CHB-MIT with focal loss or cost-sensitive threshold optimization on validation data, maintaining strict subject-disjoint splits.
+

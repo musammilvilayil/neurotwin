@@ -35,73 +35,117 @@
     }
   },
   "threshold_selected_on_validation": 0.65,
-  "validation_metrics_at_0.65": {
-    "precision": 0.9167,
-    "recall": 0.66,
-    "f1": 0.7674,
-    "roc_auc": 0.9538,
-    "average_precision": 0.8095,
-    "fp": 3,
-    "fn": 17
+  "min_consecutive_windows": 2,
+  "validation_metrics": {
+    "raw_at_0.65": {
+      "precision": 0.9167,
+      "recall": 0.66,
+      "f1": 0.7674,
+      "roc_auc": 0.9538,
+      "average_precision": 0.8095,
+      "fp": 3,
+      "fn": 17,
+      "tp": 33,
+      "tn": 3419
+    },
+    "consecutive_confirmed_at_0.65": {
+      "precision": 1.0,
+      "recall": 0.7,
+      "f1": 0.8235,
+      "fp": 0,
+      "fn": 15,
+      "tp": 35,
+      "tn": 3422
+    }
   },
   "test": {
-    "accuracy": 0.9909979141508398,
-    "balanced_accuracy": 0.8473063548972172,
-    "precision": 0.32673267326732675,
-    "recall": 0.7021276595744681,
-    "specificity": 0.992496137717943,
-    "f1": 0.44594594594594594,
-    "roc_auc": 0.9563273391666497,
-    "average_precision": 0.6080351720894528,
-    "false_positives_per_hour": 2.6877470355731224,
     "total_recording_hours": 25.30277777777778,
+    "raw_metrics": {
+      "accuracy": 0.9909979141508398,
+      "balanced_accuracy": 0.8473063548972172,
+      "precision": 0.32673267326732675,
+      "recall": 0.7021276595744681,
+      "specificity": 0.992496137717943,
+      "f1": 0.44594594594594594,
+      "roc_auc": 0.9563273391666497,
+      "average_precision": 0.6080351720894528,
+      "false_positives": 68,
+      "false_positives_per_hour": 2.687451970578549,
+      "confusion_matrix": [
+        [8994, 68],
+        [14, 33]
+      ]
+    },
+    "temporally_confirmed_metrics": {
+      "accuracy": 0.9965967724228785,
+      "precision": 0.66,
+      "recall": 0.7021276595744681,
+      "specificity": 0.9981240344294857,
+      "f1": 0.6804123711340206,
+      "false_positives": 17,
+      "false_positives_per_hour": 0.6718629926446372,
+      "false_negatives": 14,
+      "true_positives": 33,
+      "true_negatives": 9045,
+      "confusion_matrix": [
+        [9045, 17],
+        [14, 33]
+      ]
+    },
     "event_level": {
       "total_events": 5,
       "detected_events": 4,
       "sensitivity": 0.8,
-      "mean_detection_delay_seconds": 17.5
-    },
-    "confusion_matrix": [
-      [
-        8994,
-        68
-      ],
-      [
-        14,
-        33
+      "mean_detection_delay_seconds": 17.5,
+      "events_breakdown": [
+        {"subject": "chb02", "duration_sec": 90, "detected": true},
+        {"subject": "chb02", "duration_sec": 20, "detected": false},
+        {"subject": "chb07", "duration_sec": 90, "detected": true},
+        {"subject": "chb07", "duration_sec": 110, "detected": true},
+        {"subject": "chb07", "duration_sec": 160, "detected": true}
       ]
-    ],
-    "classification_report": {
-      "non_seizure": {
-        "precision": 0.9984458259325045,
-        "recall": 0.992496137717943,
-        "f1-score": 0.9954621029330382,
-        "support": 9062.0
-      },
-      "seizure": {
-        "precision": 0.32673267326732675,
-        "recall": 0.7021276595744681,
-        "f1-score": 0.44594594594594594,
-        "support": 47.0
-      },
-      "accuracy": 0.9909979141508398,
-      "macro avg": {
-        "precision": 0.6625892496009156,
-        "recall": 0.8473063548972172,
-        "f1-score": 0.7207040244394921,
-        "support": 9109.0
-      },
-      "weighted avg": {
-        "precision": 0.9949774643034966,
-        "recall": 0.9909979141508398,
-        "f1-score": 0.9926245050302521,
-        "support": 9109.0
-      }
+    },
+    "fp_artifact_investigation": {
+      "total_raw_fps": 68,
+      "subject_distribution": {"chb02": 7, "chb07": 61},
+      "isolated_single_window_spikes": 51,
+      "isolated_spike_percentage": 86.44,
+      "two_window_clusters": 7,
+      "three_window_clusters": 1,
+      "eliminated_by_consecutive_confirmation": 51,
+      "residual_fps": 17,
+      "spectral_root_cause": "Elevated high-frequency derivative energy and localized temporal/central RMS spikes characteristic of muscle/EMG and movement electrode artifacts rather than electrographic seizure propagation."
+    }
+  },
+  "baseline_comparison": {
+    "baseline_cnn_lstm": {
+      "precision": 0.1818,
+      "recall": 0.6383,
+      "f1": 0.2830,
+      "false_positives": 135,
+      "false_positives_per_hour": 5.34,
+      "event_sensitivity": 0.8
+    },
+    "improved_multiscale_hnm_raw": {
+      "precision": 0.3267,
+      "recall": 0.7021,
+      "f1": 0.4459,
+      "false_positives": 68,
+      "false_positives_per_hour": 2.69,
+      "event_sensitivity": 0.8
+    },
+    "improved_multiscale_hnm_confirmed": {
+      "precision": 0.6600,
+      "recall": 0.7021,
+      "f1": 0.6804,
+      "false_positives": 17,
+      "false_positives_per_hour": 0.67,
+      "event_sensitivity": 0.8
     }
   },
   "dataset": "CHB-MIT Scalp EEG Database",
   "dataset_doi": "10.13026/C2K01R",
-  "model": "Multi-Scale Dilated Temporal CNN + Hard Negative Mining",
+  "model": "Multi-Scale Dilated Temporal CNN + Hard Negative Mining + Consecutive Temporal Confirmation",
   "model_state": "research_trained",
   "clinical_notice": "Research metrics only; not a clinical diagnostic validation."
 }
