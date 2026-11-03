@@ -669,7 +669,7 @@ function App() {
       </section>}
 
       {tab === 'overview' && isResearchWorkspace && renderRoleDashboard()}
-      {tab === 'overview' && !isResearchWorkspace && <HMSWorkspace token={token} user={user} patients={patients}/ >}
+      {tab === 'overview' && !isResearchWorkspace && <HMSWorkspace token={token} user={user} patients={patients} />}
 
       {tab === 'patients' && <section className="panel page-panel">
         <div className="section-heading inside">
