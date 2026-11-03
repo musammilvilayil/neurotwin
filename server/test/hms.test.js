@@ -107,7 +107,11 @@ test('medicine stock adjustment rejects negative stock and applies valid adjustm
   assert.equal(adjusted.body.quantity,7);
 });
 
-test('billing creates invoice and records payment against outstanding balance',async()=>{
+test('billing rejects invalid quantities and records payments against the outstanding balance',async()=>{
+  const invalid=await request(app).post('/api/hms/billing/invoices').set('Authorization','Bearer '+tokens.billing).send({
+    patient:String(patient._id),items:[{description:'Invalid charge',quantity:-2,unitPrice:100}]
+  });
+  assert.equal(invalid.status,400);
   const created=await request(app).post('/api/hms/billing/invoices').set('Authorization','Bearer '+tokens.billing).send({
     patient:String(patient._id),items:[{description:'Consultation',quantity:1,unitPrice:500}]
   });
