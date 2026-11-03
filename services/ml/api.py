@@ -2,7 +2,7 @@
 import json
 import os
 from pathlib import Path
-from tempfile import NamedTemporaryFile
+from tempfile import TemporaryDirectory
 
 import numpy as np
 from fastapi import FastAPI, File, HTTPException, UploadFile
@@ -10,7 +10,7 @@ from tensorflow import keras
 
 from preprocessing import load_edf, preprocess, windows
 
-app = FastAPI(title="NeuroTwin ML Service", version="1.2.0")
+app = FastAPI(title="NeuroTwin ML Service", version="1.2.1")
 ARTIFACT_DIR = Path(os.getenv("MODEL_ARTIFACT_DIR", "artifacts"))
 MAX_EDF_BYTES = 50 * 1024 * 1024
 UPLOAD_CHUNK_BYTES = 1024 * 1024
@@ -52,15 +52,22 @@ def normalise_channel(name: str) -> str:
 
 
 def select_model_channels(raw, required_channels):
-    index = {normalise_channel(name): name for name in raw.ch_names}
+    required = {normalise_channel(name) for name in required_channels}
+    index = {}
+    for name in raw.ch_names:
+        normalized = normalise_channel(name)
+        index.setdefault(normalized, name)
+        for required_name in required:
+            suffix = f"{required_name}-"
+            if normalized.startswith(suffix) and normalized[len(suffix):].isdigit():
+                index.setdefault(required_name, name)
     missing = [name for name in required_channels if normalise_channel(name) not in index]
     if missing:
         raise HTTPException(
             status_code=422,
             detail={
                 "error": "channel_mismatch",
-                "message": "This research model requires the CHB-MIT bipolar channel montage. "
-                           "The uploaded EDF is missing required channels.",
+                "message": "The uploaded EDF is missing channels required by this research model.",
                 "missing_channels": missing,
                 "required_channels": required_channels,
             },
@@ -69,25 +76,45 @@ def select_model_channels(raw, required_channels):
     return raw.copy().pick_channels(names, ordered=True)
 
 
-async def save_upload(file: UploadFile, temp_file):
-    """Stream an EDF upload to disk while enforcing a hard size limit."""
+async def save_upload(file: UploadFile, destination: Path):
+    """Stream an upload to a temporary file and enforce a hard size limit."""
     total = 0
-    while True:
-        chunk = await file.read(UPLOAD_CHUNK_BYTES)
-        if not chunk:
-            break
-        total += len(chunk)
-        if total > MAX_EDF_BYTES:
-            raise HTTPException(413, "EDF file exceeds the 50 MB upload limit.")
-        temp_file.write(chunk)
+    with destination.open("wb") as output:
+        while True:
+            chunk = await file.read(UPLOAD_CHUNK_BYTES)
+            if not chunk:
+                break
+            total += len(chunk)
+            if total > MAX_EDF_BYTES:
+                raise HTTPException(413, "EDF file exceeds the 50 MB upload limit.")
+            output.write(chunk)
     if total == 0:
         raise HTTPException(400, "The uploaded EDF file is empty.")
-    temp_file.flush()
 
 
 def validate_edf_name(file: UploadFile):
     if not file.filename or not file.filename.lower().endswith(".edf"):
         raise HTTPException(400, "Only EDF files are accepted.")
+
+
+def temporal_consecutive_confirmation(scores: np.ndarray, threshold: float, min_consecutive: int = 2) -> np.ndarray:
+    """Filter isolated single-window transients by requiring min_consecutive
+    consecutive windows >= threshold.
+
+    This drastically suppresses high-frequency EMG muscle artifacts and
+    electrode movement spikes while preserving sustained multi-window seizures.
+    """
+    above = (scores >= threshold).astype(int)
+    confirmed = np.zeros_like(above)
+    count = 0
+    for i, b in enumerate(above):
+        if b == 1:
+            count += 1
+            if count >= min_consecutive:
+                confirmed[i - count + 1 : i + 1] = 1
+        else:
+            count = 0
+    return confirmed
 
 
 @app.get("/health")
@@ -106,15 +133,17 @@ def health():
 async def inspect_eeg(file: UploadFile = File(...)):
     """Inspect EDF metadata and preprocessing readiness without making predictions."""
     validate_edf_name(file)
-    with NamedTemporaryFile(suffix=".edf") as temp:
-        await save_upload(file, temp)
+    with TemporaryDirectory(prefix="neurotwin-edf-") as directory:
+        temp_path = Path(directory) / "upload.edf"
+        await save_upload(file, temp_path)
         try:
-            raw = load_edf(temp.name)
+            raw = load_edf(temp_path)
             cleaned, data = preprocess(raw)
         except HTTPException:
             raise
         except (ValueError, RuntimeError, OSError) as exc:
             raise HTTPException(422, f"Unable to parse/preprocess EDF: {exc}") from exc
+
     model_path, metadata = artifacts()
     return {
         "state": "preprocessed_no_inference",
@@ -170,10 +199,11 @@ async def infer(file: UploadFile = File(...)):
     except (TypeError, ValueError, ZeroDivisionError) as exc:
         raise HTTPException(503, f"Invalid model metadata: {exc}") from exc
 
-    with NamedTemporaryFile(suffix=".edf") as temp:
-        await save_upload(file, temp)
+    with TemporaryDirectory(prefix="neurotwin-edf-") as directory:
+        temp_path = Path(directory) / "upload.edf"
+        await save_upload(file, temp_path)
         try:
-            raw = load_edf(temp.name)
+            raw = load_edf(temp_path)
             selected = select_model_channels(raw, required_channels)
             cleaned, data = preprocess(selected, resample_hz=sample_rate)
             actual_sample_rate = float(cleaned.info["sfreq"])
@@ -203,11 +233,19 @@ async def infer(file: UploadFile = File(...)):
         probabilities.ndim != 2
         or probabilities.shape != (len(X), 2)
         or not np.isfinite(probabilities).all()
+        or np.any(probabilities < 0)
+        or np.any(probabilities > 1)
+        or not np.allclose(probabilities.sum(axis=1), 1.0, atol=1e-3)
     ):
-        raise HTTPException(503, "The installed model returned invalid seizure-score probabilities.")
+        raise HTTPException(503, "The installed model returned invalid class probabilities.")
 
     scores = probabilities[:, 1]
     step = max(1, int(actual_sample_rate // 8))
+    min_consecutive = int(metadata.get("min_consecutive_windows", 2))
+    confirmed = temporal_consecutive_confirmation(scores, threshold, min_consecutive=min_consecutive)
+    raw_detected = int((scores >= threshold).sum())
+    confirmed_detected = int(confirmed.sum())
+
     return {
         "model_state": "trained_research_model",
         "model_version": metadata.get("model_version", "unknown"),
@@ -216,13 +254,24 @@ async def infer(file: UploadFile = File(...)):
         "sampling_rate": actual_sample_rate,
         "channels": cleaned.ch_names,
         "waveform": data[: min(len(data), int(actual_sample_rate * 30)):step].mean(axis=1).tolist(),
+        "multichannel_waveform": data[: min(len(data), int(actual_sample_rate * 15)):step].T.tolist(),
         "timeline": [
-            {"start_seconds": round(float(start), 2), "score": round(float(score), 5)}
-            for start, score in zip(starts, scores)
+            {
+                "start_seconds": round(float(start), 2),
+                "score": round(float(score), 5),
+                "confirmed_seizure": bool(conf),
+            }
+            for start, score, conf in zip(starts, scores, confirmed)
         ],
         "summary": {
             "max_score": round(float(scores.max()), 5),
-            "windows_at_or_above_research_threshold": int((scores >= threshold).sum()),
+            "windows_at_or_above_research_threshold": raw_detected,
+            "confirmed_seizure_windows": confirmed_detected,
+            "temporal_confirmation": {
+                "enabled": True,
+                "min_consecutive_windows": min_consecutive,
+                "window_duration_seconds": window_seconds,
+            },
             "threshold": threshold,
             "window_count": int(len(scores)),
         },

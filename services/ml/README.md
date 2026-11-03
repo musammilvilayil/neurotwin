@@ -26,6 +26,16 @@ python prepare_chbmit.py --data-dir data/chbmit --output-dir data/processed --wi
 python train.py --features data/processed/features.npy --labels data/processed/labels.npy --subjects data/processed/subjects.npy --output-dir artifacts --epochs 10
 ```
 
+## Run the inference service
+
+With the dependencies installed and `artifacts/model.keras` plus `artifacts/metadata.json` present, start the local service from `services/ml/`:
+
+```bash
+python -m uvicorn api:app --host 127.0.0.1 --port 8001
+```
+
+The Node API proxies authorized EDF uploads to this service. Its `/health` endpoint must report `model_state: ready` before uploads are enabled in the workspace.
+
 The model uses 18 fixed bipolar channels at 128 Hz and 10-second windows. Files without the required channel montage are skipped during preparation; inspect `preparation_report.json`. Splits are separated by subject (60% train / 20% validation / 20% test), and the threshold is selected on validation data before the test set is scored. Metrics are exported to `artifacts/evaluation.json`; the exact test metrics must be reviewed rather than assumed.
 
 ## Install the trained artifact

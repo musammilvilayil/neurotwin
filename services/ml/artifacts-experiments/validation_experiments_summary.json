@@ -1,0 +1,191 @@
+{
+  "exp1_baseline": {
+    "name": "Baseline CNN-LSTM (Standard Class Weight)",
+    "val_auc": 0.9309,
+    "val_ap": 0.4864,
+    "thresholds": {
+      "thresh_0.65": {
+        "threshold": 0.65,
+        "precision": 0.5577,
+        "recall": 0.58,
+        "f1": 0.5686,
+        "fp": 23,
+        "fn": 21
+      },
+      "thresh_0.70": {
+        "threshold": 0.7,
+        "precision": 0.5909,
+        "recall": 0.52,
+        "f1": 0.5532,
+        "fp": 18,
+        "fn": 24
+      },
+      "thresh_0.75": {
+        "threshold": 0.75,
+        "precision": 0.6216,
+        "recall": 0.46,
+        "f1": 0.5287,
+        "fp": 14,
+        "fn": 27
+      },
+      "thresh_0.80": {
+        "threshold": 0.8,
+        "precision": 0.7241,
+        "recall": 0.42,
+        "f1": 0.5316,
+        "fp": 8,
+        "fn": 29
+      },
+      "thresh_0.85": {
+        "threshold": 0.85,
+        "precision": 0.7391,
+        "recall": 0.34,
+        "f1": 0.4658,
+        "fp": 6,
+        "fn": 33
+      }
+    }
+  },
+  "exp2_focal": {
+    "name": "Multi-Scale Dilated CNN + Focal Loss",
+    "val_auc": 0.9557,
+    "val_ap": 0.7271,
+    "thresholds": {
+      "thresh_0.65": {
+        "threshold": 0.65,
+        "precision": 0.8333,
+        "recall": 0.6,
+        "f1": 0.6977,
+        "fp": 6,
+        "fn": 20
+      },
+      "thresh_0.70": {
+        "threshold": 0.7,
+        "precision": 0.8438,
+        "recall": 0.54,
+        "f1": 0.6585,
+        "fp": 5,
+        "fn": 23
+      },
+      "thresh_0.75": {
+        "threshold": 0.75,
+        "precision": 0.8929,
+        "recall": 0.5,
+        "f1": 0.641,
+        "fp": 3,
+        "fn": 25
+      },
+      "thresh_0.80": {
+        "threshold": 0.8,
+        "precision": 0.92,
+        "recall": 0.46,
+        "f1": 0.6133,
+        "fp": 2,
+        "fn": 27
+      },
+      "thresh_0.85": {
+        "threshold": 0.85,
+        "precision": 0.95,
+        "recall": 0.38,
+        "f1": 0.5429,
+        "fp": 1,
+        "fn": 31
+      }
+    }
+  },
+  "exp3_balanced": {
+    "name": "Multi-Scale Dilated CNN + Balanced Batch Sampling",
+    "val_auc": 0.9364,
+    "val_ap": 0.7742,
+    "thresholds": {
+      "thresh_0.65": {
+        "threshold": 0.65,
+        "precision": 0.5278,
+        "recall": 0.76,
+        "f1": 0.623,
+        "fp": 34,
+        "fn": 12
+      },
+      "thresh_0.70": {
+        "threshold": 0.7,
+        "precision": 0.5588,
+        "recall": 0.76,
+        "f1": 0.6441,
+        "fp": 30,
+        "fn": 12
+      },
+      "thresh_0.75": {
+        "threshold": 0.75,
+        "precision": 0.5672,
+        "recall": 0.76,
+        "f1": 0.6496,
+        "fp": 29,
+        "fn": 12
+      },
+      "thresh_0.80": {
+        "threshold": 0.8,
+        "precision": 0.5938,
+        "recall": 0.76,
+        "f1": 0.6667,
+        "fp": 26,
+        "fn": 12
+      },
+      "thresh_0.85": {
+        "threshold": 0.85,
+        "precision": 0.6129,
+        "recall": 0.76,
+        "f1": 0.6786,
+        "fp": 24,
+        "fn": 12
+      }
+    }
+  },
+  "exp4_hard_negative_mining": {
+    "name": "Multi-Scale Dilated CNN + Hard-Negative Mining",
+    "val_auc": 0.9538,
+    "val_ap": 0.8095,
+    "thresholds": {
+      "thresh_0.65": {
+        "threshold": 0.65,
+        "precision": 0.9167,
+        "recall": 0.66,
+        "f1": 0.7674,
+        "fp": 3,
+        "fn": 17
+      },
+      "thresh_0.70": {
+        "threshold": 0.7,
+        "precision": 0.9143,
+        "recall": 0.64,
+        "f1": 0.7529,
+        "fp": 3,
+        "fn": 18
+      },
+      "thresh_0.75": {
+        "threshold": 0.75,
+        "precision": 0.9394,
+        "recall": 0.62,
+        "f1": 0.747,
+        "fp": 2,
+        "fn": 19
+      },
+      "thresh_0.80": {
+        "threshold": 0.8,
+        "precision": 0.9394,
+        "recall": 0.62,
+        "f1": 0.747,
+        "fp": 2,
+        "fn": 19
+      },
+      "thresh_0.85": {
+        "threshold": 0.85,
+        "precision": 0.9355,
+        "recall": 0.58,
+        "f1": 0.716,
+        "fp": 2,
+        "fn": 21
+      }
+    },
+    "mined_hn_count": 1500
+  }
+}
