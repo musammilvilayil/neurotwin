@@ -153,31 +153,71 @@ app.post('/api/patients/:id/treatment', authenticate, allow('doctor', 'admin'), 
   if (Array.isArray(req.body.conditions)) p.conditions = req.body.conditions.map(c => String(c).trim()).filter(Boolean);
   if (Array.isArray(req.body.medications)) p.treatment.medications = req.body.medications.map(m => String(m).trim()).filter(Boolean);
 
-  if (req.body.newPrescription && req.body.newPrescription.medicineName) {
+  const rxList = Array.isArray(req.body.newPrescriptions)
+    ? req.body.newPrescriptions
+    : (req.body.newPrescription ? [req.body.newPrescription] : []);
+
+  if (rxList.length > 0) {
     if (!Array.isArray(p.prescriptions)) p.prescriptions = [];
-    p.prescriptions.unshift({
-      medicineName: String(req.body.newPrescription.medicineName).trim(),
-      dosage: String(req.body.newPrescription.dosage || '').trim(),
-      frequency: String(req.body.newPrescription.frequency || '').trim(),
-      prescribedBy: req.user.name || 'Treating Physician',
-      instructions: String(req.body.newPrescription.instructions || '').trim(),
-      status: 'Active'
-    });
+    for (const rx of rxList) {
+      if (rx && rx.medicineName && String(rx.medicineName).trim()) {
+        p.prescriptions.unshift({
+          medicineName: String(rx.medicineName).trim(),
+          dosage: String(rx.dosage || '').trim(),
+          frequency: String(rx.frequency || '').trim(),
+          prescribedBy: req.user.name || 'Treating Physician',
+          instructions: String(rx.instructions || '').trim(),
+          status: 'Active'
+        });
+      }
+    }
   }
 
-  if (req.body.newAppointment && req.body.newAppointment.scheduledAt) {
+  const apptList = Array.isArray(req.body.newAppointments)
+    ? req.body.newAppointments
+    : (req.body.newAppointment ? [req.body.newAppointment] : []);
+
+  if (apptList.length > 0) {
     if (!Array.isArray(p.appointments)) p.appointments = [];
-    p.appointments.unshift({
-      doctorName: req.user.name || 'Dr. Maya Rao',
-      scheduledAt: new Date(req.body.newAppointment.scheduledAt),
-      reason: String(req.body.newAppointment.reason || 'Clinical Consultation').trim(),
-      status: 'Scheduled'
-    });
+    for (const a of apptList) {
+      if (a && a.scheduledAt) {
+        p.appointments.unshift({
+          doctorName: req.user.name || 'Dr. Maya Rao',
+          scheduledAt: new Date(a.scheduledAt),
+          reason: String(a.reason || 'Clinical Consultation').trim(),
+          status: 'Scheduled'
+        });
+      }
+    }
   }
 
   p.treatment.lastUpdated = new Date();
   await p.save();
   await audit(req, 'patient.treatment_updated', p._id);
+  res.json(p);
+}));
+
+app.patch('/api/patients/:id/prescriptions/:rxId/status', authenticate, allow('doctor', 'admin'), ah(async (req, res) => {
+  if (!(await canAccess(req, req.params.id))) return res.status(403).json({ error: 'Not authorized for this patient' });
+  const p = await Patient.findById(req.params.id);
+  if (!p) return res.status(404).json({ error: 'Patient not found' });
+  const rx = (p.prescriptions || []).id(req.params.rxId);
+  if (!rx) return res.status(404).json({ error: 'Prescription not found' });
+  rx.status = req.body.status === 'Discontinued' ? 'Discontinued' : 'Active';
+  await p.save();
+  await audit(req, 'patient.prescription_status_changed', p._id, { rxId: rx._id, status: rx.status });
+  res.json(p);
+}));
+
+app.patch('/api/patients/:id/appointments/:appId/status', authenticate, allow('doctor', 'admin'), ah(async (req, res) => {
+  if (!(await canAccess(req, req.params.id))) return res.status(403).json({ error: 'Not authorized for this patient' });
+  const p = await Patient.findById(req.params.id);
+  if (!p) return res.status(404).json({ error: 'Patient not found' });
+  const appt = (p.appointments || []).id(req.params.appId);
+  if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+  appt.status = req.body.status || 'Completed';
+  await p.save();
+  await audit(req, 'patient.appointment_status_changed', p._id, { appId: appt._id, status: appt.status });
   res.json(p);
 }));
 

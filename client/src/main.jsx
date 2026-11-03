@@ -4,7 +4,8 @@ import {
   Activity, AlertTriangle, ArrowUpRight, Brain, CheckCircle2, ClipboardList,
   FileText, LayoutDashboard, LogOut, Menu, Plus, RefreshCw, ShieldCheck, Upload,
   Users, UserPlus, X, Waves, Download, Search, Filter, Eye, Check, Layers, FileDown,
-  Calendar, Clock, Heart, Pill, Stethoscope, Sparkles
+  Calendar, Clock, Heart, Pill, Stethoscope, Sparkles, Printer, Sunrise, Sun, Moon,
+  Trash2, SlidersHorizontal
 } from 'lucide-react';
 import './style.css';
 import './plots.css';
@@ -242,9 +243,18 @@ function SeizureIntervalsList({ timeline, threshold = 0.65 }) {
 }
 
 function AnalysisDetailModal({ analysis, onClose, onDownloadReport, onToggleReview, isClinician, downloadingId }) {
+  const defaultThreshold = Number(analysis?.probabilities?.threshold ?? 0.65);
+  const [customThreshold, setCustomThreshold] = useState(defaultThreshold);
+
+  useEffect(() => {
+    if (analysis?.probabilities?.threshold !== undefined) {
+      setCustomThreshold(Number(analysis.probabilities.threshold));
+    }
+  }, [analysis?._id, analysis?.probabilities?.threshold]);
+
   if (!analysis) return null;
   const maxScore = Number(analysis?.confidence ?? analysis?.probabilities?.maxSeizureScore ?? 0);
-  const threshold = Number(analysis?.probabilities?.threshold ?? 0.65);
+  const threshold = customThreshold;
   const isElevated = maxScore >= threshold;
   const patient = analysis.patient;
   const session = analysis.session;
@@ -273,12 +283,34 @@ function AnalysisDetailModal({ analysis, onClose, onDownloadReport, onToggleRevi
               <strong>{(maxScore * 100).toFixed(1)}%</strong>
             </div>
             <div className="kpi-card">
-              <small>RESEARCH THRESHOLD</small>
+              <small>EFFECTIVE THRESHOLD</small>
               <strong>{(threshold * 100).toFixed(0)}%</strong>
             </div>
             <div className="kpi-card">
               <small>CLINICIAN REVIEW</small>
               <Badge type={isReviewed ? 'blue' : 'amber'}>{analysis.clinicianReview?.toUpperCase() || 'PENDING'}</Badge>
+            </div>
+          </div>
+
+          <div className="threshold-slider-box">
+            <div className="threshold-slider-header">
+              <span><SlidersHorizontal size={14} style={{ verticalAlign: 'middle', marginRight: '6px' }}/> <b>Interactive Sensitivity Threshold</b>: {(threshold * 100).toFixed(0)}%</span>
+              <span style={{ fontSize: '11px', color: '#64748b' }}>Baseline: {((analysis?.probabilities?.threshold ?? 0.65) * 100).toFixed(0)}%</span>
+            </div>
+            <div className="threshold-slider-control">
+              <input
+                type="range"
+                min="0.40"
+                max="0.85"
+                step="0.05"
+                value={threshold}
+                onChange={e => setCustomThreshold(Number(e.target.value))}
+              />
+              <div className="threshold-slider-labels">
+                <span>High Sensitivity (40%)</span>
+                <span>Balanced (65%)</span>
+                <span>High Specificity (85%)</span>
+              </div>
             </div>
           </div>
 
@@ -457,7 +489,112 @@ function SimplifiedWellnessSection({ overview, isCaregiver = false }) {
   );
 }
 
-function PatientScheduleAndRx({ appointments = [], prescriptions = [] }) {
+function getTimingBadges(frequency = '') {
+  const f = (frequency || '').toLowerCase();
+  const badges = [];
+  if (f.includes('bid') || f.includes('tid') || f.includes('morning') || f.includes('qam') || f.includes('daily') || f.includes('once') || f.includes('twice')) {
+    badges.push({ icon: Sunrise, label: 'Morning', cls: 'timing-morning' });
+  }
+  if (f.includes('tid') || f.includes('midday') || f.includes('afternoon') || f.includes('qid')) {
+    badges.push({ icon: Sun, label: 'Midday', cls: 'timing-badge' });
+  }
+  if (f.includes('bid') || f.includes('tid') || f.includes('qhs') || f.includes('night') || f.includes('bedtime') || f.includes('twice')) {
+    badges.push({ icon: Moon, label: 'Bedtime', cls: 'timing-night' });
+  }
+  return badges;
+}
+
+function printPrescriptionSlip(patient, prescriptions = []) {
+  const printWindow = window.open('', '_blank', 'width=800,height=900');
+  if (!printWindow) return;
+  const pName = patient?.fullName || 'Patient';
+  const mrn = patient?.mrn || 'N/A';
+  const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const activeMeds = prescriptions.filter(p => p.status !== 'Discontinued');
+  const rows = (activeMeds.length ? activeMeds : prescriptions).map((rx, i) => `
+    <tr>
+      <td style="padding:10px;border-bottom:1px solid #e2e8f0;font-weight:600;">${i+1}. ${rx.medicineName}</td>
+      <td style="padding:10px;border-bottom:1px solid #e2e8f0;">${rx.dosage || '—'}</td>
+      <td style="padding:10px;border-bottom:1px solid #e2e8f0;">${rx.frequency || '—'}</td>
+      <td style="padding:10px;border-bottom:1px solid #e2e8f0;">${rx.instructions || 'As directed'}</td>
+      <td style="padding:10px;border-bottom:1px solid #e2e8f0;"><span style="color:#16a34a;font-weight:600;">${rx.status || 'Active'}</span></td>
+    </tr>
+  `).join('');
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Prescription Slip - ${pName} (${mrn})</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #1e293b; padding: 40px; margin: 0; }
+        .rx-header { border-bottom: 2px solid #0f172a; padding-bottom: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .rx-logo { font-size: 24px; font-weight: 800; color: #4338ca; letter-spacing: -0.5px; }
+        .rx-sub { font-size: 12px; color: #64748b; margin-top: 2px; }
+        .patient-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 13px; }
+        th { text-align: left; padding: 10px; background: #f1f5f9; border-bottom: 2px solid #cbd5e1; font-weight: 700; color: #334155; }
+        .footer-sig { margin-top: 50px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .sig-line { width: 220px; border-top: 1px solid #475569; text-align: center; padding-top: 6px; font-size: 12px; color: #475569; }
+        .disclaimer { margin-top: 40px; padding: 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; font-size: 11px; color: #991b1b; }
+      </style>
+    </head>
+    <body>
+      <div class="rx-header">
+        <div>
+          <div class="rx-logo">NeuroTwin Neurological Care</div>
+          <div class="rx-sub">Digital Twin BCI & Clinical Decision Support System</div>
+        </div>
+        <div style="text-align:right; font-size:12px; color:#64748b;">
+          <div><b>Date:</b> ${dateStr}</div>
+          <div><b>Document:</b> Official Prescription Slip</div>
+        </div>
+      </div>
+      <div class="patient-box">
+        <div><strong>Patient Name:</strong> ${pName}</div>
+        <div><strong>MRN / Record:</strong> ${mrn}</div>
+        <div><strong>Primary Diagnosis:</strong> ${patient?.treatment?.diagnosis || 'Epilepsy & Neurological Monitoring'}</div>
+        <div><strong>Treating Clinician:</strong> Dr. Maya Rao, MD (Neurology)</div>
+      </div>
+      <h3 style="font-size:15px; margin:0 0 12px; color:#0f172a;">Prescribed Anti-Seizure Regimen (Rx)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Medication</th>
+            <th>Dosage</th>
+            <th>Frequency</th>
+            <th>Instructions</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows || '<tr><td colspan="5" style="padding:16px; text-align:center; color:#64748b;">No active prescriptions recorded.</td></tr>'}
+        </tbody>
+      </table>
+      <div class="footer-sig">
+        <div style="font-size:12px; color:#64748b;">
+          <p>Please present this slip at the hospital pharmacy or during clinical follow-up.</p>
+        </div>
+        <div class="sig-line">
+          <b>Dr. Maya Rao, MD</b><br/>
+          Licensed Neurologist / Clinical Lead
+        </div>
+      </div>
+      <div class="disclaimer">
+        <b>Notice:</b> This prescription is issued under supervised medical decision-support protocols. NeuroTwin provides AI-assisted analysis and digital twin trend monitoring to assist clinical judgment, not as a replacement for authorized neurological oversight.
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => {
+    printWindow.print();
+  }, 250);
+}
+
+function PatientScheduleAndRx({ appointments = [], prescriptions = [], patient, isClinician, onToggleRxStatus }) {
+  const activeRx = prescriptions.filter(rx => rx.status !== 'Discontinued');
   return (
     <div className="content-grid" style={{ marginBottom: '20px' }}>
       <article className="panel">
@@ -498,21 +635,64 @@ function PatientScheduleAndRx({ appointments = [], prescriptions = [] }) {
               <p>Active prescribed anti-seizure medications and schedules</p>
             </div>
           </div>
-          <Badge type="blue">{prescriptions.length} active</Badge>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <Badge type="blue">{activeRx.length} active</Badge>
+            {prescriptions.length > 0 && (
+              <button
+                type="button"
+                className="print-rx-btn"
+                onClick={() => printPrescriptionSlip(patient, prescriptions)}
+                title="Print or save PDF prescription slip"
+              >
+                <Printer size={13}/> Print Rx Slip
+              </button>
+            )}
+          </div>
         </div>
         {prescriptions.length ? (
           <div className="rx-grid">
-            {prescriptions.map((rx, idx) => (
-              <div className="rx-card" key={idx}>
-                <div className="rx-card-header">
-                  <strong>{rx.medicineName}</strong>
-                  <Badge type="neutral">{rx.dosage}</Badge>
+            {prescriptions.map((rx, idx) => {
+              const timings = getTimingBadges(rx.frequency);
+              const isDiscontinued = rx.status === 'Discontinued';
+              return (
+                <div className={`rx-card ${isDiscontinued ? 'rx-discontinued' : ''}`} key={rx._id || idx}>
+                  <div className="rx-card-header">
+                    <strong>{rx.medicineName}</strong>
+                    <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                      <Badge type={isDiscontinued ? 'red' : 'neutral'}>{rx.dosage}</Badge>
+                      <Badge type={isDiscontinued ? 'red' : 'green'}>{rx.status || 'Active'}</Badge>
+                    </div>
+                  </div>
+                  <small>Frequency: <b>{rx.frequency}</b></small>
+                  {timings.length > 0 && (
+                    <div style={{ display: 'flex', gap: '4px', margin: '4px 0', flexWrap: 'wrap' }}>
+                      {timings.map((t, ti) => {
+                        const Icon = t.icon;
+                        return (
+                          <span key={ti} className={`timing-badge ${t.cls}`}>
+                            <Icon size={11} style={{ marginRight: '3px' }}/> {t.label}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {rx.instructions && <p>Instructions: {rx.instructions}</p>}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px' }}>
+                    <small style={{ color: '#94a3b8' }}>By: {rx.prescribedBy || 'Treating Physician'}</small>
+                    {isClinician && onToggleRxStatus && rx._id && (
+                      <button
+                        type="button"
+                        className="action-btn-sm"
+                        style={{ fontSize: '10px', padding: '2px 6px' }}
+                        onClick={() => onToggleRxStatus(rx._id, isDiscontinued ? 'Active' : 'Discontinued')}
+                      >
+                        {isDiscontinued ? 'Reactivate' : 'Discontinue'}
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <small>Frequency: <b>{rx.frequency}</b></small>
-                {rx.instructions && <p>Instructions: {rx.instructions}</p>}
-                <small style={{ color: '#94a3b8', marginTop: '4px' }}>Prescribed by: {rx.prescribedBy || 'Treating Physician'}</small>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <EmptyState icon={Pill} title="No prescriptions recorded">Prescribed treatments will be listed here by your doctor.</EmptyState>
@@ -526,13 +706,60 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
   const [diagnosis, setDiagnosis] = useState(patient?.treatment?.diagnosis || '');
   const [treatmentPlan, setTreatmentPlan] = useState(patient?.treatment?.treatmentPlan || '');
   const [conditions, setConditions] = useState((patient?.conditions || []).join(', '));
-  const [newRxName, setNewRxName] = useState('');
-  const [newRxDose, setNewRxDose] = useState('');
-  const [newRxFreq, setNewRxFreq] = useState('');
-  const [newRxInst, setNewRxInst] = useState('');
-  const [newApptDate, setNewApptDate] = useState('');
-  const [newApptReason, setNewApptReason] = useState('Longitudinal EEG Follow-up');
+  const [medicines, setMedicines] = useState([
+    { medicineName: '', dosage: '', frequency: '', instructions: '' }
+  ]);
+  const [appointments, setAppointments] = useState([
+    { scheduledAt: '', reason: 'Longitudinal EEG Follow-up' }
+  ]);
   const [savedNotice, setSavedNotice] = useState('');
+
+  useEffect(() => {
+    setDiagnosis(patient?.treatment?.diagnosis || '');
+    setTreatmentPlan(patient?.treatment?.treatmentPlan || '');
+    setConditions((patient?.conditions || []).join(', '));
+  }, [patient?._id, patient?.treatment, patient?.conditions]);
+
+  const addMedicineRow = (med = { medicineName: '', dosage: '', frequency: '', instructions: '' }) => {
+    setMedicines(prev => [...prev, med]);
+  };
+
+  const removeMedicineRow = (idx) => {
+    setMedicines(prev => prev.length > 1 ? prev.filter((_, i) => i !== idx) : [{ medicineName: '', dosage: '', frequency: '', instructions: '' }]);
+  };
+
+  const updateMedicine = (idx, field, val) => {
+    setMedicines(prev => prev.map((m, i) => i === idx ? { ...m, [field]: val } : m));
+  };
+
+  const addPredefinedMed = (name, dose, freq, inst) => {
+    setMedicines(prev => {
+      if (prev.length === 1 && !prev[0].medicineName.trim()) {
+        return [{ medicineName: name, dosage: dose, frequency: freq, instructions: inst }];
+      }
+      return [...prev, { medicineName: name, dosage: dose, frequency: freq, instructions: inst }];
+    });
+  };
+
+  const addPredefinedCondition = (cond) => {
+    setConditions(prev => {
+      const items = prev.split(',').map(s => s.trim()).filter(Boolean);
+      if (!items.includes(cond)) items.push(cond);
+      return items.join(', ');
+    });
+  };
+
+  const addAppointmentRow = () => {
+    setAppointments(prev => [...prev, { scheduledAt: '', reason: 'Follow-up Consultation' }]);
+  };
+
+  const removeAppointmentRow = (idx) => {
+    setAppointments(prev => prev.length > 1 ? prev.filter((_, i) => i !== idx) : [{ scheduledAt: '', reason: 'Follow-up Consultation' }]);
+  };
+
+  const updateAppointment = (idx, field, val) => {
+    setAppointments(prev => prev.map((a, i) => i === idx ? { ...a, [field]: val } : a));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -542,24 +769,26 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
         treatmentPlan: treatmentPlan.trim(),
         conditions: conditions.split(',').map(s => s.trim()).filter(Boolean),
       };
-      if (newRxName.trim()) {
-        payload.newPrescription = {
-          medicineName: newRxName.trim(),
-          dosage: newRxDose.trim(),
-          frequency: newRxFreq.trim(),
-          instructions: newRxInst.trim()
-        };
+      const validMeds = medicines.filter(m => m.medicineName.trim());
+      if (validMeds.length > 0) {
+        payload.newPrescriptions = validMeds.map(m => ({
+          medicineName: m.medicineName.trim(),
+          dosage: m.dosage.trim(),
+          frequency: m.frequency.trim(),
+          instructions: m.instructions.trim()
+        }));
       }
-      if (newApptDate) {
-        payload.newAppointment = {
-          scheduledAt: newApptDate,
-          reason: newApptReason.trim()
-        };
+      const validAppts = appointments.filter(a => a.scheduledAt);
+      if (validAppts.length > 0) {
+        payload.newAppointments = validAppts.map(a => ({
+          scheduledAt: a.scheduledAt,
+          reason: a.reason.trim() || 'Follow-up Consultation'
+        }));
       }
       await onSave(payload);
-      setNewRxName(''); setNewRxDose(''); setNewRxFreq(''); setNewRxInst('');
-      setNewApptDate('');
-      setSavedNotice('Treatment record, diagnosis, and plan updated successfully.');
+      setMedicines([{ medicineName: '', dosage: '', frequency: '', instructions: '' }]);
+      setAppointments([{ scheduledAt: '', reason: 'Longitudinal EEG Follow-up' }]);
+      setSavedNotice('Treatment record, diagnosis, prescriptions, and follow-ups saved successfully.');
       setTimeout(() => setSavedNotice(''), 4000);
     } catch (err) {
       console.error(err);
@@ -572,34 +801,149 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
         Enter Diagnosis & Treatment Updates for {patient?.fullName || 'Patient'}
       </h4>
       {savedNotice && <div className="feedback success-feedback" style={{ padding: '8px 12px', fontSize: '11px', marginBottom: '10px' }}><CheckCircle2 size={14}/><span>{savedNotice}</span></div>}
+      
       <div className="treatment-form-grid">
         <div>
           <label>Primary Clinical Diagnosis</label>
           <input value={diagnosis} onChange={e => setDiagnosis(e.target.value)} placeholder="e.g. Focal Intractable Epilepsy (Temporal Lobe)" />
+          <div className="quick-chips-row">
+            <span style={{ fontSize: '10px', color: '#64748b' }}>Diagnoses:</span>
+            <button type="button" className="quick-chip" onClick={() => setDiagnosis('Focal Intractable Epilepsy (Temporal Lobe)')}>+ Focal Temporal</button>
+            <button type="button" className="quick-chip" onClick={() => setDiagnosis('Absence Seizures (Generalized)')}>+ Absence</button>
+            <button type="button" className="quick-chip" onClick={() => setDiagnosis('Post-Stroke Epileptogenesis Monitoring')}>+ Post-Stroke</button>
+            <button type="button" className="quick-chip" onClick={() => setDiagnosis('Juvenile Myoclonic Epilepsy (JME)')}>+ JME</button>
+          </div>
         </div>
+
         <div>
-          <label>Conditions & Comorbidities (comma-separated)</label>
-          <input value={conditions} onChange={e => setConditions(e.target.value)} placeholder="e.g. Absence seizures, Post-stroke monitoring" />
+          <label>Conditions & Comorbidities</label>
+          <input value={conditions} onChange={e => setConditions(e.target.value)} placeholder="e.g. Sleep disruption, Post-ictal confusion" />
+          <div className="quick-chips-row">
+            <span style={{ fontSize: '10px', color: '#64748b' }}>Add Condition:</span>
+            <button type="button" className="quick-chip" onClick={() => addPredefinedCondition('Refractory seizures')}>+ Refractory</button>
+            <button type="button" className="quick-chip" onClick={() => addPredefinedCondition('Nocturnal events')}>+ Nocturnal</button>
+            <button type="button" className="quick-chip" onClick={() => addPredefinedCondition('Post-ictal confusion')}>+ Post-ictal</button>
+            <button type="button" className="quick-chip" onClick={() => addPredefinedCondition('Photosensitivity')}>+ Photosensitivity</button>
+          </div>
         </div>
+
         <div style={{ gridColumn: '1 / -1' }}>
           <label>Treatment Plan & Clinical Notes</label>
           <textarea rows={2} value={treatmentPlan} onChange={e => setTreatmentPlan(e.target.value)} placeholder="Longitudinal treatment strategy, titration notes, or clinical guidelines..." />
         </div>
-        <div>
-          <label>Add Prescription Medication (Optional)</label>
-          <input value={newRxName} onChange={e => setNewRxName(e.target.value)} placeholder="Medicine name e.g. Lamotrigine" />
-        </div>
-        <div>
-          <label>Dosage & Frequency</label>
-          <input value={newRxDose} onChange={e => setNewRxDose(e.target.value)} placeholder="e.g. 100 mg BID" />
-        </div>
-        <div>
-          <label>Schedule Follow-up Consultation (Optional)</label>
-          <input type="datetime-local" value={newApptDate} onChange={e => setNewApptDate(e.target.value)} />
-        </div>
       </div>
-      <div className="form-bottom">
-        <span>Updates are saved directly to the patient's record and reflected on their wellness portal.</span>
+
+      {/* Dynamic Multiple Prescriptions Section */}
+      <div style={{ marginTop: '16px', borderTop: '1px solid #e2e8f0', paddingTop: '14px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <div>
+            <b style={{ fontSize: '13px', color: '#1e293b' }}>Prescription Regimen (Anti-Seizure Medications)</b>
+            <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>Add one or multiple anti-seizure medications with dosage and frequency instructions.</p>
+          </div>
+          <button type="button" className="action-btn-sm" onClick={() => addMedicineRow()} style={{ fontWeight: 600 }}>
+            <Plus size={13}/> Add More Medicine
+          </button>
+        </div>
+
+        <div className="quick-chips-row" style={{ marginBottom: '12px' }}>
+          <span style={{ fontSize: '11px', color: '#4338ca', fontWeight: 600 }}>Quick Add AED:</span>
+          <button type="button" className="quick-chip" onClick={() => addPredefinedMed('Levetiracetam', '500 mg', 'BID (Twice daily)', 'Take with water after meals')}>+ Levetiracetam 500mg BID</button>
+          <button type="button" className="quick-chip" onClick={() => addPredefinedMed('Clobazam', '10 mg', 'QHS (At bedtime)', 'Take at night before sleep')}>+ Clobazam 10mg QHS</button>
+          <button type="button" className="quick-chip" onClick={() => addPredefinedMed('Lamotrigine', '100 mg', 'BID (Twice daily)', 'Titrate gradually as advised')}>+ Lamotrigine 100mg BID</button>
+          <button type="button" className="quick-chip" onClick={() => addPredefinedMed('Sodium Valproate', '500 mg', 'BID (Twice daily)', 'Monitor liver functions periodically')}>+ Valproate 500mg BID</button>
+          <button type="button" className="quick-chip" onClick={() => addPredefinedMed('Lacosamide', '100 mg', 'BID (Twice daily)', 'Take 1 tablet every 12 hours')}>+ Lacosamide 100mg BID</button>
+          <button type="button" className="quick-chip" onClick={() => addPredefinedMed('Topiramate', '50 mg', 'BID (Twice daily)', 'Maintain adequate hydration')}>+ Topiramate 50mg BID</button>
+        </div>
+
+        {medicines.map((med, mIdx) => (
+          <div key={mIdx} className="med-row-wrap">
+            <div className="med-row-header">
+              <span>Medication #{mIdx + 1}</span>
+              {medicines.length > 1 && (
+                <button type="button" className="med-remove-btn" onClick={() => removeMedicineRow(mIdx)} title="Remove medicine">
+                  <Trash2 size={12}/> Remove
+                </button>
+              )}
+            </div>
+            <div className="med-row-grid">
+              <div>
+                <label>Medicine Name</label>
+                <input
+                  value={med.medicineName}
+                  onChange={e => updateMedicine(mIdx, 'medicineName', e.target.value)}
+                  placeholder="e.g. Levetiracetam"
+                />
+              </div>
+              <div>
+                <label>Dosage</label>
+                <input
+                  value={med.dosage}
+                  onChange={e => updateMedicine(mIdx, 'dosage', e.target.value)}
+                  placeholder="e.g. 500 mg"
+                />
+              </div>
+              <div>
+                <label>Frequency</label>
+                <input
+                  value={med.frequency}
+                  onChange={e => updateMedicine(mIdx, 'frequency', e.target.value)}
+                  placeholder="e.g. BID (Morning & Bedtime)"
+                />
+              </div>
+              <div>
+                <label>Instructions (Optional)</label>
+                <input
+                  value={med.instructions}
+                  onChange={e => updateMedicine(mIdx, 'instructions', e.target.value)}
+                  placeholder="e.g. Take with food"
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Dynamic Follow-up Appointments Section */}
+      <div style={{ marginTop: '16px', borderTop: '1px solid #e2e8f0', paddingTop: '14px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <div>
+            <b style={{ fontSize: '13px', color: '#1e293b' }}>Schedule Consultations & Follow-ups</b>
+            <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>Book neurological review visits or EEG follow-up sessions.</p>
+          </div>
+          <button type="button" className="action-btn-sm" onClick={() => addAppointmentRow()} style={{ fontWeight: 600 }}>
+            <Plus size={13}/> Add Follow-up
+          </button>
+        </div>
+
+        {appointments.map((appt, aIdx) => (
+          <div key={aIdx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '8px', alignItems: 'flex-end', marginBottom: '8px' }}>
+            <div>
+              <label>Date & Time</label>
+              <input
+                type="datetime-local"
+                value={appt.scheduledAt}
+                onChange={e => updateAppointment(aIdx, 'scheduledAt', e.target.value)}
+              />
+            </div>
+            <div>
+              <label>Reason for Visit</label>
+              <input
+                value={appt.reason}
+                onChange={e => updateAppointment(aIdx, 'reason', e.target.value)}
+                placeholder="e.g. Routine EEG Follow-up"
+              />
+            </div>
+            {appointments.length > 1 && (
+              <button type="button" className="action-btn-sm" onClick={() => removeAppointmentRow(aIdx)} style={{ height: '36px', color: '#dc2626' }}>
+                <Trash2 size={13}/>
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="form-bottom" style={{ marginTop: '16px' }}>
+        <span>Updates are saved directly to the patient's record and reflected immediately on their wellness portal.</span>
         <button type="submit" className="primary-button" disabled={isBusy}>{isBusy ? 'Saving...' : 'Update Treatment Record'}</button>
       </div>
     </form>
@@ -976,6 +1320,44 @@ function App() {
     }
   };
 
+  const toggleRxStatus = async (rxId, newStatus) => {
+    if (!patient?._id) return;
+    try {
+      setBusy(true);
+      await api(`/api/patients/${patient._id}/prescriptions/${rxId}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: newStatus })
+      }, token);
+      setNotice(`Prescription marked as ${newStatus}.`);
+      setOverview(await api(`/api/patients/${patient._id}/overview`, {}, token));
+      setTimeout(() => setNotice(''), 3000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const switchDemoRole = async (targetRole) => {
+    try {
+      setBusy(true);
+      setError('');
+      const auth = await api('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ identifier: targetRole, password: 'DemoPass123!' })
+      });
+      localStorage.setItem('nt-session', JSON.stringify(auth));
+      setSession(auth);
+      setTab('overview');
+      setNotice(`Switched to ${roleLabels[auth.user.role] || auth.user.role} workspace.`);
+      setTimeout(() => setNotice(''), 3000);
+    } catch (err) {
+      setError(`Failed to switch demo role: ${err.message}`);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const simulateEEG = async (mode = 'normal') => {
     if (!patient?._id) return;
     setUploading(true); setError(''); setNotice('');
@@ -1264,6 +1646,14 @@ function App() {
           </article>
         </section>
 
+        <PatientScheduleAndRx
+          patient={patient}
+          appointments={overview?.patient?.appointments || []}
+          prescriptions={overview?.patient?.prescriptions || []}
+          isClinician={true}
+          onToggleRxStatus={toggleRxStatus}
+        />
+
         <DoctorTreatmentForm patient={patient} onSave={saveTreatment} token={token} isBusy={busy}/>
       </>;
     }
@@ -1289,8 +1679,10 @@ function App() {
         <SimplifiedWellnessSection overview={overview} isCaregiver={false}/>
 
         <PatientScheduleAndRx
+          patient={patient}
           appointments={overview?.patient?.appointments || []}
           prescriptions={overview?.patient?.prescriptions || []}
+          isClinician={false}
         />
 
         <section className="content-grid">
@@ -1348,8 +1740,10 @@ function App() {
         <SimplifiedWellnessSection overview={overview} isCaregiver={true}/>
 
         <PatientScheduleAndRx
+          patient={patient}
           appointments={overview?.patient?.appointments || []}
           prescriptions={overview?.patient?.prescriptions || []}
+          isClinician={false}
         />
 
         <section className="content-grid">
@@ -1403,7 +1797,7 @@ function App() {
       <div className="sidebar-bottom"><div className="secure-label"><ShieldCheck size={16}/><span>Protected workspace<small>Role-based access enabled</small></span></div><div className="profile"><div className="avatar">{user?.name?.[0] || 'N'}</div><div className="profile-copy"><b>{user?.name}</b><small>{roleLabels[user?.role] || user?.role}</small></div><button className="icon-button" onClick={logout} aria-label="Sign out" title="Sign out"><LogOut size={17}/></button></div></div>
     </aside>
     <main className="workspace">
-      <header className="topbar"><div className="topbar-title"><button className="menu-toggle icon-button" onClick={() => setMobileNav(true)} aria-label="Open navigation"><Menu size={21}/></button><div><p className="eyebrow">{roleLabels[user?.role] || user?.role} workspace</p><h1>{tab === 'overview' ? `Welcome back${greeting ? `, ${greeting}` : ''}` : navigation.find(item => item.id === tab)?.label || 'Workspace'}</h1></div></div><div className="topbar-actions"><span className="status-pill"><span/> Workspace active</span><button className="icon-button refresh-button" onClick={loadWorkspace} disabled={busy} aria-label="Refresh data" title="Refresh data"><RefreshCw size={17}/></button><div className="top-avatar">{user?.name?.[0] || 'N'}</div></div></header>
+      <header className="topbar"><div className="topbar-title"><button className="menu-toggle icon-button" onClick={() => setMobileNav(true)} aria-label="Open navigation"><Menu size={21}/></button><div><p className="eyebrow">{roleLabels[user?.role] || user?.role} workspace</p><h1>{tab === 'overview' ? `Welcome back${greeting ? `, ${greeting}` : ''}` : navigation.find(item => item.id === tab)?.label || 'Workspace'}</h1></div></div><div className="topbar-actions"><div className="demo-role-switcher" title="Quick 1-Click Role Switcher"><span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>Demo:</span><button type="button" className={`demo-role-btn ${user?.role === 'doctor' ? 'active' : ''}`} onClick={() => switchDemoRole('doctor')} disabled={busy || user?.role === 'doctor'}>Clinician</button><button type="button" className={`demo-role-btn ${user?.role === 'patient' ? 'active' : ''}`} onClick={() => switchDemoRole('patient')} disabled={busy || user?.role === 'patient'}>Patient</button><button type="button" className={`demo-role-btn ${user?.role === 'caregiver' ? 'active' : ''}`} onClick={() => switchDemoRole('caregiver')} disabled={busy || user?.role === 'caregiver'}>Caregiver</button><button type="button" className={`demo-role-btn ${user?.role === 'admin' ? 'active' : ''}`} onClick={() => switchDemoRole('admin')} disabled={busy || user?.role === 'admin'}>Admin</button></div><span className="status-pill"><span/> Workspace active</span><button className="icon-button refresh-button" onClick={loadWorkspace} disabled={busy} aria-label="Refresh data" title="Refresh data"><RefreshCw size={17}/></button><div className="top-avatar">{user?.name?.[0] || 'N'}</div></div></header>
       <div className="safety-banner"><AlertTriangle size={16}/><span><b>Decision-Support Tool Only</b> — Does not replace clinical judgment or generate independent diagnoses. Digital Twin represents monitored neurological state derived from EEG patterns, not a brain simulation. All AI alerts include confidence scores and explainability for clinician verification.</span></div>
       {error && <div className="feedback error-feedback" role="alert"><AlertTriangle size={17}/><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error"><X size={16}/></button></div>}
       {notice && <div className="feedback success-feedback" role="status"><CheckCircle2 size={17}/><span>{notice}</span><button onClick={() => setNotice('')} aria-label="Dismiss notice"><X size={16}/></button></div>}
@@ -1413,7 +1807,14 @@ function App() {
           <label htmlFor="dashboard-patient">Selected patient</label>
           <select id="dashboard-patient" value={patient?._id || ''} onChange={selectPatient} disabled={busy || patients.length === 0}>
             {patients.length === 0 && <option value="">No authorized patient records</option>}
-            {patients.map(item => <option value={item._id} key={item._id}>{item.fullName || 'Unnamed patient'}{item.mrn ? ` · ${item.mrn}` : ''}</option>)}
+            {patients.map(item => {
+              const hasAlert = analysesList.some(a => (a.patientId?._id || a.patientId || a.patient?._id) === item._id && (Number(a.confidence ?? a.probabilities?.maxSeizureScore ?? 0) >= 0.65 || a.label?.toLowerCase().includes('seizure')));
+              return (
+                <option value={item._id} key={item._id}>
+                  {hasAlert ? '⚠️ [ALERT: HIGH RISK] ' : ''}{item.fullName || 'Unnamed patient'}{item.mrn ? ` · ${item.mrn}` : ''}
+                </option>
+              );
+            })}
           </select>
         </div>
         <ModelStatus status={modelStatus}/>
@@ -1500,7 +1901,12 @@ function App() {
             >
               <span className="patient-avatar">{item.fullName?.[0] || 'P'}</span>
               <span className="patient-details">
-                <b>{item.fullName || 'Unnamed patient'}</b>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <b>{item.fullName || 'Unnamed patient'}</b>
+                  {analysesList.some(a => (a.patientId?._id || a.patientId || a.patient?._id) === item._id && (Number(a.confidence ?? a.probabilities?.maxSeizureScore ?? 0) >= 0.65 || a.label?.toLowerCase().includes('seizure'))) && (
+                    <span className="triage-alert-badge"><AlertTriangle size={11}/> HIGH RISK</span>
+                  )}
+                </div>
                 <small>{item.mrn ? `Record ID · ${item.mrn}` : 'Patient research record'}{item.assignedDoctor?.name ? ` · Assigned to: ${item.assignedDoctor.name}` : ''}</small>
                 {Array.isArray(item.conditions) && item.conditions.length > 0 && (
                   <span className="chip-row">
@@ -1537,6 +1943,13 @@ function App() {
                 <option value="patient">Shared with patient & caregiver</option>
               </select>
             </div>
+          </div>
+          <div className="quick-chips-row" style={{ marginBottom: '8px' }}>
+            <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>Note Templates:</span>
+            <button type="button" className="quick-chip" onClick={() => setNote(prev => (prev ? prev + '\n' : '') + 'Routine EEG Review: Baseline background activity within normal limits. No epileptiform discharges or focal slowing identified in current recording.')}>+ Routine Review</button>
+            <button type="button" className="quick-chip" onClick={() => setNote(prev => (prev ? prev + '\n' : '') + 'Post-Ictal Review: Monitored post-event period. Transient generalized delta/theta slowing resolving toward alpha baseline. Neurological exam stable.')}>+ Post-Ictal</button>
+            <button type="button" className="quick-chip" onClick={() => setNote(prev => (prev ? prev + '\n' : '') + 'Medication Titration: Evaluated clinical efficacy and serum tolerability. Initiated regimen adjustment with regular therapeutic monitoring.')}>+ Med Titration</button>
+            <button type="button" className="quick-chip" onClick={() => setNote(prev => (prev ? prev + '\n' : '') + 'Seizure Precautions: Counseled on medication adherence, sleep hygiene, trigger avoidance, and aquatic safety.')}>+ Precautions</button>
           </div>
           <textarea id="clinical-note" value={note} onChange={e => setNote(e.target.value)} placeholder="Record relevant clinical context for authorized review…" rows={4} required/>
           <div className="form-bottom">
