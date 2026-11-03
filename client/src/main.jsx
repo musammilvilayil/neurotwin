@@ -376,6 +376,7 @@ function App() {
   const token = session?.token;
   const user = session?.user;
   const isClinician = ['doctor', 'admin'].includes(user?.role);
+  const isResearchWorkspace = ['doctor','admin','patient','caregiver'].includes(user?.role);
   const logout = useCallback(() => { localStorage.removeItem('nt-session'); setSession(null); setDashboard(null); setOverview(null); }, []);
 
   const loadWorkspace = useCallback(async () => {
@@ -416,9 +417,7 @@ function App() {
   const navigation = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     ...(isClinician ? [{ id: 'patients', label: 'Patients', icon: Users }] : []),
-    { id: 'analyses', label: 'EEG Analyses', icon: Activity },
-    { id: 'twin', label: 'Digital Twin', icon: Brain },
-    { id: 'notes', label: 'Clinical notes', icon: FileText },
+    ...(isResearchWorkspace ? [{ id: 'analyses', label: 'EEG Analyses', icon: Activity },{ id: 'twin', label: 'Digital Twin', icon: Brain },{ id: 'notes', label: 'Clinical notes', icon: FileText }] : []),
     ...(user?.role === 'admin' ? [{ id: 'admin', label: 'Audit & access', icon: ShieldCheck }] : []),
     ...(['admin','doctor','receptionist','nurse','lab_technician','pharmacist','billing'].includes(user?.role) ? [{ id: 'hms', label: 'Hospital Management', icon: ClipboardList }] : [])
   ];
