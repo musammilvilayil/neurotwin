@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const sections = [
   ['summary','Overview'],['appointments','Appointments'],['encounters','OPD'],
-  ['admissions','IPD & Beds'],['lab','Laboratory'],['pharmacy','Pharmacy'],
+  ['admissions','IPD Admissions'],['beds','Beds'],['lab','Laboratory'],['pharmacy','Pharmacy'],
   ['billing','Billing'],['departments','Departments'],['staff','Staff']
 ];
 const urls = {
@@ -16,7 +16,7 @@ const rupees = v => new Intl.NumberFormat('en-IN',{style:'currency',currency:'IN
 const allowed = {
   summary:['admin','doctor','receptionist','nurse','lab_technician','pharmacist','billing'],
   appointments:['admin','doctor','receptionist','nurse'],encounters:['admin','doctor','nurse'],
-  admissions:['admin','doctor','nurse','receptionist','billing'],lab:['admin','doctor','lab_technician','nurse'],
+  admissions:['admin','doctor','nurse','receptionist','billing'],beds:['admin','doctor','nurse','receptionist'],lab:['admin','doctor','lab_technician','nurse'],
   pharmacy:['admin','doctor','pharmacist','nurse'],billing:['admin','billing','receptionist','doctor'],
   departments:['admin','doctor','receptionist','nurse'],staff:['admin']
 };
@@ -27,7 +27,7 @@ export default function HMSWorkspace({token,user}) {
   const [form,setForm]=useState({}),[showForm,setShowForm]=useState(false),[patientChoices,setPatientChoices]=useState([]),[doctorChoices,setDoctorChoices]=useState([]);
   const role=user?.role,canAdmin=role==='admin',canDoctor=['admin','doctor'].includes(role);
   const canLab=['admin','lab_technician'].includes(role),canPharmacy=['admin','pharmacist'].includes(role),canBilling=['admin','billing'].includes(role);
-  const canCreate={appointments:['admin','doctor','receptionist'].includes(role),encounters:canDoctor,admissions:canDoctor,lab:canDoctor,pharmacy:canPharmacy,billing:canBilling,departments:canAdmin,staff:canAdmin,beds:canAdmin};
+  const canCreate={appointments:['admin','doctor','receptionist'].includes(role),encounters:canDoctor,admissions:canDoctor,beds:canAdmin,lab:canDoctor,pharmacy:canPharmacy,billing:canBilling,departments:canAdmin,staff:canAdmin,beds:canAdmin};
   const api=async(path,options={})=>{
     const response=await fetch(path,{...options,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token}});
     const result=await response.json().catch(()=>({}));
@@ -90,7 +90,8 @@ export default function HMSWorkspace({token,user}) {
     {section!=='summary'&&!busy&&<div className="hms-records">
       {section==='appointments'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{(x.patient?.fullName||'Patient')+' · '+(x.doctor?.name||'Doctor')}</b><span>{stamp(x.scheduledAt)+' · '+(x.reason||'Consultation')+' · '+x.status}</span></div><select value={x.status} onChange={e=>patch('/api/hms/appointments/'+x._id+'/status',{status:e.target.value},'Appointment updated')}><option value="booked">Booked</option><option value="checked_in">Checked in</option><option value="in_consultation">In consultation</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option><option value="no_show">No show</option></select></article>)}
       {section==='encounters'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{(x.patient?.fullName||'Patient')+' · '+x.type}</b><span>{stamp(x.createdAt)+' · '+(x.chiefComplaint||'No complaint')+' · '+(x.diagnosis||'Diagnosis pending')}</span></div>{x.status==='open'&&canDoctor&&<button className="secondary-btn" onClick={()=>patch('/api/hms/encounters/'+x._id+'/complete',{},'OPD encounter completed')}>Complete</button>}</article>)}
-      {section==='admissions'&&data.map(x=>x.kind==='bed'?<article className="record-row" key={x._id}><div className="record-copy"><b>{x.ward+' · Bed '+x.bedNumber}</b><span>{x.category+' · '+rupees(x.dailyRate)+'/day · '+x.status}</span></div></article>:<article className="record-row" key={x._id}><div className="record-copy"><b>{(x.patient?.fullName||'Patient')+' · '+(x.bed?.ward||'Ward')+' / '+(x.bed?.bedNumber||'')}</b><span>{stamp(x.admittedAt)+' · '+x.status}</span></div>{x.status==='admitted'&&canDoctor&&<button className="secondary-btn" onClick={()=>patch('/api/hms/admissions/'+x._id+'/discharge',{dischargeSummary:'Discharge summary pending clinician completion.'},'Patient discharged and bed released')}>Discharge</button>}</article>)}
+      {section==='admissions'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{(x.patient?.fullName||'Patient')+' · '+(x.bed?.ward||'Ward')+' / '+(x.bed?.bedNumber||'')}</b><span>{stamp(x.admittedAt)+' · '+x.status}</span></div>{x.status==='admitted'&&canDoctor&&<button className="secondary-btn" onClick={()=>patch('/api/hms/admissions/'+x._id+'/discharge',{dischargeSummary:'Discharge summary pending clinician completion.'},'Patient discharged and bed released')}>Discharge</button>}</article>)}
+      {section==='beds'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.ward+' · Bed '+x.bedNumber}</b><span>{x.category+' · '+rupees(x.dailyRate)+'/day · '+x.status}</span></div></article>)}
       {section==='lab'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.testName+' · '+(x.patient?.fullName||'Patient')}</b><span>{stamp(x.createdAt)+' · '+x.priority+' · '+x.status+(x.result?' · Result: '+x.result:'')}</span></div>{canLab&&x.status!=='verified'&&<button className="secondary-btn" onClick={()=>{const result=window.prompt('Enter result for this test');if(result)patch('/api/hms/lab/orders/'+x._id,{status:'verified',result},'Lab result verified');}}>Enter result</button>}</article>)}
       {section==='pharmacy'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.name+' · '+x.sku}</b><span>{(x.genericName||'')+' · Stock: '+x.quantity+' '+x.unit+' · Reorder at '+x.reorderLevel+' · '+rupees(x.unitPrice)}</span></div><span className="badge">{x.quantity<=x.reorderLevel?'Low stock':'In stock'}</span></article>)}
       {section==='billing'&&data.map(x=><article className="record-row" key={x._id}><div className="record-copy"><b>{x.invoiceNumber+' · '+(x.patient?.fullName||'Patient')}</b><span>{stamp(x.createdAt)+' · Total '+rupees(x.total)+' · Paid '+rupees(x.paid)+' · '+x.status}</span></div>{canBilling&&x.status!=='paid'&&<button className="secondary-btn" onClick={()=>{const amount=window.prompt('Outstanding '+rupees(x.total-x.paid)+'. Enter payment amount');if(amount)patch('/api/hms/billing/invoices/'+x._id+'/payments',{amount:Number(amount),method:'upi'},'Payment recorded');}}>Record payment</button>}</article>)}
