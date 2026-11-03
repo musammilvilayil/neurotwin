@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   Activity, AlertTriangle, ArrowUpRight, Brain, CheckCircle2, ClipboardList,
   FileText, LayoutDashboard, LogOut, Menu, Plus, RefreshCw, ShieldCheck, Upload,
-  Users, UserPlus, X, Waves
+  Users, UserPlus, X, Waves, Download, Search, Filter, Eye, Check, Layers, FileDown
 } from 'lucide-react';
 import './style.css';
 import './plots.css';
@@ -143,6 +143,206 @@ function Plot({ values, kind = 'wave' }) {
   return <div className="plot-wrap"><svg className={`plot ${score ? 'score-plot' : ''}`} viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label={score ? 'Experimental EEG score timeline' : 'EEG waveform'}><line x1="0" y1="50" x2="100" y2="50" className="plot-axis"/><polyline points={points}/></svg><div className="plot-labels"><span>Earlier</span><span>Recent</span></div></div>;
 }
 
+function MultichannelPlot({ multichannel, channels, windowSeconds = 15 }) {
+  if (!Array.isArray(multichannel) || multichannel.length === 0) {
+    return <EmptyState icon={Waves} title="No multichannel signal">Multichannel 18-lead EEG will appear when supported recordings are uploaded.</EmptyState>;
+  }
+  const defaultLeads = [
+    "FP1-F7", "F7-T7", "T7-P7", "P7-O1", "FP2-F8", "F8-T8", "T8-P8", "P8-O2",
+    "FP1-F3", "F3-C3", "C3-P3", "P3-O1", "FP2-F4", "F4-C4", "C4-P4", "P4-O2",
+    "FZ-CZ", "CZ-PZ"
+  ];
+  const channelNames = Array.isArray(channels) && channels.length === multichannel.length ? channels : defaultLeads;
+  return (
+    <div className="multichannel-eeg-wrap">
+      <div className="multichannel-header">
+        <b>18-CHANNEL BIPOLAR 10–20 MONTAGE (FIRST {windowSeconds}s)</b>
+        <small style={{ color: '#94a3b8' }}>128 Hz Resampled · 0.5–40 Hz Bandpass · Standard Lead Sequence</small>
+      </div>
+      {multichannel.map((samples, idx) => {
+        const leadName = channelNames[idx] || `CH-${idx + 1}`;
+        const pts = samples.map((v, i) => {
+          const clamped = Math.max(-3, Math.min(3, Number(v) || 0));
+          const y = 12 - clamped * 3.5;
+          const x = (i / (samples.length - 1)) * 100;
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+        return (
+          <div className="eeg-lead-row" key={leadName}>
+            <span className="eeg-lead-label">{leadName}</span>
+            <svg className="eeg-lead-svg" viewBox="0 0 100 24" preserveAspectRatio="none">
+              <line x1="0" y1="12" x2="100" y2="12" stroke="#1e293b" strokeWidth="0.5" />
+              <polyline points={pts} />
+            </svg>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function SeizureIntervalsList({ timeline, threshold = 0.65 }) {
+  const intervals = [];
+  let currentStart = null;
+  let currentEnd = null;
+  let peak = 0;
+
+  (timeline || []).forEach(w => {
+    const isHit = Boolean(w.confirmed_seizure || w.score >= threshold);
+    if (isHit) {
+      if (currentStart === null) {
+        currentStart = w.start_seconds;
+        currentEnd = w.start_seconds + 10;
+        peak = w.score;
+      } else {
+        currentEnd = w.start_seconds + 10;
+        peak = Math.max(peak, w.score);
+      }
+    } else if (currentStart !== null) {
+      intervals.push({ start: currentStart, end: currentEnd, duration: currentEnd - currentStart, peak });
+      currentStart = null;
+    }
+  });
+  if (currentStart !== null) {
+    intervals.push({ start: currentStart, end: currentEnd, duration: currentEnd - currentStart, peak });
+  }
+
+  if (intervals.length === 0) {
+    return <p className="muted" style={{ fontSize: '11px', margin: '6px 0' }}>No sustained seizure intervals identified above threshold ({Math.round(threshold * 100)}%).</p>;
+  }
+
+  return (
+    <table className="intervals-table">
+      <thead>
+        <tr>
+          <th>Interval #</th>
+          <th>Start (s)</th>
+          <th>End (s)</th>
+          <th>Duration</th>
+          <th>Peak Probability</th>
+          <th>Confirmation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {intervals.map((ev, i) => (
+          <tr key={i}>
+            <td><b>Event {i + 1}</b></td>
+            <td>{ev.start.toFixed(1)}s</td>
+            <td>{ev.end.toFixed(1)}s</td>
+            <td>{ev.duration.toFixed(0)}s</td>
+            <td><b style={{ color: '#dc2626' }}>{(ev.peak * 100).toFixed(1)}%</b></td>
+            <td><Badge type="amber">Consecutive (≥2)</Badge></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function AnalysisDetailModal({ analysis, onClose, onDownloadReport, onToggleReview, isClinician, downloadingId }) {
+  if (!analysis) return null;
+  const maxScore = Number(analysis?.confidence ?? analysis?.probabilities?.maxSeizureScore ?? 0);
+  const threshold = Number(analysis?.probabilities?.threshold ?? 0.65);
+  const isElevated = maxScore >= threshold;
+  const patient = analysis.patient;
+  const session = analysis.session;
+  const isReviewed = analysis.clinicianReview === 'reviewed';
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-box" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <div>
+            <h2>EEG Analysis Detail</h2>
+            <small style={{ color: '#64748b' }}>{patient?.fullName || 'Patient Record'} {patient?.mrn ? `· ${patient.mrn}` : ''} · {dateLabel(analysis.createdAt)}</small>
+          </div>
+          <button className="icon-button" onClick={onClose} aria-label="Close modal"><X size={18}/></button>
+        </div>
+        <div className="modal-body">
+          <div className="analysis-kpi-row">
+            <div className="kpi-card">
+              <small>SEIZURE DETECTION STATUS</small>
+              <strong style={{ color: isElevated ? '#dc2626' : '#16a34a', fontSize: '15px' }}>
+                {isElevated ? 'SEIZURE PATTERN' : 'NORMAL PATTERN'}
+              </strong>
+            </div>
+            <div className="kpi-card">
+              <small>PEAK PROBABILITY</small>
+              <strong>{(maxScore * 100).toFixed(1)}%</strong>
+            </div>
+            <div className="kpi-card">
+              <small>RESEARCH THRESHOLD</small>
+              <strong>{(threshold * 100).toFixed(0)}%</strong>
+            </div>
+            <div className="kpi-card">
+              <small>CLINICIAN REVIEW</small>
+              <Badge type={isReviewed ? 'blue' : 'amber'}>{analysis.clinicianReview?.toUpperCase() || 'PENDING'}</Badge>
+            </div>
+          </div>
+
+          <article className="panel">
+            <div className="panel-heading">
+              <div>
+                <span className="panel-icon purple"><Activity size={18}/></span>
+                <div>
+                  <h3>EEG Seizure Score Timeline</h3>
+                  <p>Window-level predictions (10s stride, consecutive confirmation filter)</p>
+                </div>
+              </div>
+              <Badge type="amber">EXPERIMENTAL</Badge>
+            </div>
+            <Plot values={analysis.timeline} kind="score" />
+            <div style={{ marginTop: '16px' }}>
+              <h4 style={{ fontSize: '12px', margin: '0 0 6px', color: '#1e293b' }}>Confirmed Seizure Intervals</h4>
+              <SeizureIntervalsList timeline={analysis.timeline} threshold={threshold} />
+            </div>
+          </article>
+
+          <article className="panel">
+            <div className="panel-heading">
+              <div>
+                <span className="panel-icon"><Waves size={18}/></span>
+                <div>
+                  <h3>Multichannel EEG Signals</h3>
+                  <p>18-channel standard international 10–20 bipolar montage</p>
+                </div>
+              </div>
+              <Badge type="neutral">{session?.sourceName || 'EDF Record'}</Badge>
+            </div>
+            {analysis.multichannel_waveform ? (
+              <MultichannelPlot multichannel={analysis.multichannel_waveform} channels={analysis.channels} />
+            ) : (
+              <Plot values={analysis.waveform} />
+            )}
+          </article>
+        </div>
+        <div className="modal-footer">
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              className="action-btn-sm action-btn-primary"
+              onClick={() => onDownloadReport(analysis._id, patient?.fullName)}
+              disabled={downloadingId === analysis._id}
+            >
+              <FileDown size={14} />
+              {downloadingId === analysis._id ? 'Generating PDF…' : 'Download Clinical PDF Report'}
+            </button>
+            {isClinician && (
+              <button
+                className="action-btn-sm"
+                onClick={() => onToggleReview(analysis._id, analysis.clinicianReview)}
+              >
+                <Check size={14} />
+                {isReviewed ? 'Mark as Pending' : 'Mark as Reviewed'}
+              </button>
+            )}
+          </div>
+          <button className="secondary-btn" onClick={onClose}>Close</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [session, setSession] = useState(() => { try { return JSON.parse(localStorage.getItem('nt-session') || 'null'); } catch { return null; } });
   const [dashboard, setDashboard] = useState(null);
@@ -164,6 +364,13 @@ function App() {
   const [newPatientDob, setNewPatientDob] = useState('');
   const [newPatientConditions, setNewPatientConditions] = useState('');
   const [mobileNav, setMobileNav] = useState(false);
+  const [analysesList, setAnalysesList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterPatientId, setFilterPatientId] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterPattern, setFilterPattern] = useState('all');
+  const [inspectedAnalysis, setInspectedAnalysis] = useState(null);
+  const [downloadingReportId, setDownloadingReportId] = useState(null);
 
   const token = session?.token;
   const user = session?.user;
@@ -208,6 +415,7 @@ function App() {
   const navigation = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     ...(isClinician ? [{ id: 'patients', label: 'Patients', icon: Users }] : []),
+    { id: 'analyses', label: 'EEG Analyses', icon: Activity },
     { id: 'twin', label: 'Digital Twin', icon: Brain },
     { id: 'notes', label: 'Clinical notes', icon: FileText },
     ...(user?.role === 'admin' ? [{ id: 'admin', label: 'Audit & access', icon: ShieldCheck }] : [])
@@ -283,6 +491,114 @@ function App() {
       setError(err.message);
     } finally {
       setBusy(false);
+    }
+  };
+
+  const loadAnalyses = useCallback(async () => {
+    if (!token) return;
+    try {
+      let q = '/api/analyses?limit=100';
+      if (filterPatientId) q += `&patientId=${filterPatientId}`;
+      const res = await api(q, {}, token);
+      setAnalysesList(res.analyses || []);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [token, filterPatientId]);
+
+  useEffect(() => {
+    if (tab === 'analyses' || tab === 'overview') {
+      loadAnalyses();
+    }
+  }, [tab, loadAnalyses]);
+
+  const downloadReport = async (analysisId, patientName) => {
+    try {
+      setDownloadingReportId(analysisId);
+      setNotice('Preparing PDF clinical report…');
+      const res = await fetch(`/api/analyses/${analysisId}/report`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Could not generate PDF report');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `NeuroTwin_Report_${(patientName || 'Patient').replace(/\s+/g, '_')}_${analysisId.slice(-6)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      setNotice('Clinical research PDF report downloaded.');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDownloadingReportId(null);
+    }
+  };
+
+  const inspectAnalysis = async (item) => {
+    try {
+      setBusy(true);
+      const detail = await api(`/api/analyses/${item._id}`, {}, token);
+      setInspectedAnalysis(detail);
+    } catch (err) {
+      setInspectedAnalysis(item);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const filteredAnalyses = useMemo(() => {
+    return analysesList.filter(item => {
+      if (filterPatientId && (item.patientId?._id || item.patientId || item.patient?._id) !== filterPatientId) {
+        return false;
+      }
+      if (filterStatus === 'reviewed' && item.clinicianReview !== 'reviewed') {
+        return false;
+      }
+      if (filterStatus === 'pending' && item.clinicianReview === 'reviewed') {
+        return false;
+      }
+      const maxScore = Number(item.confidence ?? item.probabilities?.maxSeizureScore ?? 0);
+      const isSeizure = maxScore >= (item.probabilities?.threshold ?? 0.65) || item.label?.toLowerCase().includes('seizure');
+      if (filterPattern === 'seizure' && !isSeizure) {
+        return false;
+      }
+      if (filterPattern === 'normal' && isSeizure) {
+        return false;
+      }
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const patientName = (item.patient?.fullName || item.patientId?.fullName || '').toLowerCase();
+        const mrn = (item.patient?.mrn || item.patientId?.mrn || '').toLowerCase();
+        const file = (item.session?.sourceName || item.metadata?.originalFileName || item.edfFileName || '').toLowerCase();
+        const label = (item.label || '').toLowerCase();
+        if (!patientName.includes(q) && !mrn.includes(q) && !file.includes(q) && !label.includes(q)) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }, [analysesList, filterPatientId, filterStatus, filterPattern, searchQuery]);
+
+  const toggleReviewStatus = async (analysisId, currentStatus) => {
+    try {
+      const nextStatus = currentStatus === 'reviewed' ? 'pending' : 'reviewed';
+      await api(`/api/analyses/${analysisId}/review`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: nextStatus })
+      }, token);
+      if (inspectedAnalysis && inspectedAnalysis._id === analysisId) {
+        setInspectedAnalysis(prev => ({ ...prev, clinicianReview: nextStatus }));
+      }
+      loadAnalyses();
+      if (patient?._id) {
+        setOverview(await api(`/api/patients/${patient._id}/overview`, {}, token));
+      }
+      setNotice(`Analysis review state updated to ${nextStatus}.`);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -473,7 +789,176 @@ function App() {
         </div> : <EmptyState icon={FileText} title="No notes recorded">No notes are available for the selected patient and your access level.</EmptyState>}
       </section>}
 
+      
+      {tab === 'analyses' && <section className="panel page-panel">
+        <div className="section-heading inside">
+          <div>
+            <p className="eyebrow">EEG RECORDINGS & INFERENCE ARCHIVE</p>
+            <h2>Analyses & Reports</h2>
+            <p className="muted">Multi-channel EEG waveforms, model seizure timelines, and clinician review governance.</p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Badge type="blue">{filteredAnalyses.length} of {analysesList.length} analyses</Badge>
+          </div>
+        </div>
+
+        <div className="filter-bar">
+          <div className="filter-item" style={{ flex: 2 }}>
+            <label>Search archive</label>
+            <div className="filter-search-box">
+              <Search size={14} color="#64748b"/>
+              <input
+                type="text"
+                placeholder="Search patient, MRN, file, pattern..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="filter-item">
+            <label>Patient</label>
+            <select value={filterPatientId} onChange={e => setFilterPatientId(e.target.value)}>
+              <option value="">All Patients</option>
+              {patients.map(p => <option key={p._id} value={p._id}>{p.fullName || 'Unnamed'}</option>)}
+            </select>
+          </div>
+          <div className="filter-item">
+            <label>Classification</label>
+            <select value={filterPattern} onChange={e => setFilterPattern(e.target.value)}>
+              <option value="all">All Patterns</option>
+              <option value="seizure">Seizure Detected</option>
+              <option value="normal">Normal / Background</option>
+            </select>
+          </div>
+          <div className="filter-item">
+            <label>Clinician Review</label>
+            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+              <option value="all">All States</option>
+              <option value="pending">Pending Review</option>
+              <option value="reviewed">Reviewed</option>
+            </select>
+          </div>
+          {(searchQuery || filterPatientId || filterPattern !== 'all' || filterStatus !== 'all') && (
+            <button
+              className="filter-reset-btn"
+              onClick={() => { setSearchQuery(''); setFilterPatientId(''); setFilterPattern('all'); setFilterStatus('all'); }}
+            >
+              Reset Filters
+            </button>
+          )}
+        </div>
+
+        {filteredAnalyses.length > 0 ? (
+          <div className="analysis-table-wrap">
+            <table className="analysis-table">
+              <thead>
+                <tr>
+                  <th>Date & Time</th>
+                  <th>Patient</th>
+                  <th>Recording / File</th>
+                  <th>Peak Score</th>
+                  <th>Pattern Classification</th>
+                  <th>Review Status</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAnalyses.map(item => {
+                  const maxScore = Number(item.confidence ?? item.probabilities?.maxSeizureScore ?? 0);
+                  const threshold = Number(item.probabilities?.threshold ?? 0.65);
+                  const isSeizure = maxScore >= threshold || item.label?.toLowerCase().includes('seizure');
+                  const pName = item.patient?.fullName || item.patientId?.fullName || 'Patient Record';
+                  const pMrn = item.patient?.mrn || item.patientId?.mrn;
+                  const fileName = item.session?.sourceName || item.metadata?.originalFileName || item.edfFileName || 'EDF Record';
+                  const isReviewed = item.clinicianReview === 'reviewed';
+
+                  return (
+                    <tr key={item._id}>
+                      <td>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <strong>{dateLabel(item.createdAt)}</strong>
+                          <small style={{ color: '#64748b' }}>{new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+                        </div>
+                      </td>
+                      <td>
+                        <strong>{pName}</strong>
+                        {pMrn && <small style={{ display: 'block', color: '#64748b' }}>MRN: {pMrn}</small>}
+                      </td>
+                      <td>
+                        <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#334155' }}>{fileName}</span>
+                      </td>
+                      <td>
+                        <span className={`score-pill ${isSeizure ? 'score-elevated' : 'score-normal'}`}>
+                          {(maxScore * 100).toFixed(1)}%
+                        </span>
+                      </td>
+                      <td>
+                        <Badge type={isSeizure ? 'red' : 'green'}>
+                          {isSeizure ? 'Seizure Pattern' : 'Normal / Background'}
+                        </Badge>
+                      </td>
+                      <td>
+                        {isClinician ? (
+                          <button
+                            className={`review-btn ${isReviewed ? 'reviewed' : 'pending'}`}
+                            onClick={() => toggleReviewStatus(item._id, item.clinicianReview)}
+                            title="Click to toggle clinician review status"
+                          >
+                            {isReviewed ? <Check size={12}/> : <Activity size={12}/>}
+                            {isReviewed ? 'Reviewed' : 'Pending Review'}
+                          </button>
+                        ) : (
+                          <Badge type={isReviewed ? 'blue' : 'amber'}>{isReviewed ? 'Reviewed' : 'Pending'}</Badge>
+                        )}
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <div className="btn-group" style={{ justifyContent: 'flex-end' }}>
+                          <button
+                            className="action-btn-sm"
+                            onClick={() => inspectAnalysis(item)}
+                            title="Inspect Waveforms & Intervals"
+                          >
+                            <Eye size={13}/> Inspect
+                          </button>
+                          <button
+                            className="action-btn-sm action-btn-primary"
+                            onClick={() => downloadReport(item._id, pName)}
+                            disabled={downloadingReportId === item._id}
+                            title="Download Clinical PDF Report"
+                          >
+                            <FileDown size={13}/>
+                            {downloadingReportId === item._id ? '...' : 'PDF'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <EmptyState icon={Activity} title="No matching EEG analyses">
+            {analysesList.length === 0
+              ? 'No EEG analyses recorded yet. Upload an EDF recording to run inference.'
+              : 'No analyses match the current filter criteria.'}
+          </EmptyState>
+        )}
+      </section>}
+
       {tab === 'admin' && user?.role === 'admin' && <section className="panel page-panel"><div className="section-heading inside"><div><p className="eyebrow">GOVERNANCE</p><h2>Audit & access</h2><p className="muted">Recent audit events returned by the administration API.</p></div><Badge>{audit.length} events</Badge></div>{audit.length ? <div className="audit-list">{audit.map(item => <div className="audit-row" key={item._id}><span className="audit-icon"><ShieldCheck size={17}/></span><div><b>{item.action || 'Workspace event'}</b><small>{item.actor?.name || 'System'} · {item.actor?.role || 'unknown role'}</small></div><time>{dateLabel(item.createdAt)}</time></div>)}</div> : <EmptyState icon={ShieldCheck} title="No audit events available">Audit events will appear here when returned by the server.</EmptyState>}<p className="chart-note">This view displays API-provided events; it does not modify user roles or permissions.</p></section>}
+      
+      {inspectedAnalysis && (
+        <AnalysisDetailModal
+          analysis={inspectedAnalysis}
+          onClose={() => setInspectedAnalysis(null)}
+          onDownloadReport={downloadReport}
+          onToggleReview={toggleReviewStatus}
+          isClinician={isClinician}
+          downloadingId={downloadingReportId}
+        />
+      )}
+
       <footer className="app-footer"><div className="footer-brand"><Brain size={16}/> NeuroTwin</div><span>Academic research prototype · Not for diagnosis</span><button onClick={loadWorkspace} className="text-button"><RefreshCw size={14}/> Refresh workspace</button></footer>
     </main>
   </div>;
