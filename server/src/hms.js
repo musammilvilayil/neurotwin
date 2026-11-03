@@ -273,11 +273,13 @@ router.post('/billing/invoices/:id/payments', roles('admin','billing'), wrap(asy
   const payment=await HMSPayment.create({invoice:invoice._id,amount,method,reference:cleanText(req.body.reference,100),receivedBy:req.user.id});
   const updated=await HMSInvoice.findOneAndUpdate(
     {_id:invoice._id,status:{$nin:['cancelled','paid']},$expr:{$lte:[{$add:[{$ifNull:['$paid',0]},amount]},'$total']}},
-    {$inc:{paid:amount}},
+    [{$set:{
+      paid:{$add:[{$ifNull:['$paid',0]},amount]},
+      status:{$cond:[{$gte:[{$add:[{$ifNull:['$paid',0]},amount]},'$total']},'paid','partially_paid']}
+    }}],
     {new:true}
   );
   if(!updated){await HMSPayment.deleteOne({_id:payment._id});return res.status(409).json({error:'Invoice balance changed; refresh and retry the payment'});}
-  updated.status=updated.paid>=updated.total?'paid':'partially_paid';await updated.save();
   await record(req,'hms.invoice.payment_received',updated._id,{amount,method});res.status(201).json({payment,invoice:updated});
 }));
 
