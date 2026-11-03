@@ -54,6 +54,12 @@ router.get('/summary', roles('admin','doctor','receptionist','nurse','lab_techni
   res.json({patients,appointmentsToday:appointments,activeAdmissions:admissions,pendingLabOrders:pendingLabs,lowStockItems:lowStock,unsettledInvoices:invoices});
 }));
 
+router.get('/patients', roles('admin','doctor','receptionist','nurse','billing','lab_technician','pharmacist'), wrap(async(req,res)=>{
+  let filter={};
+  if(req.user.role==='doctor')filter={assignedDoctor:req.user.id};
+  const list=await Patient.find(filter).select('fullName mrn').sort({fullName:1}).limit(1000);
+  res.json(list);
+}));
 router.get('/departments', roles('admin','doctor','receptionist','nurse'), wrap(async(req,res)=>{
   res.json(await HMSDepartment.find({active:true}).sort({name:1}));
 }));
