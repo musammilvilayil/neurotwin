@@ -108,6 +108,7 @@ router.post('/appointments', roles('admin','doctor','receptionist'), wrap(async(
   const {patient,doctor,scheduledAt}=req.body;
   if(!validId(patient)||!validId(doctor)||!scheduledAt||Number.isNaN(new Date(scheduledAt).getTime()))return res.status(400).json({error:'Patient, doctor and valid appointment date/time are required'});
   if(!(await Patient.exists({_id:patient})))return res.status(404).json({error:'Patient not found'});
+  if(req.user.role==='doctor'&&!(await patientAccess(req,patient)))return res.status(403).json({error:'Patient access denied'});
   if(!(await User.exists({_id:doctor,role:'doctor',active:{$ne:false}})))return res.status(404).json({error:'Active doctor not found'});
   if(req.user.role==='doctor'&&String(doctor)!==String(req.user.id))return res.status(403).json({error:'Doctors may only book appointments with themselves'});
   const when=new Date(scheduledAt);if(when<new Date(Date.now()-60000))return res.status(400).json({error:'Appointment must be in the future'});
@@ -130,7 +131,9 @@ router.get('/encounters', roles('admin','doctor','nurse'), wrap(async(req,res)=>
 }));
 router.post('/encounters', roles('admin','doctor'), wrap(async(req,res)=>{
   if(!validId(req.body.patient)||!(await patientAccess(req,req.body.patient)))return res.status(403).json({error:'Patient access denied'});
-  const item=await HMSEncounter.create({patient:req.body.patient,doctor:req.user.role==='doctor'?req.user.id:req.body.doctor||req.user.id,appointment:validId(req.body.appointment)?req.body.appointment:undefined,type:['OPD','emergency','follow_up'].includes(req.body.type)?req.body.type:'OPD',chiefComplaint:cleanText(req.body.chiefComplaint),examination:cleanText(req.body.examination,5000),diagnosis:cleanText(req.body.diagnosis),plan:cleanText(req.body.plan,5000),vitals:req.body.vitals||{}});
+  const encounterDoctor=req.user.role==='doctor'?req.user.id:req.body.doctor;
+  if(!validId(encounterDoctor)||!(await User.exists({_id:encounterDoctor,role:'doctor',active:{$ne:false}})))return res.status(400).json({error:'A valid active doctor is required'});
+  const item=await HMSEncounter.create({patient:req.body.patient,doctor:encounterDoctor,appointment:validId(req.body.appointment)?req.body.appointment:undefined,type:['OPD','emergency','follow_up'].includes(req.body.type)?req.body.type:'OPD',chiefComplaint:cleanText(req.body.chiefComplaint),examination:cleanText(req.body.examination,5000),diagnosis:cleanText(req.body.diagnosis),plan:cleanText(req.body.plan,5000),vitals:req.body.vitals||{}});
   await record(req,'hms.encounter.created',item._id);res.status(201).json(item);
 }));
 router.patch('/encounters/:id/complete', roles('admin','doctor'), wrap(async(req,res)=>{
@@ -156,9 +159,11 @@ router.post('/admissions', roles('admin','doctor'), wrap(async(req,res)=>{
   const target=await HMSBed.findOneAndUpdate({_id:bed,status:'available'},{$set:{status:'occupied'}},{new:true});
   if(!target)return res.status(409).json({error:'Selected bed is unavailable'});
   try{
-    const admission=await HMSAdmission.create({patient,bed,attendingDoctor:req.user.role==='doctor'?req.user.id:req.body.attendingDoctor||req.user.id,admissionReason:cleanText(req.body.admissionReason)});
+    const attendingDoctor=req.user.role==='doctor'?req.user.id:req.body.attendingDoctor;
+    if(!validId(attendingDoctor)||!(await User.exists({_id:attendingDoctor,role:'doctor',active:{$ne:false}})))throw Object.assign(new Error('A valid active attending doctor is required'),{statusCode:400});
+    const admission=await HMSAdmission.create({patient,bed,attendingDoctor,admissionReason:cleanText(req.body.admissionReason)});
     await record(req,'hms.admission.created',admission._id);res.status(201).json(await admission.populate(['patient','attendingDoctor','bed']));
-  }catch(error){target.status='available';await target.save();throw error;}
+  }catch(error){target.status='available';await target.save();if(error.statusCode===400)return res.status(400).json({error:error.message});throw error;}
 }));
 router.patch('/admissions/:id/discharge', roles('admin','doctor'), wrap(async(req,res)=>{
   const item=await HMSAdmission.findOne({_id:req.params.id,status:'admitted'});if(!item)return res.status(404).json({error:'Active admission not found'});
