@@ -208,10 +208,19 @@ router.post('/pharmacy/medicines', roles('admin','pharmacist'), wrap(async(req,r
   await record(req,'hms.medicine.created',item._id);res.status(201).json(item);
 }));
 router.patch('/pharmacy/medicines/:id/stock', roles('admin','pharmacist'), wrap(async(req,res)=>{
-  const delta=Number(req.body.quantityChange);if(!Number.isFinite(delta)||delta===0)return res.status(400).json({error:'Non-zero quantityChange is required'});
-  const item=await HMSMedicine.findById(req.params.id);if(!item)return res.status(404).json({error:'Medicine not found'});
-  if(item.quantity+delta<0)return res.status(409).json({error:'Insufficient stock'});
-  item.quantity+=delta;await item.save();await record(req,'hms.medicine.stock_adjusted',item._id,{delta});res.json(item);
+  if(!validId(req.params.id))return res.status(400).json({error:'Invalid medicine identifier'});
+  const delta=Number(req.body.quantityChange);
+  if(!Number.isFinite(delta)||delta===0)return res.status(400).json({error:'Non-zero quantityChange is required'});
+  const item=await HMSMedicine.findOneAndUpdate(
+    {_id:req.params.id,$expr:{$gte:[{$add:['$quantity',delta]},0]}},
+    {$inc:{quantity:delta}},
+    {new:true,runValidators:true}
+  );
+  if(!item){
+    if(!(await HMSMedicine.exists({_id:req.params.id})))return res.status(404).json({error:'Medicine not found'});
+    return res.status(409).json({error:'Insufficient stock'});
+  }
+  await record(req,'hms.medicine.stock_adjusted',item._id,{delta});res.json(item);
 }));
 router.get('/pharmacy/prescriptions', roles('admin','doctor','pharmacist','nurse'), wrap(async(req,res)=>{
   const filter=req.user.role==='doctor'?{prescribedBy:req.user.id}:{};
@@ -256,13 +265,20 @@ router.post('/billing/invoices', roles('admin','billing'), wrap(async(req,res)=>
   await record(req,'hms.invoice.created',invoice._id);res.status(201).json(invoice);
 }));
 router.post('/billing/invoices/:id/payments', roles('admin','billing'), wrap(async(req,res)=>{
+  if(!validId(req.params.id))return res.status(400).json({error:'Invalid invoice identifier'});
   const amount=Number(req.body.amount),method=req.body.method;
   if(!Number.isFinite(amount)||amount<=0||!['cash','card','upi','bank_transfer','insurance'].includes(method))return res.status(400).json({error:'Positive amount and valid payment method are required'});
   const invoice=await HMSInvoice.findById(req.params.id);if(!invoice)return res.status(404).json({error:'Invoice not found'});
   if(invoice.status==='cancelled'||amount>invoice.total-invoice.paid)return res.status(409).json({error:'Payment exceeds the outstanding invoice balance'});
   const payment=await HMSPayment.create({invoice:invoice._id,amount,method,reference:cleanText(req.body.reference,100),receivedBy:req.user.id});
-  invoice.paid+=amount;invoice.status=invoice.paid>=invoice.total?'paid':'partially_paid';await invoice.save();
-  await record(req,'hms.invoice.payment_received',invoice._id,{amount,method});res.status(201).json({payment,invoice});
+  const updated=await HMSInvoice.findOneAndUpdate(
+    {_id:invoice._id,status:{$nin:['cancelled','paid']},$expr:{$lte:[{$add:[{$ifNull:['$paid',0]},amount]},'$total']}},
+    {$inc:{paid:amount}},
+    {new:true}
+  );
+  if(!updated){await HMSPayment.deleteOne({_id:payment._id});return res.status(409).json({error:'Invoice balance changed; refresh and retry the payment'});}
+  updated.status=updated.paid>=updated.total?'paid':'partially_paid';await updated.save();
+  await record(req,'hms.invoice.payment_received',updated._id,{amount,method});res.status(201).json({payment,invoice:updated});
 }));
 
 export default router;
