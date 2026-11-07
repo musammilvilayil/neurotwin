@@ -32,7 +32,7 @@ function HomePage({ onLogin, onNavigate }) {
       <div className="public-hero-copy">
         <p className="eyebrow"><Sparkles size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }} />CLINICAL BCI DIGITAL TWIN PLATFORM</p>
         <h1>Understand the signal.<br /><i>Keep the clinical context.</i></h1>
-        <p>NeuroTwin unifies high-resolution 18-channel EEG feature extraction, real-time seizure detection, and longitudinal digital twin modeling into an integrated decision-support workspace for doctors, patients, and care teams.</p>
+        <p>NeuroTwin brings EEG signal review, experimental model outputs, and longitudinal patient context into one role-aware research workspace.</p>
         <div className="public-hero-actions">
           <button className="primary-button" onClick={onLogin}>Enter workspace <ArrowUpRight size={17} /></button>
           <button className="public-secondary-button" onClick={() => onNavigate('features')}>Explore capabilities</button>
@@ -60,12 +60,12 @@ function HomePage({ onLogin, onNavigate }) {
         <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#3b82f6" intensity={0.25}>
           <span><Activity size={20} /></span>
           <h3>EEG Research & Anomaly Review</h3>
-          <p>Automated feature extraction and multi-scale CNN/LSTM seizure scoring with consecutive temporal confirmation.</p>
+          <p>EEG preprocessing, model-assisted scoring, and reviewable signal intervals for supervised research.</p>
         </SpotlightCard>
         <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#6366f1" intensity={0.25}>
           <span><Brain size={20} /></span>
           <h3>Patient-Specific Digital Twin</h3>
-          <p>Real-time neurological state representation and longitudinal trend tracking derived from monitored EEG recordings.</p>
+          <p>A longitudinal view of stored EEG analyses and patient-specific research context.</p>
         </SpotlightCard>
         <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#0ea5e9" intensity={0.25}>
           <span><ShieldCheck size={20} /></span>
