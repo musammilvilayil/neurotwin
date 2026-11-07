@@ -1,120 +1,133 @@
-# NeuroTwin — EEG-Based Seizure Detection and Longitudinal Brain Monitoring Prototype
+# NeuroTwin — EEG Research & Digital Twin Prototype
 
-NeuroTwin is an academic clinical decision-support and neurological research prototype. It combines a responsive React 18 clinical workspace, a Node.js/Express/MongoDB gateway API with PDF report generation, and an MNE-Python/TensorFlow machine learning microservice for scalp EEG analysis and longitudinal Digital Twin modeling.
+NeuroTwin is a full-stack academic research prototype combining scalp EEG preprocessing, an experimental deep-learning model, longitudinal patient-context records and role-based web access. It includes a React 18/Vite frontend, Node.js/Express/MongoDB application API, and an MNE-Python/TensorFlow FastAPI inference service.
 
-> **Clinical Boundary & Safety Notice:** NeuroTwin is an academic decision-support prototype, not a certified diagnostic medical device. Output scores are experimental research metrics and do not replace professional neurological judgment, nor can they be used to rule out seizures or guide treatment decisions. All recordings require qualified clinician review.
+> **Research-only boundary:** NeuroTwin is not a certified medical device. Model outputs are experimental scores, not diagnoses. They must not be used to rule out seizures, recommend treatment or make emergency decisions. Real EEG requires qualified professional review.
 
----
+## Core capabilities
 
-## Key Features
+- Role-based access for administrator, doctor, patient and caregiver accounts
+- Patient assignment and record isolation
+- EDF upload, validation and MNE-based EEG preprocessing
+- Multi-Scale Dilated Temporal CNN inference when valid model artifacts are installed
+- 18-channel bipolar EEG waveform and score timeline visualization
+- Longitudinal analysis snapshots and clinician review workflow
+- Audit events and downloadable PDF research summaries
+- CHB-MIT data preparation and subject-disjoint model training pipeline
 
-- **Multi-Role Authentication & Access Control:** Role-Based Access Control (RBAC) with secure JWT tokens for `Doctor`, `Patient`, `Caregiver`, and `Admin` roles. Strict patient isolation prevents cross-patient data access.
-- **Deep Learning Seizure Detection:** Multi-Scale Dilated Temporal Convolutional Network with dual global pooling and Hard-Negative Mining (HNM), trained on the complete 24-subject CHB-MIT Scalp EEG database with strict subject-disjoint isolation.
-- **Consecutive Temporal Post-Processing:** 2-window consecutive confirmation filter (20s sustained activity) reducing false alarms by 74.8% on continuous scalp EEG while achieving 76.79% recall.
-- **18-Channel Bipolar Montage Visualizer:** Interactive multi-channel EEG visualizer following the international standard 10–20 bipolar montage (`FP1-F7`, `F7-T7`, `T7-P7`, etc.).
-- **Longitudinal Digital Twin Modeling:** Assembles patient seizure trajectories, interictal baseline trends, and research snapshots across sequential monitoring sessions.
-- **Clinical Research PDF Reports:** Exportable PDF summaries via PDFKit featuring clinical disclaimers, patient demographics, peak confidence scores, and confirmed seizure interval timelines.
-- **Clinician Review Governance:** Flagging and review workflow with immutable `AuditEvent` tracking.
+## Architecture
 
----
-
-## System Architecture
-
-```mermaid
+\`\`\`mermaid
 flowchart LR
-    A[React 18 + Vite Frontend] -->|REST / JWT| B[Express + MongoDB Gateway API]
-    B -->|Stream EDF / Multipart| C[FastAPI + TensorFlow ML Microservice]
-    C -->|MNE Preprocessing 128Hz| D[Multi-Scale Dilated Temporal CNN]
-    D -->|Consecutive Confirmation| C
-    C -->|Scores, Waveforms, Intervals| B
-    B -->|Save Analysis & Snapshot| E[(MongoDB)]
-    B -->|PDFKit Generator| F[Downloadable Clinical PDF Report]
-```
+  A[React + Vite] -->|JWT / REST| B[Express API]
+  B --> C[(MongoDB)]
+  B -->|EDF| D[FastAPI ML service]
+  D --> E[MNE preprocessing]
+  E --> F[Multi-Scale Dilated CNN]
+  F --> G[Temporal confirmation]
+  G --> D
+  D -->|Scores and waveform| B
+  B --> H[PDF research report]
+\`\`\`
 
----
+## Prerequisites
 
-## Quick Start (Local Development)
-
-### Prerequisites
 - Node.js 20+
-- MongoDB 7+ (running locally on port 27017 or embedded fallback)
-- Python 3.11+ (virtual environment in `services/ml/.venv`)
+- Python 3.11
+- MongoDB 7+ (local or Docker)
+- Authorized CHB-MIT data only if you intend to reproduce training
 
-### Installation & Launch
-```bash
-# 1. Install dependencies for all tiers
+## Local setup
+
+\`\`\`bash
+# Install JavaScript dependencies
 npm run install:all
 
-# 2. Configure environment
-cp .env.example server/.env
+# Configure the Express API
+cp server/.env.example server/.env
+# Edit server/.env and set a unique random JWT_SECRET
 
-# 3. Launch full stack (Vite + Express Backend)
+# Start MongoDB separately, then run frontend + Express
 npm run dev
-```
+\`\`\`
 
-The React workspace will open at `http://localhost:5173`; the Express API runs on `http://localhost:5000`.
+Frontend: \`http://localhost:5173\`  
+Express API: \`http://localhost:5000\`
 
-### Launching Python ML Microservice
-```powershell
+In another terminal, install and launch the Python ML service:
+
+\`\`\`bash
 cd services/ml
-.\.venv\Scripts\Activate.ps1
+python -m venv .venv
+# Windows PowerShell: .venv\\Scripts\\Activate.ps1
+# macOS/Linux: source .venv/bin/activate
+python -m pip install -r requirements.txt
 uvicorn api:app --host 127.0.0.1 --port 8001
-```
+\`\`\`
 
----
+The ML API reports \`model_state: not_ready\` if its artifact directory does not contain a compatible \`model.keras\` and \`metadata.json\`. This is intentional; the API does not fabricate predictions.
 
-## Demo Accounts
+## Demo accounts
 
-Password for all seeded accounts: `DemoPass123!` (for local development only).
+Seeded local demo password: \`DemoPass123!\` (development only; change or remove demo credentials before any deployment).
 
-| Role | Username | Email | Access Scope |
-|---|---|---|---|
-| **Admin** | `admin` | admin@neurotwin.demo | Full system access, audit trail, user governance |
-| **Doctor** | `doctor` | doctor@neurotwin.demo | Assigned patient monitoring, EEG upload, PDF reports, review actions |
-| **Patient** | `patient` | patient@neurotwin.demo | Self-record viewing, shared notes, longitudinal twin status |
-| **Caregiver** | `caregiver` | caregiver@neurotwin.demo | Read-only access to linked patient updates and care notes |
+| Role | Username | Email |
+|---|---|---|
+| Admin | \`admin\` | admin@neurotwin.demo |
+| Doctor | \`doctor\` | doctor@neurotwin.demo |
+| Patient | \`patient\` | patient@neurotwin.demo |
+| Caregiver | \`caregiver\` | caregiver@neurotwin.demo |
 
----
+## Tests and build
 
-## Machine Learning Pipeline & Performance
+\`\`\`bash
+# Backend tests
+npm test --prefix server
 
-### Evaluation on Held-Out Test Set (`chb02`, `chb07` — 21.30 Continuous Hours, 7,669 Windows)
-Evaluated with strict subject-disjoint isolation (zero test data seen during training or threshold tuning):
+# Frontend production build
+npm run build --prefix client
 
-| Metric | Baseline CNN-LSTM | Full-Dataset Multi-Scale CNN + HNM + Confirmation | Relative Gain |
-|---|:---:|:---:|:---:|
-| **Precision** | 18.18% | **55.84%** | **+207% (+37.7 pp)** |
-| **Recall (Sensitivity)** | 63.83% | **76.79%** | **+20.3% (+13.0 pp)** |
-| **F1 Score** | 28.30% | **64.66%** | **+128% (+36.4 pp)** |
-| **False Positives** | 135 | **34** | **-74.8%** |
-| **False Alarm Rate** | 5.34 / hour | **1.60 / hour** | **-70.0% reduction** |
-| **ROC-AUC** | 94.55% | **91.55%** | Robust generalization |
-| **Specificity** | 98.49% | **99.55%** | Near-zero false alarms |
-
-For complete experimental details, see [MODEL_REPORT.md](MODEL_REPORT.md) and [TRAINING_REPORT.md](TRAINING_REPORT.md).
-
----
-
-## Verification & Testing Suite
-
-All tiers contain automated test suites:
-
-```powershell
-# 1. Clean standalone inference verification (zero dataset dependencies)
-.\services\ml\.venv\Scripts\python.exe scratch/test_clean_model.py services/ml/artifacts
-
-# 2. Python ML unit tests (9 tests)
+# Python syntax check and ML unit tests
+python -m compileall -q services/ml
 cd services/ml
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+python -m unittest discover -s tests -v
+\`\`\`
 
-# 3. Comprehensive error-handling and edge-case suite (7 tests)
-.\.venv\Scripts\python.exe -u ..\..\scratch\test_error_handling.py
+The GitHub Actions workflow \`.github/workflows/ci.yml\` runs the frontend build, backend tests and ML checks on pushes and pull requests.
 
-# 4. Backend integration and API security suite (25 tests)
-cd ../../server
-npm test
+## CHB-MIT preparation and training
 
-# 5. Client production build
-cd ../client
-npm run build
-```
+Download CHB-MIT under its official terms. The data is not included in this repository.
+
+\`\`\`bash
+cd services/ml
+python download_chbmit.py --help
+python prepare_chbmit.py --data-dir data/chbmit --output-dir data/processed
+python train.py \\
+  --features data/processed/features.npy \\
+  --labels data/processed/labels.npy \\
+  --subjects data/processed/subjects.npy \\
+  --architecture multiscale_cnn \\
+  --hard-negative-mining \\
+  --output-dir artifacts
+\`\`\`
+
+The training script supports subject-disjoint partitions, validation-only threshold selection, held-out testing and memory-mapped feature batches. Review its saved \`metadata.json\` and \`evaluation.json\` before using any reported number. A manual GitHub Actions training workflow is available under Actions → Train CHB-MIT research model.
+
+## Research metrics
+
+A previous repository experiment reported precision 55.84%, recall 76.79%, F1 64.66%, specificity 99.55%, ROC-AUC 91.55% and 1.60 false alarms/hour on its held-out test protocol. Treat these as historical experiment results until reproduced from the exact data split, code, artifact and threshold. Do not compare runs unless their splits and evaluation methods match.
+
+## Project documentation
+
+- [B.Tech major project report, scope and readiness checklist](docs/BTECH_MAJOR_PROJECT.md)
+- [B.Tech viva preparation](docs/BTECH_VIVA.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Reproducibility](docs/REPRODUCIBILITY.md)
+- [API documentation](API_DOCUMENTATION.md)
+- [Model report](MODEL_REPORT.md)
+- [Training report](TRAINING_REPORT.md)
+
+## Limitations
+
+The prototype has not been clinically validated, certified or prospectively evaluated. Dataset shift, montage variation, artifacts, class imbalance, false positives and false negatives remain important. Secure deployment also requires privacy, consent, retention, access-control, secret-management and operational review.
