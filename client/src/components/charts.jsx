@@ -45,9 +45,18 @@ export const WINDOW_LEGEND = [
 /* ------------------------------------------------------------------ */
 const GAINS = [{ id: '0.5', label: '0.5×' }, { id: '1', label: '1×' }, { id: '2', label: '2×' }];
 
+const DEFAULT_LEADS = [
+  'FP1-F7', 'F7-T7', 'T7-P7', 'P7-O1',
+  'FP1-F3', 'F3-C3', 'C3-P3', 'P3-O1',
+  'FZ-CZ', 'CZ-PZ',
+  'FP2-F4', 'F4-C4', 'C4-P4', 'P4-O2',
+  'FP2-F8', 'F8-T8', 'T8-P8', 'P8-O2',
+];
+
 export function EEGPanel({ signals, channels, names, duration = 10, events = [], caption }) {
   const signalList = signals || (Array.isArray(channels?.[0]) ? channels : []);
-  const channelLabels = names || (typeof channels?.[0] === 'string' ? channels : []);
+  const rawLabels = names || (typeof channels?.[0] === 'string' ? channels : []);
+  const channelLabels = Array.isArray(rawLabels) && rawLabels.length ? rawLabels : DEFAULT_LEADS;
   const [ref, width] = useWidth();
   const [gain, setGain] = useState('1');
   const [hover, setHover] = useState(null);

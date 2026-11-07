@@ -150,8 +150,10 @@ export function Topbar({
   const matches = useMemo(() => {
     const term = q.trim().toLowerCase();
     if (!term) return { pts: [], recs: [] };
-    const pts = patients.filter((p) => `${p.fullName} ${p.mrn}`.toLowerCase().includes(term)).slice(0, 4);
-    const recs = analyses.filter((a) => `${sourceOf(a)} ${a.label || ''}`.toLowerCase().includes(term)).slice(0, 4);
+    const safePts = Array.isArray(patients) ? patients : [];
+    const safeRecs = Array.isArray(analyses) ? analyses : (Array.isArray(analyses?.analyses) ? analyses.analyses : []);
+    const pts = safePts.filter((p) => `${p.fullName} ${p.mrn}`.toLowerCase().includes(term)).slice(0, 4);
+    const recs = safeRecs.filter((a) => `${sourceOf(a)} ${a.label || ''}`.toLowerCase().includes(term)).slice(0, 4);
     return { pts, recs };
   }, [q, patients, analyses]);
 

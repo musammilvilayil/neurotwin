@@ -37,6 +37,8 @@ export function Analyses({
   onToggleReview,
 }) {
   const isClinician = ['doctor', 'admin'].includes(user?.role);
+  const safeAnalyses = Array.isArray(analyses) ? analyses : (Array.isArray(analyses?.analyses) ? analyses.analyses : []);
+  const safePatients = Array.isArray(patients) ? patients : [];
   const fileRef = useRef(null);
 
   // Upload workflow state
@@ -58,9 +60,9 @@ export function Analyses({
   const [inspectThreshold, setInspectThreshold] = useState(null);
 
   const focusedAnalysis = useMemo(() => {
-    const found = analyses.find((a) => a._id === focusedId);
-    return found || latestResult || analyses[0] || null;
-  }, [analyses, focusedId, latestResult]);
+    const found = safeAnalyses.find((a) => a._id === focusedId);
+    return found || latestResult || safeAnalyses[0] || null;
+  }, [safeAnalyses, focusedId, latestResult]);
 
   const effectiveThreshold = inspectThreshold ?? (focusedAnalysis ? thresholdOf(focusedAnalysis) : 0.6);
 
@@ -125,13 +127,16 @@ export function Analyses({
           else if (pct >= 65) setStage(4);
         },
       });
+      const doc = created?.analysis
+        ? { ...created.analysis, session: created.session || created.analysis.session }
+        : created;
       setStage(6);
       setProgress(100);
-      setLatestResult(created);
-      setFocusedId(created._id);
+      setLatestResult(doc);
+      setFocusedId(doc?._id || '');
       setFile(null);
       if (fileRef.current) fileRef.current.value = '';
-      if (onUploaded) await onUploaded(created);
+      if (onUploaded) await onUploaded(doc);
     } catch (err) {
       setUploadError(err.message || 'EEG upload and model inference failed.');
     }
@@ -139,8 +144,8 @@ export function Analyses({
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return analyses.filter((a) => {
-      const p = patientOf(a, patients);
+    return safeAnalyses.filter((a) => {
+      const p = patientOf(a, safePatients);
       const outcome = outcomeKeyOf(a);
       if (subjectFilter !== 'all' && (p?._id || a.patient) !== subjectFilter) return false;
       if (outcomeFilter === 'flagged' && outcome === 'normal') return false;
@@ -153,7 +158,7 @@ export function Analyses({
       const hay = `${sourceOf(a)} ${p?.fullName || ''} ${p?.mrn || ''} ${a.label || ''}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [analyses, patients, query, subjectFilter, outcomeFilter, reviewFilter]);
+  }, [safeAnalyses, safePatients, query, subjectFilter, outcomeFilter, reviewFilter]);
 
   const inspectedEvents = focusedAnalysis ? eventsAt(focusedAnalysis, effectiveThreshold, 2) : [];
   const focusedChannels = focusedAnalysis?.multichannel_waveform?.length
@@ -389,7 +394,7 @@ export function Analyses({
                       setInspectThreshold(null);
                     }}
                   >
-                    {analyses.map((a) => (
+                    {safeAnalyses.map((a) => (
                       <option key={a._id} value={a._id}>
                         {sourceOf(a)} — {percent(scoreOf(a), 0)} ({dateLabel(a.createdAt)})
                       </option>
@@ -484,7 +489,9 @@ export function Analyses({
                   18-Lead Bipolar Montage Waveform ({focusedChannels.length} channels)
                 </span>
                 <span className="muted" style={{ fontSize: 12 }}>
-                  { focusedAnalysis.session?.preprocessing || '0.5–40 Hz bandpass + per-channel z-score' }
+                  {typeof focusedAnalysis.session?.preprocessing === 'object'
+                    ? focusedAnalysis.session.preprocessing.pipeline
+                    : (focusedAnalysis.session?.preprocessing || '0.5–40 Hz bandpass + per-channel z-score')}
                 </span>
               </div>
               <EEGPanel
@@ -503,7 +510,7 @@ export function Analyses({
       <Card>
         <CardHead
           title="Processed EEG Analyses Archive"
-          subtitle={`Showing ${filtered.length} of ${analyses.length} recordings`}
+          subtitle={`Showing ${filtered.length} of ${safeAnalyses.length} recordings`}
         />
 
         <div className="toolbar" style={{ marginBottom: 16 }}>

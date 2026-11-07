@@ -187,11 +187,11 @@ export function AnalysisModal({ analysis, patients = [], role, onClose, onDownlo
               </div>
               <div>
                 <dt>Montage leads</dt>
-                <dd className="mono">{analysis.session?.channels?.length || channels.length || 18} channels</dd>
+                <dd className="mono">{Array.isArray(analysis.session?.channels) ? analysis.session.channels.length : (analysis.session?.channels || channels.length || 18)} channels</dd>
               </div>
               <div>
                 <dt>Preprocessing</dt>
-                <dd>{analysis.session?.preprocessing || '0.5–40 Hz bandpass + per-channel z-score'}</dd>
+                <dd>{typeof analysis.session?.preprocessing === 'object' ? analysis.session.preprocessing.pipeline : (analysis.session?.preprocessing || '0.5–40 Hz bandpass + per-channel z-score')}</dd>
               </div>
               <div>
                 <dt>Model state</dt>

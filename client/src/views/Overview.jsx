@@ -31,12 +31,14 @@ export function Overview({
   onOpenEnroll,
 }) {
   const isClinician = ['doctor', 'admin'].includes(user?.role);
-  const activePatient = overview?.patient || patients.find((p) => p._id === selectedPatientId) || patients[0];
-  const latestAnalysis = (overview?.analyses && overview.analyses[0]) || analyses[0] || null;
-  const totalAnalyses = dashboard?.counts?.analyses ?? analyses.length;
-  const totalPatients = dashboard?.counts?.patients ?? patients.length;
-  const pendingReviews = dashboard?.counts?.pending ?? analyses.filter((a) => a.clinicianReview !== 'reviewed').length;
-  const detectedEvents = analyses.filter((a) => outcomeKeyOf(a) === 'confirmed').length;
+  const safeAnalyses = Array.isArray(analyses) ? analyses : (Array.isArray(analyses?.analyses) ? analyses.analyses : []);
+  const safePatients = Array.isArray(patients) ? patients : [];
+  const activePatient = overview?.patient || safePatients.find((p) => p._id === selectedPatientId) || safePatients[0];
+  const latestAnalysis = (overview?.analyses && overview.analyses[0]) || safeAnalyses[0] || null;
+  const totalAnalyses = dashboard?.counts?.analyses ?? safeAnalyses.length;
+  const totalPatients = dashboard?.counts?.patients ?? safePatients.length;
+  const pendingReviews = dashboard?.counts?.pending ?? safeAnalyses.filter((a) => a.clinicianReview !== 'reviewed').length;
+  const detectedEvents = safeAnalyses.filter((a) => outcomeKeyOf(a) === 'confirmed').length;
   const modelReady = modelStatus?.model_state === 'ready';
   const meta = modelStatus?.model_metadata || {};
 
@@ -62,7 +64,7 @@ export function Overview({
         subtitle="Multi-channel scalp EEG telemetry, 1D-CNN window classification, and longitudinal digital twin context in one research workspace."
         actions={
           <>
-            {isClinician && patients.length > 0 && (
+            {isClinician && safePatients.length > 0 && (
               <label className="row" style={{ gap: 8 }}>
                 <span className="muted" style={{ fontSize: 12.5, fontWeight: 600 }}>Active subject:</span>
                 <select
@@ -72,7 +74,7 @@ export function Overview({
                   onChange={(e) => onSelectPatient(e.target.value)}
                   aria-label="Select active subject"
                 >
-                  {patients.map((p) => (
+                  {safePatients.map((p) => (
                     <option key={p._id} value={p._id}>
                       {p.fullName} ({p.mrn})
                     </option>
@@ -120,7 +122,7 @@ export function Overview({
           <MetricCard
             label="EEG Analyses"
             value={totalAnalyses}
-            sub={`${analyses.length} loaded in workspace`}
+            sub={`${safeAnalyses.length} loaded in workspace`}
             icon={Activity}
             tone="primary"
           />
@@ -283,14 +285,14 @@ export function Overview({
               subtitle="Latest recordings evaluated by the CHB-MIT 1D-CNN model"
               right={
                 <button type="button" className="btn btn-ghost btn-sm" onClick={() => onNavigate('analyses')}>
-                  View all ({analyses.length})
+                  View all ({safeAnalyses.length})
                 </button>
               }
             />
-            {analyses.length ? (
+            {safeAnalyses.length ? (
               <AnalysisTable
-                analyses={analyses.slice(0, 6)}
-                patients={patients}
+                analyses={safeAnalyses.slice(0, 6)}
+                patients={safePatients}
                 onView={onViewAnalysis}
                 onDownload={onDownloadReport}
                 compact

@@ -16,12 +16,14 @@ export function Reports({
   onViewAnalysis,
   onDownloadReport,
 }) {
+  const safeAnalyses = Array.isArray(analyses) ? analyses : (Array.isArray(analyses?.analyses) ? analyses.analyses : []);
+  const safePatients = Array.isArray(patients) ? patients : [];
   const [subjectFilter, setSubjectFilter] = useState('all');
 
   const filtered = useMemo(() => {
-    if (subjectFilter === 'all') return analyses;
-    return analyses.filter((a) => (patientOf(a, patients)?._id || a.patient) === subjectFilter);
-  }, [analyses, patients, subjectFilter]);
+    if (subjectFilter === 'all') return safeAnalyses;
+    return safeAnalyses.filter((a) => (patientOf(a, safePatients)?._id || a.patient) === subjectFilter);
+  }, [safeAnalyses, safePatients, subjectFilter]);
 
   const counts = useMemo(() => {
     const confirmed = filtered.filter((a) => outcomeKeyOf(a) === 'confirmed').length;
@@ -100,8 +102,8 @@ export function Reports({
               onChange={(e) => setSubjectFilter(e.target.value)}
               aria-label="Filter reports by subject"
             >
-              <option value="all">All subjects ({analyses.length} sessions)</option>
-              {patients.map((p) => (
+              <option value="all">All subjects ({safeAnalyses.length} sessions)</option>
+              {safePatients.map((p) => (
                 <option key={p._id} value={p._id}>
                   {p.fullName} ({p.mrn})
                 </option>

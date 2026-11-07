@@ -30,6 +30,8 @@ export function Patients({
   setEnrollOpen,
 }) {
   const isClinician = ['doctor', 'admin'].includes(user?.role);
+  const safePatients = Array.isArray(patients) ? patients : [];
+  const safeAnalyses = Array.isArray(analyses) ? analyses : (Array.isArray(analyses?.analyses) ? analyses.analyses : []);
   const [query, setQuery] = useState('');
   const [consentFilter, setConsentFilter] = useState('all');
 
@@ -43,7 +45,7 @@ export function Patients({
 
   const statsByPatient = useMemo(() => {
     const map = {};
-    for (const a of analyses) {
+    for (const a of safeAnalyses) {
       const pid = patientIdOf(a);
       if (!pid) continue;
       if (!map[pid]) map[pid] = { count: 0, confirmed: 0, lastAt: null, peak: 0 };
@@ -56,18 +58,18 @@ export function Patients({
       }
     }
     return map;
-  }, [analyses]);
+  }, [safeAnalyses]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return patients.filter((p) => {
+    return safePatients.filter((p) => {
       if (consentFilter === 'consented' && !p.consented) return false;
       if (consentFilter === 'pending' && p.consented) return false;
       if (!q) return true;
       const hay = `${p.fullName} ${p.mrn} ${(p.conditions || []).join(' ')} ${p.primaryDiagnosis || ''}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [patients, query, consentFilter]);
+  }, [safePatients, query, consentFilter]);
 
   const addConditionPreset = (preset) => {
     const existing = conditionsInput
@@ -103,8 +105,8 @@ export function Patients({
     }
   };
 
-  const consentedCount = patients.filter((p) => p.consented).length;
-  const activeRxCount = patients.reduce(
+  const consentedCount = safePatients.filter((p) => p.consented).length;
+  const activeRxCount = safePatients.reduce(
     (sum, p) => sum + (p.prescriptions || []).filter((r) => r.status !== 'Discontinued').length,
     0,
   );
@@ -127,21 +129,21 @@ export function Patients({
       <div className="grid grid-4">
         <MetricCard
           label="Enrolled Subjects"
-          value={patients.length}
+          value={safePatients.length}
           sub="Active cohort registry"
           icon={Users}
           tone="primary"
         />
         <MetricCard
           label="Research Consent"
-          value={`${consentedCount} / ${patients.length}`}
+          value={`${consentedCount} / ${safePatients.length}`}
           sub="Documented informed consent"
           icon={ShieldCheck}
           tone="success"
         />
         <MetricCard
           label="Total EEG Sessions"
-          value={analyses.length}
+          value={safeAnalyses.length}
           sub="Linked across all subjects"
           icon={Activity}
           tone="cyan"
@@ -158,7 +160,7 @@ export function Patients({
       <Card>
         <CardHead
           title="Subject Directory"
-          subtitle={`Showing ${filtered.length} of ${patients.length} subjects`}
+          subtitle={`Showing ${filtered.length} of ${safePatients.length} subjects`}
         />
 
         <div className="toolbar" style={{ marginBottom: 16 }}>

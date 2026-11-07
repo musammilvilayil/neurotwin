@@ -96,11 +96,27 @@ function NeuroTwinApp() {
       setLoading(true);
       setError('');
       try {
-        const [dash, pts, allAnalyses] = await Promise.all([
+        const isClinician = ['admin', 'doctor'].includes(user?.role);
+        const [dash, ptsRes, analysesRes] = await Promise.all([
           api('/api/dashboard', { token }),
-          api('/api/patients', { token }),
-          api('/api/analyses?limit=100', { token }),
+          isClinician ? api('/api/patients', { token }).catch(() => null) : Promise.resolve(null),
+          api('/api/analyses?limit=100', { token }).catch(() => null),
         ]);
+
+        const pts = Array.isArray(ptsRes)
+          ? ptsRes
+          : Array.isArray(dash?.patients)
+            ? dash.patients
+            : [];
+
+        const allAnalyses = Array.isArray(analysesRes)
+          ? analysesRes
+          : Array.isArray(analysesRes?.analyses)
+            ? analysesRes.analyses
+            : Array.isArray(dash?.recent)
+              ? dash.recent
+              : [];
+
         setDashboard(dash);
         setPatients(pts);
         setAnalyses(allAnalyses);
@@ -123,8 +139,8 @@ function NeuroTwinApp() {
             api('/api/admin/audit', { token }).catch(() => []),
             api('/api/admin/users', { token }).catch(() => []),
           ]);
-          setAudit(auditData);
-          setUsers(usersData);
+          setAudit(Array.isArray(auditData) ? auditData : []);
+          setUsers(Array.isArray(usersData) ? usersData : []);
         }
       } catch (err) {
         if (err.status === 401) {
@@ -205,13 +221,16 @@ function NeuroTwinApp() {
         token,
         body: { patientId: selectedPatientId, mode },
       });
+      const doc = created?.analysis
+        ? { ...created.analysis, session: created.session || created.analysis.session }
+        : created;
       toast.success(
         mode === 'seizure'
           ? 'Simulated 18-lead seizure-pattern EEG and completed model inference.'
           : 'Simulated 18-lead normal baseline EEG and completed model inference.',
       );
       await loadWorkspace(selectedPatientId);
-      setActiveAnalysis(created);
+      setActiveAnalysis(doc);
     } catch (err) {
       toast.error(err.message || 'Simulation failed.');
     } finally {
@@ -474,9 +493,12 @@ function NeuroTwinApp() {
               selectedPatientId={selectedPatientId}
               onSelectPatient={setSelectedPatientId}
               onUploaded={async (created) => {
+                const doc = created?.analysis
+                  ? { ...created.analysis, session: created.session || created.analysis.session }
+                  : created;
                 toast.success('EDF recording uploaded and evaluated by the 1D-CNN model.');
                 await loadWorkspace(selectedPatientId);
-                setActiveAnalysis(created);
+                setActiveAnalysis(doc);
               }}
               onSimulate={handleSimulate}
               simulating={simulating}

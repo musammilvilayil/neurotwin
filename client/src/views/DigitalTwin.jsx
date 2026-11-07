@@ -24,11 +24,13 @@ export function DigitalTwin({
   onDownloadReport,
 }) {
   const isClinician = ['doctor', 'admin'].includes(user?.role);
-  const patient = overview?.patient || patients.find((p) => p._id === selectedPatientId) || patients[0];
+  const safePatients = Array.isArray(patients) ? patients : [];
+  const safeAnalyses = Array.isArray(analyses) ? analyses : (Array.isArray(analyses?.analyses) ? analyses.analyses : []);
+  const patient = overview?.patient || safePatients.find((p) => p._id === selectedPatientId) || safePatients[0];
   const twin = overview?.twin || null;
   const subjectAnalyses = overview?.analyses?.length
     ? overview.analyses
-    : analyses.filter((a) => (a.patient?._id || a.patient) === patient?._id);
+    : safeAnalyses.filter((a) => (a.patient?._id || a.patient) === patient?._id);
 
   const latest = subjectAnalyses[0] || null;
   const latestChannels = latest?.multichannel_waveform?.length
@@ -161,7 +163,7 @@ export function DigitalTwin({
                   </div>
                   <div>
                     <dt>Primary diagnosis</dt>
-                    <dd>{patient.primaryDiagnosis || (patient.conditions || [])[0] || 'Under evaluation'}</dd>
+                    <dd>{patient.treatment?.diagnosis || patient.primaryDiagnosis || (patient.conditions || [])[0] || 'Under evaluation'}</dd>
                   </div>
                   <div>
                     <dt>Research consent</dt>
@@ -179,7 +181,7 @@ export function DigitalTwin({
                     <dt>Signal specification</dt>
                     <dd className="mono">
                       {latest
-                        ? `${latest.session?.samplingRate || 128} Hz · ${latest.session?.channels?.length || 18} leads`
+                        ? `${latest.session?.samplingRate || 128} Hz · ${Array.isArray(latest.session?.channels) ? latest.session.channels.length : (latest.session?.channels || 18)} leads`
                         : '128 Hz · 18 leads'}
                     </dd>
                   </div>
