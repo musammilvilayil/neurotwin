@@ -9,7 +9,6 @@ import {
 } from 'lucide-react';
 import './style.css';
 import './plots.css';
-import './reactbits-theme.css';
 import './clinical-refinement.css';
 import HMSWorkspace from './HMSWorkspace.jsx';
 
