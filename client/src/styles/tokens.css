@@ -1,0 +1,82 @@
+/* NeuroTwin design tokens — premium light theme.
+   Every colour, size, radius, shadow and timing used by the app is defined here. */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg: #f7f9fc;
+  --surface: #ffffff;
+  --surface-2: #f1f5fa;
+  --soft: #eff6ff;
+
+  /* Brand */
+  --primary: #2563eb;
+  --primary-600: #1d4ed8;
+  --primary-100: #dbeafe;
+  --primary-50: #eff6ff;
+  --cyan: #0ea5e9;
+  --cyan-50: #f0f9ff;
+  --purple: #8065d9;
+  --purple-50: #f3f0ff;
+
+  /* Text */
+  --text: #172033;
+  --text-2: #64748b;
+  --muted: #94a3b8;
+
+  /* Lines */
+  --border: #e5eaf1;
+  --border-strong: #d3dbe7;
+
+  /* Status (fill) and ink (accessible text on tinted backgrounds) */
+  --success: #16a36a;
+  --success-50: #ecfdf5;
+  --success-ink: #0b7a4e;
+  --warning: #d99024;
+  --warning-50: #fff7e8;
+  --warning-ink: #8f5a0a;
+  --danger: #dc535b;
+  --danger-50: #fef1f2;
+  --danger-ink: #b3333c;
+
+  /* Radius */
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-pill: 999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(23, 32, 51, 0.04);
+  --shadow-sm: 0 1px 2px rgba(23, 32, 51, 0.04), 0 2px 8px rgba(23, 32, 51, 0.04);
+  --shadow-md: 0 4px 18px rgba(23, 32, 51, 0.08);
+  --shadow-lg: 0 18px 48px rgba(23, 32, 51, 0.16);
+  --ring: 0 0 0 3px rgba(37, 99, 235, 0.22);
+
+  /* Spacing scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+
+  /* Typography */
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 0.18s;
+
+  /* Layout */
+  --sidebar-w: 248px;
+  --sidebar-w-collapsed: 72px;
+  --topbar-h: 60px;
+
+  /* Breakpoints (documentation only — CSS custom properties cannot be used in media queries):
+     sm 640 · md 768 · lg 1024 · xl 1280 · 2xl 1536 */
+}
+
