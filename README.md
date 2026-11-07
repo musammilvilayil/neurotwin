@@ -131,3 +131,7 @@ A previous repository experiment reported precision 55.84%, recall 76.79%, F1 64
 ## Limitations
 
 The prototype has not been clinically validated, certified or prospectively evaluated. Dataset shift, montage variation, artifacts, class imbalance, false positives and false negatives remain important. Secure deployment also requires privacy, consent, retention, access-control, secret-management and operational review.
+
+## Frontend UI and motion components
+
+The frontend uses selected official free React Bits source components (Aurora and SpotlightCard) copied into `client/src/components/reactbits/` and customized through the local NeuroTwin theme. The component source is included in the repository; no paid React Bits Pro blocks or license-gated assets are used. React Bits: https://reactbits.dev/ (MIT + Commons Clause; see upstream repository license for the applicable terms).
