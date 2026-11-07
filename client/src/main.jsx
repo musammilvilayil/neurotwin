@@ -28,41 +28,41 @@ function HomePage({ onLogin, onNavigate }) {
   return <main className="public-main">
     <section className="public-hero">
       <div className="public-aurora" aria-hidden="true"><Aurora colorStops={["#2563eb", "#60a5fa", "#818cf8"]} amplitude={1.15} blend={0.42} speed={0.28} height={0.48} scale={1.1} glow={0.42} layers={2} opacity={0.75} /></div>
-      <div className="public-hero-copy"><p className="eyebrow">EEG-INFORMED DIGITAL TWIN RESEARCH</p><h1>Understand the signal.<br/><i>Keep the context.</i></h1><p>NeuroTwin brings EEG research outputs, longitudinal context and role-based collaboration into one carefully scoped workspace.</p><div className="public-hero-actions"><button className="primary-button" onClick={onLogin}>Enter workspace <ArrowUpRight size={17}/></button><button className="public-secondary-button" onClick={() => onNavigate('features')}>Explore capabilities</button></div><div className="public-trust"><span><ShieldCheck size={16}/> Role-based access</span><span><Activity size={16}/> EEG research workflow</span><span><Users size={16}/> Connected care roles</span></div></div>
-      <div className="public-visual"><div className="public-orbit orbit-a"/><div className="public-orbit orbit-b"/><div className="public-brain"><Brain size={94} strokeWidth={1.1}/></div><span className="public-signal signal-one"/><span className="public-signal signal-two"/><div className="public-visual-label"><Waves size={16}/> SIGNAL · CONTEXT · INSIGHT</div></div>
+      <div className="public-hero-copy"><p className="eyebrow">EEG-INFORMED DIGITAL TWIN RESEARCH</p><h1>Understand the signal.<br /><i>Keep the context.</i></h1><p>NeuroTwin brings EEG research outputs, longitudinal context and role-based collaboration into one carefully scoped workspace.</p><div className="public-hero-actions"><button className="primary-button" onClick={onLogin}>Enter workspace <ArrowUpRight size={17} /></button><button className="public-secondary-button" onClick={() => onNavigate('features')}>Explore capabilities</button></div><div className="public-trust"><span><ShieldCheck size={16} /> Role-based access</span><span><Activity size={16} /> EEG research workflow</span><span><Users size={16} /> Connected care roles</span></div></div>
+      <div className="public-visual"><div className="public-orbit orbit-a" /><div className="public-orbit orbit-b" /><div className="public-brain"><Brain size={94} strokeWidth={1.1} /></div><span className="public-signal signal-one" /><span className="public-signal signal-two" /><div className="public-visual-label"><Waves size={16} /> SIGNAL · CONTEXT · INSIGHT</div></div>
     </section>
     <section className="public-section"><p className="eyebrow">ONE CONNECTED WORKSPACE</p><h2>Research context, made easier to explore.</h2><p className="public-section-lead">A research prototype designed to organize EEG-informed records and support collaboration between authorized roles.</p><div className="public-feature-grid">
-      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#3b82f6" intensity={0.22}><span><Activity size={20}/></span><h3>EEG research review</h3><p>Upload supported EDF recordings and review artifact-backed model outputs when the research service is available.</p></SpotlightCard>
-      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#6366f1" intensity={0.2}><span><Brain size={20}/></span><h3>Digital Twin context</h3><p>Explore stored longitudinal snapshots and research trends alongside available patient context.</p></SpotlightCard>
-      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#0ea5e9" intensity={0.2}><span><ShieldCheck size={20}/></span><h3>Role-based workspace</h3><p>Separate access for administrators, doctors, patients and caregivers.</p></SpotlightCard>
+      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#3b82f6" intensity={0.22}><span><Activity size={20} /></span><h3>EEG research review</h3><p>Upload supported EDF recordings and review artifact-backed model outputs when the research service is available.</p></SpotlightCard>
+      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#6366f1" intensity={0.2}><span><Brain size={20} /></span><h3>Digital Twin context</h3><p>Explore stored longitudinal snapshots and research trends alongside available patient context.</p></SpotlightCard>
+      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#0ea5e9" intensity={0.2}><span><ShieldCheck size={20} /></span><h3>Role-based workspace</h3><p>Separate access for administrators, doctors, patients and caregivers.</p></SpotlightCard>
     </div></section>
-    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
+    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17} /></button></section>
   </main>;
 }
 
 function AboutPage({ onLogin }) {
   return <main className="public-main">
     <section className="public-section public-copy-section"><p className="eyebrow">ABOUT NEUROTWIN</p><h2>A structured view of EEG research and longitudinal context.</h2><p>NeuroTwin is an academic research prototype exploring how EEG signal processing, machine-learning research outputs and patient-specific longitudinal records can be brought together in a single digital workspace.</p><p>It is intended for demonstration, research and supervised review. It does not replace clinical judgement, neurological examination or validated medical devices.</p></section>
-    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
+    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17} /></button></section>
   </main>;
 }
 
 function FeaturesPage({ onLogin }) {
   return <main className="public-main">
     <section className="public-section"><p className="eyebrow">PLATFORM CAPABILITIES</p><h2>Built around four connected roles.</h2><div className="public-feature-grid role-grid">
-      <article><span><ShieldCheck size={20}/></span><h3>Administrator</h3><p>Review workspace activity and governance records, and oversee platform-level access.</p></article>
-      <article><span><Activity size={20}/></span><h3>Doctor</h3><p>Access assigned patient records, review EEG research outputs, upload EDF files and document clinical context.</p></article>
-      <article><span><Users size={20}/></span><h3>Patient</h3><p>View the linked personal research overview, permitted notes and longitudinal context.</p></article>
-      <article><span><Users size={20}/></span><h3>Caregiver</h3><p>View only the patient information explicitly linked and authorized for caregiver access.</p></article>
+      <article><span><ShieldCheck size={20} /></span><h3>Administrator</h3><p>Review workspace activity and governance records, and oversee platform-level access.</p></article>
+      <article><span><Activity size={20} /></span><h3>Doctor</h3><p>Access assigned patient records, review EEG research outputs, upload EDF files and document clinical context.</p></article>
+      <article><span><Users size={20} /></span><h3>Patient</h3><p>View the linked personal research overview, permitted notes and longitudinal context.</p></article>
+      <article><span><Users size={20} /></span><h3>Caregiver</h3><p>View only the patient information explicitly linked and authorized for caregiver access.</p></article>
     </div></section>
-    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
+    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17} /></button></section>
   </main>;
 }
 
 function ResearchPage({ onLogin }) {
   return <main className="public-main">
-    <section className="public-section public-copy-section"><p className="eyebrow">RESEARCH & SAFETY</p><h2>Transparent about what the prototype can — and cannot — do.</h2><p>Model outputs are experimental research information. They must not be used to diagnose, predict an individual's clinical outcome, change medication or make treatment decisions.</p><p>Any EEG analysis shown in the workspace requires review by a qualified clinician and must be interpreted with the broader clinical history. The prototype has not been established as a clinically validated diagnostic device.</p><div className="boundary public-boundary"><AlertTriangle size={18}/><span><b>Important boundary</b><br/>For academic research and demonstration only. Not for diagnosis or treatment.</span></div></section>
-    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
+    <section className="public-section public-copy-section"><p className="eyebrow">RESEARCH & SAFETY</p><h2>Transparent about what the prototype can — and cannot — do.</h2><p>Model outputs are experimental research information. They must not be used to diagnose, predict an individual's clinical outcome, change medication or make treatment decisions.</p><p>Any EEG analysis shown in the workspace requires review by a qualified clinician and must be interpreted with the broader clinical history. The prototype has not been established as a clinically validated diagnostic device.</p><div className="boundary public-boundary"><AlertTriangle size={18} /><span><b>Important boundary</b><br />For academic research and demonstration only. Not for diagnosis or treatment.</span></div></section>
+    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17} /></button></section>
   </main>;
 }
 
@@ -84,13 +84,13 @@ function PublicSite({ onLogin }) {
     switch (page) {
       case 'login':
         return <main className="public-login-layout">
-          <section className="public-login-intro"><p className="eyebrow">AUTHORIZED ACCESS</p><h1>Your research workspace, <i>securely connected.</i></h1><p>Sign in with the username and password assigned to your NeuroTwin account. Your role determines which records and tools are available.</p><div className="boundary"><AlertTriangle size={18}/><span><b>Research use only</b><br/>NeuroTwin is not a diagnostic device. Outputs require qualified clinical review.</span></div></section>
+          <section className="public-login-intro"><p className="eyebrow">AUTHORIZED ACCESS</p><h1>Your research workspace, <i>securely connected.</i></h1><p>Sign in with the username and password assigned to your NeuroTwin account. Your role determines which records and tools are available.</p><div className="boundary"><AlertTriangle size={18} /><span><b>Research use only</b><br />NeuroTwin is not a diagnostic device. Outputs require qualified clinical review.</span></div></section>
           <form className="card login-card public-login-card" onSubmit={submit}>
-            <div className="login-symbol"><ShieldCheck size={22}/></div><p className="eyebrow">SECURE ACCESS</p><h2>Welcome back</h2><p className="muted">Enter your username and password to continue.</p>
-            <label>Username or email<input autoComplete="username" value={identifier} onChange={e => setIdentifier(e.target.value)} required/></label>
-            <label>Password<input autoComplete="current-password" type="password" value={password} onChange={e => setPassword(e.target.value)} required/></label>
+            <div className="login-symbol"><ShieldCheck size={22} /></div><p className="eyebrow">SECURE ACCESS</p><h2>Welcome back</h2><p className="muted">Enter your username and password to continue.</p>
+            <label>Username or email<input autoComplete="username" value={identifier} onChange={e => setIdentifier(e.target.value)} required /></label>
+            <label>Password<input autoComplete="current-password" type="password" value={password} onChange={e => setPassword(e.target.value)} required /></label>
             {error && <p className="error" role="alert">{error}</p>}
-            <button className="primary-button" disabled={busy}>{busy ? 'Signing in…' : 'Sign in securely'} <ArrowUpRight size={17}/></button>
+            <button className="primary-button" disabled={busy}>{busy ? 'Signing in…' : 'Sign in securely'} <ArrowUpRight size={17} /></button>
             <div className="demo"><b>DEMO ACCOUNTS · SELECT A ROLE</b>{Object.keys(roleLabels).map(role => <button type="button" key={role} onClick={() => setIdentifier(role)}>{roleLabels[role]}</button>)}<small>Password for all demo accounts: <b>DemoPass123!</b></small></div>
             <button type="button" className="public-back-link" onClick={() => nav('home')}>← Back to public website</button>
           </form>
@@ -108,14 +108,14 @@ function PublicSite({ onLogin }) {
   };
   return <div className="public-site">
     <header className="public-nav">
-      <button className="public-brand" onClick={() => nav('home')}><span className="logo-mark"><Brain size={21}/></span><span>NeuroTwin<small>EEG WORKSPACE</small></span></button>
+      <button className="public-brand" onClick={() => nav('home')}><span className="logo-mark"><Brain size={21} /></span><span>NeuroTwin<small>EEG WORKSPACE</small></span></button>
       <nav aria-label="Main navigation">
         <button className={page === 'home' ? 'selected' : ''} onClick={() => nav('home')}>Home</button>
         <button className={page === 'about' ? 'selected' : ''} onClick={() => nav('about')}>About</button>
         <button className={page === 'features' ? 'selected' : ''} onClick={() => nav('features')}>Features</button>
         <button className={page === 'research' ? 'selected' : ''} onClick={() => nav('research')}>Research & safety</button>
       </nav>
-      <button className="primary-button public-login-cta" onClick={openLogin}>Workspace login <ArrowUpRight size={16}/></button>
+      <button className="primary-button public-login-cta" onClick={openLogin}>Workspace login <ArrowUpRight size={16} /></button>
     </header>
     {renderPage()}
     <footer className="public-footer"><span>© NeuroTwin · Academic research prototype</span><span>Privacy-aware access · Not a diagnostic device</span></footer>
@@ -123,7 +123,7 @@ function PublicSite({ onLogin }) {
 }
 
 function Badge({ children, type = '' }) { return <span className={`badge ${type}`}>{children}</span>; }
-function EmptyState({ icon: Icon = Activity, title, children }) { return <div className="empty-state"><span><Icon size={22}/></span><b>{title}</b><p>{children}</p></div>; }
+function EmptyState({ icon: Icon = Activity, title, children }) { return <div className="empty-state"><span><Icon size={22} /></span><b>{title}</b><p>{children}</p></div>; }
 function ModelStatus({ status }) {
   const ready = status?.model_state === 'ready';
   const checking = status?.model_state === 'checking';
@@ -134,7 +134,7 @@ function ModelStatus({ status }) {
       ? 'Checking whether the EEG model service is ready.'
       : status?.error || 'The EEG model service is unavailable. EDF uploads are disabled.';
   return <div className={`model-status ${ready ? 'model-ready' : 'model-unavailable'}`} role="status" aria-live="polite">
-    <span className="model-status-indicator"/>
+    <span className="model-status-indicator" />
     <div><b>{title}</b><p>{detail}</p></div>
   </div>;
 }
@@ -147,7 +147,7 @@ function Plot({ values, kind = 'wave' }) {
     const y = score ? 94 - Math.max(0, Math.min(1, safe)) * 78 : 50 - Math.max(-2.5, Math.min(2.5, safe)) * 14;
     return `${index / (values.length - 1) * 100},${y}`;
   }).join(' ');
-  return <div className="plot-wrap"><svg className={`plot ${score ? 'score-plot' : ''}`} viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label={score ? 'Experimental EEG score timeline' : 'EEG waveform'}><line x1="0" y1="50" x2="100" y2="50" className="plot-axis"/><polyline points={points}/></svg><div className="plot-labels"><span>Earlier</span><span>Recent</span></div></div>;
+  return <div className="plot-wrap"><svg className={`plot ${score ? 'score-plot' : ''}`} viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label={score ? 'Experimental EEG score timeline' : 'EEG waveform'}><line x1="0" y1="50" x2="100" y2="50" className="plot-axis" /><polyline points={points} /></svg><div className="plot-labels"><span>Earlier</span><span>Recent</span></div></div>;
 }
 
 function MultichannelPlot({ multichannel, channels, windowSeconds = 15 }) {
@@ -272,7 +272,7 @@ function AnalysisDetailModal({ analysis, onClose, onDownloadReport, onToggleRevi
             <h2>EEG Analysis Detail</h2>
             <small style={{ color: '#64748b' }}>{patient?.fullName || 'Patient Record'} {patient?.mrn ? `· ${patient.mrn}` : ''} · {dateLabel(analysis.createdAt)}</small>
           </div>
-          <button className="icon-button" onClick={onClose} aria-label="Close modal"><X size={18}/></button>
+          <button className="icon-button" onClick={onClose} aria-label="Close modal"><X size={18} /></button>
         </div>
         <div className="modal-body">
           <div className="analysis-kpi-row">
@@ -298,7 +298,7 @@ function AnalysisDetailModal({ analysis, onClose, onDownloadReport, onToggleRevi
 
           <div className="threshold-slider-box">
             <div className="threshold-slider-header">
-              <span><SlidersHorizontal size={14} style={{ verticalAlign: 'middle', marginRight: '6px' }}/> <b>Interactive Sensitivity Threshold</b>: {(threshold * 100).toFixed(0)}%</span>
+              <span><SlidersHorizontal size={14} style={{ verticalAlign: 'middle', marginRight: '6px' }} /> <b>Interactive Sensitivity Threshold</b>: {(threshold * 100).toFixed(0)}%</span>
               <span style={{ fontSize: '11px', color: '#64748b' }}>Baseline: {((analysis?.probabilities?.threshold ?? 0.65) * 100).toFixed(0)}%</span>
             </div>
             <div className="threshold-slider-control">
@@ -321,7 +321,7 @@ function AnalysisDetailModal({ analysis, onClose, onDownloadReport, onToggleRevi
           <article className="panel">
             <div className="panel-heading">
               <div>
-                <span className="panel-icon purple"><Activity size={18}/></span>
+                <span className="panel-icon purple"><Activity size={18} /></span>
                 <div>
                   <h3>EEG Seizure Score Timeline</h3>
                   <p>Window-level predictions (10s stride, consecutive confirmation filter)</p>
@@ -341,7 +341,7 @@ function AnalysisDetailModal({ analysis, onClose, onDownloadReport, onToggleRevi
           <article className="panel">
             <div className="panel-heading">
               <div>
-                <span className="panel-icon"><Waves size={18}/></span>
+                <span className="panel-icon"><Waves size={18} /></span>
                 <div>
                   <h3>Multichannel EEG Signals</h3>
                   <p>18-channel standard international 10–20 bipolar montage</p>
@@ -418,7 +418,7 @@ function ExplainabilityMetrics({ analysis }) {
     <article className="panel">
       <div className="panel-heading">
         <div>
-          <span className="panel-icon purple"><Layers size={18}/></span>
+          <span className="panel-icon purple"><Layers size={18} /></span>
           <div>
             <h3>Explainability & Feature Saliency</h3>
             <p>AI model feature attribution and regional electrographic contribution</p>
@@ -517,7 +517,7 @@ function printPrescriptionSlip(patient, prescriptions = []) {
   const activeMeds = prescriptions.filter(p => p.status !== 'Discontinued');
   const rows = (activeMeds.length ? activeMeds : prescriptions).map((rx, i) => `
     <tr>
-      <td style="padding:10px;border-bottom:1px solid #e2e8f0;font-weight:600;">${i+1}. ${rx.medicineName}</td>
+      <td style="padding:10px;border-bottom:1px solid #e2e8f0;font-weight:600;">${i + 1}. ${rx.medicineName}</td>
       <td style="padding:10px;border-bottom:1px solid #e2e8f0;">${rx.dosage || '—'}</td>
       <td style="padding:10px;border-bottom:1px solid #e2e8f0;">${rx.frequency || '—'}</td>
       <td style="padding:10px;border-bottom:1px solid #e2e8f0;">${rx.instructions || 'As directed'}</td>
@@ -604,7 +604,7 @@ function PatientScheduleAndRx({ appointments = [], prescriptions = [], patient, 
       <article className="panel">
         <div className="panel-heading">
           <div>
-            <span className="panel-icon"><Calendar size={18}/></span>
+            <span className="panel-icon"><Calendar size={18} /></span>
             <div>
               <h3>Appointment Schedule</h3>
               <p>Upcoming and past neurological review consultations</p>
@@ -620,7 +620,7 @@ function PatientScheduleAndRx({ appointments = [], prescriptions = [], patient, 
                   <b>{app.reason || 'Clinical Consultation'}</b>
                   <Badge type={app.status === 'Completed' ? 'neutral' : 'blue'}>{app.status || 'Scheduled'}</Badge>
                 </div>
-                <span><Clock size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}/>{dateLabel(app.scheduledAt)}</span>
+                <span><Clock size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />{dateLabel(app.scheduledAt)}</span>
                 <small style={{ color: '#475569' }}>Doctor: {app.doctorName || 'Dr. Maya Rao'}</small>
               </div>
             ))}
@@ -633,7 +633,7 @@ function PatientScheduleAndRx({ appointments = [], prescriptions = [], patient, 
       <article className="panel">
         <div className="panel-heading">
           <div>
-            <span className="panel-icon purple"><Pill size={18}/></span>
+            <span className="panel-icon purple"><Pill size={18} /></span>
             <div>
               <h3>Prescriptions & Regimen</h3>
               <p>Active prescribed anti-seizure medications and schedules</p>
@@ -648,7 +648,7 @@ function PatientScheduleAndRx({ appointments = [], prescriptions = [], patient, 
                 onClick={() => printPrescriptionSlip(patient, prescriptions)}
                 title="Print or save PDF prescription slip"
               >
-                <Printer size={13}/> Print Rx Slip
+                <Printer size={13} /> Print Rx Slip
               </button>
             )}
           </div>
@@ -674,7 +674,7 @@ function PatientScheduleAndRx({ appointments = [], prescriptions = [], patient, 
                         const Icon = t.icon;
                         return (
                           <span key={ti} className={`timing-badge ${t.cls}`}>
-                            <Icon size={11} style={{ marginRight: '3px' }}/> {t.label}
+                            <Icon size={11} style={{ marginRight: '3px' }} /> {t.label}
                           </span>
                         );
                       })}
@@ -804,8 +804,8 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
       <h4 style={{ margin: '0 0 12px', fontSize: '13px', color: '#1e293b' }}>
         Enter Diagnosis & Treatment Updates for {patient?.fullName || 'Patient'}
       </h4>
-      {savedNotice && <div className="feedback success-feedback" style={{ padding: '8px 12px', fontSize: '11px', marginBottom: '10px' }}><CheckCircle2 size={14}/><span>{savedNotice}</span></div>}
-      
+      {savedNotice && <div className="feedback success-feedback" style={{ padding: '8px 12px', fontSize: '11px', marginBottom: '10px' }}><CheckCircle2 size={14} /><span>{savedNotice}</span></div>}
+
       <div className="treatment-form-grid">
         <div>
           <label>Primary Clinical Diagnosis</label>
@@ -845,7 +845,7 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
             <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>Add one or multiple anti-seizure medications with dosage and frequency instructions.</p>
           </div>
           <button type="button" className="action-btn-sm" onClick={() => addMedicineRow()} style={{ fontWeight: 600 }}>
-            <Plus size={13}/> Add More Medicine
+            <Plus size={13} /> Add More Medicine
           </button>
         </div>
 
@@ -865,7 +865,7 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
               <span>Medication #{mIdx + 1}</span>
               {medicines.length > 1 && (
                 <button type="button" className="med-remove-btn" onClick={() => removeMedicineRow(mIdx)} title="Remove medicine">
-                  <Trash2 size={12}/> Remove
+                  <Trash2 size={12} /> Remove
                 </button>
               )}
             </div>
@@ -915,7 +915,7 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
             <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>Book neurological review visits or EEG follow-up sessions.</p>
           </div>
           <button type="button" className="action-btn-sm" onClick={() => addAppointmentRow()} style={{ fontWeight: 600 }}>
-            <Plus size={13}/> Add Follow-up
+            <Plus size={13} /> Add Follow-up
           </button>
         </div>
 
@@ -939,7 +939,7 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
             </div>
             {appointments.length > 1 && (
               <button type="button" className="action-btn-sm" onClick={() => removeAppointmentRow(aIdx)} style={{ height: '36px', color: '#dc2626' }}>
-                <Trash2 size={13}/>
+                <Trash2 size={13} />
               </button>
             )}
           </div>
@@ -1074,7 +1074,7 @@ function App() {
   const token = session?.token;
   const user = session?.user;
   const isClinician = ['doctor', 'admin'].includes(user?.role);
-  const isResearchWorkspace = ['doctor','admin','patient','caregiver'].includes(user?.role);
+  const isResearchWorkspace = ['doctor', 'admin', 'patient', 'caregiver'].includes(user?.role);
   const logout = useCallback(() => { localStorage.removeItem('nt-session'); setSession(null); setDashboard(null); setOverview(null); }, []);
 
   const loadWorkspace = useCallback(async () => {
@@ -1163,8 +1163,8 @@ function App() {
     });
   }, [analysesList, filterPatientId, filterStatus, filterPattern, searchQuery]);
 
-  if (!session) return <PublicSite onLogin={value => { localStorage.setItem('nt-session', JSON.stringify(value)); setSession(value); }}/>;
-  if (!dashboard && busy) return <div className="loading"><span className="loading-mark"><Brain size={25}/></span><b>Preparing your workspace</b><p>Loading authorized research data…</p></div>;
+  if (!session) return <PublicSite onLogin={value => { localStorage.setItem('nt-session', JSON.stringify(value)); setSession(value); }} />;
+  if (!dashboard && busy) return <div className="loading"><span className="loading-mark"><Brain size={25} /></span><b>Preparing your workspace</b><p>Loading authorized research data…</p></div>;
 
   const patient = overview?.patient;
   const latest = overview?.analyses?.[0];
@@ -1172,9 +1172,9 @@ function App() {
   const navigation = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     ...(isClinician ? [{ id: 'patients', label: 'Patients', icon: Users }] : []),
-    ...(isResearchWorkspace ? [{ id: 'analyses', label: 'EEG Analyses', icon: Activity },{ id: 'twin', label: 'Digital Twin', icon: Brain },{ id: 'notes', label: 'Clinical notes', icon: FileText }] : []),
+    ...(isResearchWorkspace ? [{ id: 'analyses', label: 'EEG Analyses', icon: Activity }, { id: 'twin', label: 'Digital Twin', icon: Brain }, { id: 'notes', label: 'Clinical notes', icon: FileText }] : []),
     ...(user?.role === 'admin' ? [{ id: 'admin', label: 'Audit & access', icon: ShieldCheck }] : []),
-    ...(['admin','doctor','receptionist','nurse','lab_technician','pharmacist','billing'].includes(user?.role) ? [{ id: 'hms', label: 'Hospital Management', icon: ClipboardList }] : [])
+    ...(['admin', 'doctor', 'receptionist', 'nurse', 'lab_technician', 'pharmacist', 'billing'].includes(user?.role) ? [{ id: 'hms', label: 'Hospital Management', icon: ClipboardList }] : [])
   ];
   const chooseTab = id => { setTab(id); setMobileNav(false); setError(''); setNotice(''); };
   const upload = async event => {
@@ -1442,36 +1442,36 @@ function App() {
             <h2>Administrative Dashboard</h2>
             <p>Manage user accounts, role assignments, patient consent/privacy flows, and platform governance.</p>
             <div className="hero-meta">
-              <span><ShieldCheck size={15}/> Governance</span>
-              <span><Users size={15}/> User & Role Management</span>
+              <span><ShieldCheck size={15} /> Governance</span>
+              <span><Users size={15} /> User & Role Management</span>
             </div>
           </div>
           <div className="hero-art">
-            <div className="orb orb-one"/><div className="orb orb-two"/>
-            <ShieldCheck size={70} strokeWidth={1.1}/><span className="orbit-dot"/>
+            <div className="orb orb-one" /><div className="orb orb-two" />
+            <ShieldCheck size={70} strokeWidth={1.1} /><span className="orbit-dot" />
           </div>
         </section>
 
         <div className="section-heading">
           <div><p className="eyebrow">ADMIN AT A GLANCE</p><h2>Operational Status</h2></div>
-          <span className="updated-label"><span/> Platform View</span>
+          <span className="updated-label"><span /> Platform View</span>
         </div>
 
         <section className="stats">
           <article className="stat-card">
-            <div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">USERS</span></div>
+            <div className="stat-top"><span className="stat-icon"><Users size={18} /></span><span className="stat-kicker">USERS</span></div>
             <small>Active user accounts</small>
             <strong>{usersList.length || dashboard?.counts?.users || 0}</strong>
             <span className="stat-foot">Managed accounts</span>
           </article>
           <article className="stat-card">
-            <div className="stat-top"><span className="stat-icon lavender"><Users size={18}/></span><span className="stat-kicker">PATIENTS</span></div>
+            <div className="stat-top"><span className="stat-icon lavender"><Users size={18} /></span><span className="stat-kicker">PATIENTS</span></div>
             <small>Patient records</small>
             <strong>{patients.length}</strong>
             <span className="stat-foot">Consent & profile records</span>
           </article>
           <article className="stat-card">
-            <div className="stat-top"><span className="stat-icon amber-icon"><Activity size={18}/></span><span className="stat-kicker">ANALYSES</span></div>
+            <div className="stat-top"><span className="stat-icon amber-icon"><Activity size={18} /></span><span className="stat-kicker">ANALYSES</span></div>
             <small>Total EEG inferences</small>
             <strong>{dashboard?.counts?.analyses ?? 0}</strong>
             <span className="stat-foot">AI-processed sessions</span>
@@ -1481,7 +1481,7 @@ function App() {
         <article className="panel">
           <div className="panel-heading">
             <div>
-              <span className="panel-icon"><Users size={18}/></span>
+              <span className="panel-icon"><Users size={18} /></span>
               <div>
                 <h3>User Account Management & Role Assignment</h3>
                 <p>Create, inspect, and assign roles (Doctor, Patient, Caregiver, Admin)</p>
@@ -1489,13 +1489,13 @@ function App() {
             </div>
             <Badge type="blue">{usersList.length} accounts</Badge>
           </div>
-          <AdminUserManagement users={usersList} onRoleChange={handleRoleChange} onToggleStatus={handleToggleUserStatus}/>
+          <AdminUserManagement users={usersList} onRoleChange={handleRoleChange} onToggleStatus={handleToggleUserStatus} />
         </article>
 
         <article className="panel">
           <div className="panel-heading">
             <div>
-              <span className="panel-icon purple"><ShieldCheck size={18}/></span>
+              <span className="panel-icon purple"><ShieldCheck size={18} /></span>
               <div>
                 <h3>Patient Consent & Privacy Flows</h3>
                 <p>Track consent agreements and data privacy authorizations</p>
@@ -1503,13 +1503,13 @@ function App() {
             </div>
             <Badge type="green">PRIVACY COMPLIANT</Badge>
           </div>
-          <AdminConsentTracker patients={patients} onToggleConsent={handleToggleConsent}/>
+          <AdminConsentTracker patients={patients} onToggleConsent={handleToggleConsent} />
         </article>
 
         <article className="panel">
           <div className="panel-heading">
             <div>
-              <span className="panel-icon"><ClipboardList size={18}/></span>
+              <span className="panel-icon"><ClipboardList size={18} /></span>
               <div>
                 <h3>Recent Governance & Audit Log</h3>
                 <p>Latest role-based access events</p>
@@ -1543,26 +1543,26 @@ function App() {
             <h2>Doctor Dashboard & Caseload</h2>
             <p>Review raw EEG waveforms, AI-flagged anomalies with confidence scores, digital twin trends, and explainability metrics across assigned patient caseloads.</p>
             <div className="hero-meta">
-              <span><Activity size={15}/> Caseload Monitoring</span>
-              <span><Brain size={15}/> Digital Twin Trajectory</span>
+              <span><Activity size={15} /> Caseload Monitoring</span>
+              <span><Brain size={15} /> Digital Twin Trajectory</span>
             </div>
           </div>
           <div className="hero-art">
-            <div className="orb orb-one"/><div className="orb orb-two"/>
-            <Activity size={70} strokeWidth={1.1}/><span className="orbit-dot"/>
+            <div className="orb orb-one" /><div className="orb orb-two" />
+            <Activity size={70} strokeWidth={1.1} /><span className="orbit-dot" />
           </div>
           {patient && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 2 }}>
               <label className={`upload-button${uploading || modelStatus.model_state !== 'ready' ? ' is-loading' : ''}`} aria-disabled={uploading || modelStatus.model_state !== 'ready'}>
-                <Upload size={17}/>{uploading ? 'Processing EEG…' : 'Upload EDF (PhysioNet)'}
-                <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || modelStatus.model_state !== 'ready'} hidden/>
+                <Upload size={17} />{uploading ? 'Processing EEG…' : 'Upload EDF (PhysioNet)'}
+                <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || modelStatus.model_state !== 'ready'} hidden />
               </label>
               <div className="sim-btn-group">
                 <button type="button" className="sim-btn" onClick={() => simulateEEG('normal')} disabled={uploading} title="Run simulated normal baseline EEG">
-                  <Sparkles size={13}/> Sim Normal
+                  <Sparkles size={13} /> Sim Normal
                 </button>
                 <button type="button" className="sim-btn" style={{ background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }} onClick={() => simulateEEG('seizure')} disabled={uploading} title="Run simulated seizure burst EEG">
-                  <Activity size={13}/> Sim Seizure
+                  <Activity size={13} /> Sim Seizure
                 </button>
               </div>
             </div>
@@ -1571,24 +1571,24 @@ function App() {
 
         <div className="section-heading">
           <div><p className="eyebrow">PATIENT CASELOAD</p><h2>Active Caseload Summary</h2></div>
-          <span className="updated-label"><span/> Treating Clinician View</span>
+          <span className="updated-label"><span /> Treating Clinician View</span>
         </div>
 
         <section className="stats">
           <article className="stat-card">
-            <div className="stat-top"><span className="stat-icon"><Users size={18}/></span><span className="stat-kicker">CASELOAD</span></div>
+            <div className="stat-top"><span className="stat-icon"><Users size={18} /></span><span className="stat-kicker">CASELOAD</span></div>
             <small>Assigned patients</small>
             <strong>{patients.length}</strong>
             <span className="stat-foot">Under your active clinical care</span>
           </article>
           <article className="stat-card">
-            <div className="stat-top"><span className="stat-icon lavender"><Activity size={18}/></span><span className="stat-kicker">ANALYSES</span></div>
+            <div className="stat-top"><span className="stat-icon lavender"><Activity size={18} /></span><span className="stat-kicker">ANALYSES</span></div>
             <small>EEG sessions</small>
             <strong>{overview?.analyses?.length ?? 0}</strong>
             <span className="stat-foot">For selected patient {patient?.fullName?.split(' ')[0]}</span>
           </article>
           <article className="stat-card">
-            <div className="stat-top"><span className="stat-icon amber-icon"><ClipboardList size={18}/></span><span className="stat-kicker">REVIEW</span></div>
+            <div className="stat-top"><span className="stat-icon amber-icon"><ClipboardList size={18} /></span><span className="stat-kicker">REVIEW</span></div>
             <small>Pending clinician review</small>
             <strong>{dashboard?.counts?.pending ?? 0}</strong>
             <span className="stat-foot">Requiring physician verification</span>
@@ -1598,29 +1598,29 @@ function App() {
         <section className="content-grid">
           <article className="panel">
             <div className="panel-heading">
-              <div><span className="panel-icon"><Waves size={18}/></span><div><h3>Raw EEG Waveform</h3><p>Lead FP1-F7 · 10–20 Bipolar Montage</p></div></div>
+              <div><span className="panel-icon"><Waves size={18} /></span><div><h3>Raw EEG Waveform</h3><p>Lead FP1-F7 · 10–20 Bipolar Montage</p></div></div>
               <Badge type={latest ? 'blue' : 'neutral'}>{latest ? '128 HZ RESAMPLED' : 'NO DATA'}</Badge>
             </div>
-            <Plot values={latest?.waveform}/>
+            <Plot values={latest?.waveform} />
             <p className="chart-note">Review raw EEG waveform context alongside clinical history and digital twin state.</p>
           </article>
 
           <article className="panel">
             <div className="panel-heading">
-              <div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>AI Seizure Anomaly Timeline</h3><p>Window confidence scores & threshold</p></div></div>
+              <div><span className="panel-icon purple"><Activity size={18} /></span><div><h3>AI Seizure Anomaly Timeline</h3><p>Window confidence scores & threshold</p></div></div>
               <Badge type="amber">CONFIDENCE TIMELINE</Badge>
             </div>
-            <Plot values={latest?.timeline} kind="score"/>
+            <Plot values={latest?.timeline} kind="score" />
             <p className="chart-note">Window scores reflect model prediction probabilities. All AI alerts include confidence scores for clinician verification.</p>
           </article>
         </section>
 
-        {latest && <ExplainabilityMetrics analysis={latest}/>}
+        {latest && <ExplainabilityMetrics analysis={latest} />}
 
         <section className="content-grid">
           <article className="panel">
             <div className="panel-heading">
-              <div><span className="panel-icon"><Brain size={18}/></span><div><h3>Digital Twin Trends</h3><p>{patient?.fullName} Neurological State</p></div></div>
+              <div><span className="panel-icon"><Brain size={18} /></span><div><h3>Digital Twin Trends</h3><p>{patient?.fullName} Neurological State</p></div></div>
               <Badge type="blue">{twin?.trend?.toUpperCase() || 'STABLE'}</Badge>
             </div>
             <div className="twin-state">
@@ -1635,7 +1635,7 @@ function App() {
 
           <article className="panel">
             <div className="panel-heading">
-              <div><span className="panel-icon purple"><Stethoscope size={18}/></span><div><h3>Current Diagnosis & Regimen</h3><p>Entered by treating physician</p></div></div>
+              <div><span className="panel-icon purple"><Stethoscope size={18} /></span><div><h3>Current Diagnosis & Regimen</h3><p>Entered by treating physician</p></div></div>
               <Badge type="neutral">{patient?.mrn || 'Patient Record'}</Badge>
             </div>
             <div className="twin-state">
@@ -1658,7 +1658,7 @@ function App() {
           onToggleRxStatus={toggleRxStatus}
         />
 
-        <DoctorTreatmentForm patient={patient} onSave={saveTreatment} token={token} isBusy={busy}/>
+        <DoctorTreatmentForm patient={patient} onSave={saveTreatment} token={token} isBusy={busy} />
       </>;
     }
 
@@ -1670,17 +1670,17 @@ function App() {
             <h2>Welcome, {patient?.fullName?.split(' ')[0] || user?.name}</h2>
             <p>Track your simplified brain wave wellness score, read plain-language summaries, check appointment schedules, and review your active prescriptions.</p>
             <div className="hero-meta">
-              <span><Heart size={15}/> Personal Health Portal</span>
-              <span><ShieldCheck size={15}/> Private & Secure</span>
+              <span><Heart size={15} /> Personal Health Portal</span>
+              <span><ShieldCheck size={15} /> Private & Secure</span>
             </div>
           </div>
           <div className="hero-art">
-            <div className="orb orb-one"/><div className="orb orb-two"/>
-            <Brain size={70} strokeWidth={1.1}/><span className="orbit-dot"/>
+            <div className="orb orb-one" /><div className="orb orb-two" />
+            <Brain size={70} strokeWidth={1.1} /><span className="orbit-dot" />
           </div>
         </section>
 
-        <SimplifiedWellnessSection overview={overview} isCaregiver={false}/>
+        <SimplifiedWellnessSection overview={overview} isCaregiver={false} />
 
         <PatientScheduleAndRx
           patient={patient}
@@ -1692,7 +1692,7 @@ function App() {
         <section className="content-grid">
           <article className="panel">
             <div className="panel-heading">
-              <div><span className="panel-icon"><FileText size={18}/></span><div><h3>Care Team Notes</h3><p>Updates shared by your doctor</p></div></div>
+              <div><span className="panel-icon"><FileText size={18} /></span><div><h3>Care Team Notes</h3><p>Updates shared by your doctor</p></div></div>
               <Badge type="blue">SHARED</Badge>
             </div>
             {overview?.notes?.length ? (
@@ -1713,10 +1713,10 @@ function App() {
 
           <article className="panel">
             <div className="panel-heading">
-              <div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>Latest Brain Wave Rhythm</h3><p>Recent recorded activity</p></div></div>
+              <div><span className="panel-icon purple"><Activity size={18} /></span><div><h3>Latest Brain Wave Rhythm</h3><p>Recent recorded activity</p></div></div>
               <Badge type="green">ACTIVE</Badge>
             </div>
-            <Plot values={latest?.timeline} kind="score"/>
+            <Plot values={latest?.timeline} kind="score" />
             <p className="chart-note">Visual summary of your most recent recording interval.</p>
           </article>
         </section>
@@ -1731,17 +1731,17 @@ function App() {
             <h2>Caregiver View · {patient?.fullName ? `${patient.fullName}'s Wellness` : 'Patient Wellness'}</h2>
             <p>Review the patient's simplified wellness scores, plain-language summaries, appointment schedules, and active prescriptions in read-only mode.</p>
             <div className="hero-meta">
-              <span><Users size={15}/> Supporting Access</span>
-              <span><ShieldCheck size={15}/> Read-Only Scope</span>
+              <span><Users size={15} /> Supporting Access</span>
+              <span><ShieldCheck size={15} /> Read-Only Scope</span>
             </div>
           </div>
           <div className="hero-art">
-            <div className="orb orb-one"/><div className="orb orb-two"/>
-            <Users size={70} strokeWidth={1.1}/><span className="orbit-dot"/>
+            <div className="orb orb-one" /><div className="orb orb-two" />
+            <Users size={70} strokeWidth={1.1} /><span className="orbit-dot" />
           </div>
         </section>
 
-        <SimplifiedWellnessSection overview={overview} isCaregiver={true}/>
+        <SimplifiedWellnessSection overview={overview} isCaregiver={true} />
 
         <PatientScheduleAndRx
           patient={patient}
@@ -1753,7 +1753,7 @@ function App() {
         <section className="content-grid">
           <article className="panel">
             <div className="panel-heading">
-              <div><span className="panel-icon"><FileText size={18}/></span><div><h3>Visible Care Notes</h3><p>Patient-facing instructions and advice</p></div></div>
+              <div><span className="panel-icon"><FileText size={18} /></span><div><h3>Visible Care Notes</h3><p>Patient-facing instructions and advice</p></div></div>
               <Badge type="blue">READ-ONLY</Badge>
             </div>
             {overview?.notes?.length ? (
@@ -1774,7 +1774,7 @@ function App() {
 
           <article className="panel">
             <div className="panel-heading">
-              <div><span className="panel-icon purple"><Brain size={18}/></span><div><h3>Digital Twin Summary</h3><p>Patient trajectory snapshot</p></div></div>
+              <div><span className="panel-icon purple"><Brain size={18} /></span><div><h3>Digital Twin Summary</h3><p>Patient trajectory snapshot</p></div></div>
               <Badge type="amber">MONITORED</Badge>
             </div>
             <div className="twin-state">
@@ -1794,17 +1794,17 @@ function App() {
   };
 
   return <div className="shell">
-    {mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)}/>}
+    {mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)} />}
     <aside className={mobileNav ? 'sidebar sidebar-open' : 'sidebar'}>
-      <div className="logo"><span className="logo-mark"><Brain size={21}/></span><span>NeuroTwin<small>EEG WORKSPACE</small></span><button className="mobile-close" onClick={() => setMobileNav(false)} aria-label="Close menu"><X size={18}/></button></div>
-      <p className="nav-caption">WORKSPACE</p><nav>{navigation.map(item => { const Icon = item.icon; return <button key={item.id} className={tab === item.id ? 'nav-link active' : 'nav-link'} onClick={() => chooseTab(item.id)}><Icon size={18}/><span>{item.label}</span>{tab === item.id && <span className="nav-indicator"/>}</button>; })}</nav>
-      <div className="sidebar-bottom"><div className="secure-label"><ShieldCheck size={16}/><span>Protected workspace<small>Role-based access enabled</small></span></div><div className="profile"><div className="avatar">{user?.name?.[0] || 'N'}</div><div className="profile-copy"><b>{user?.name}</b><small>{roleLabels[user?.role] || user?.role}</small></div><button className="icon-button" onClick={logout} aria-label="Sign out" title="Sign out"><LogOut size={17}/></button></div></div>
+      <div className="logo"><span className="logo-mark"><Brain size={21} /></span><span>NeuroTwin<small>EEG WORKSPACE</small></span><button className="mobile-close" onClick={() => setMobileNav(false)} aria-label="Close menu"><X size={18} /></button></div>
+      <p className="nav-caption">WORKSPACE</p><nav>{navigation.map(item => { const Icon = item.icon; return <button key={item.id} className={tab === item.id ? 'nav-link active' : 'nav-link'} onClick={() => chooseTab(item.id)}><Icon size={18} /><span>{item.label}</span>{tab === item.id && <span className="nav-indicator" />}</button>; })}</nav>
+      <div className="sidebar-bottom"><div className="secure-label"><ShieldCheck size={16} /><span>Protected workspace<small>Role-based access enabled</small></span></div><div className="profile"><div className="avatar">{user?.name?.[0] || 'N'}</div><div className="profile-copy"><b>{user?.name}</b><small>{roleLabels[user?.role] || user?.role}</small></div><button className="icon-button" onClick={logout} aria-label="Sign out" title="Sign out"><LogOut size={17} /></button></div></div>
     </aside>
     <main className="workspace">
-      <header className="topbar"><div className="topbar-title"><button className="menu-toggle icon-button" onClick={() => setMobileNav(true)} aria-label="Open navigation"><Menu size={21}/></button><div><p className="eyebrow">{roleLabels[user?.role] || user?.role} workspace</p><h1>{tab === 'overview' ? `Welcome back${greeting ? `, ${greeting}` : ''}` : navigation.find(item => item.id === tab)?.label || 'Workspace'}</h1></div></div><div className="topbar-actions"><div className="demo-role-switcher" title="Quick 1-Click Role Switcher"><span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>Demo:</span><button type="button" className={`demo-role-btn ${user?.role === 'doctor' ? 'active' : ''}`} onClick={() => switchDemoRole('doctor')} disabled={busy || user?.role === 'doctor'}>Clinician</button><button type="button" className={`demo-role-btn ${user?.role === 'patient' ? 'active' : ''}`} onClick={() => switchDemoRole('patient')} disabled={busy || user?.role === 'patient'}>Patient</button><button type="button" className={`demo-role-btn ${user?.role === 'caregiver' ? 'active' : ''}`} onClick={() => switchDemoRole('caregiver')} disabled={busy || user?.role === 'caregiver'}>Caregiver</button><button type="button" className={`demo-role-btn ${user?.role === 'admin' ? 'active' : ''}`} onClick={() => switchDemoRole('admin')} disabled={busy || user?.role === 'admin'}>Admin</button></div><span className="status-pill"><span/> Workspace active</span><button className="icon-button refresh-button" onClick={loadWorkspace} disabled={busy} aria-label="Refresh data" title="Refresh data"><RefreshCw size={17}/></button><div className="top-avatar">{user?.name?.[0] || 'N'}</div></div></header>
-      <div className="safety-banner"><AlertTriangle size={16}/><span><b>Decision-Support Tool Only</b> — Does not replace clinical judgment or generate independent diagnoses. Digital Twin represents monitored neurological state derived from EEG patterns, not a brain simulation. All AI alerts include confidence scores and explainability for clinician verification.</span></div>
-      {error && <div className="feedback error-feedback" role="alert"><AlertTriangle size={17}/><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error"><X size={16}/></button></div>}
-      {notice && <div className="feedback success-feedback" role="status"><CheckCircle2 size={17}/><span>{notice}</span><button onClick={() => setNotice('')} aria-label="Dismiss notice"><X size={16}/></button></div>}
+      <header className="topbar"><div className="topbar-title"><button className="menu-toggle icon-button" onClick={() => setMobileNav(true)} aria-label="Open navigation"><Menu size={21} /></button><div><p className="eyebrow">{roleLabels[user?.role] || user?.role} workspace</p><h1>{tab === 'overview' ? `Welcome back${greeting ? `, ${greeting}` : ''}` : navigation.find(item => item.id === tab)?.label || 'Workspace'}</h1></div></div><div className="topbar-actions"><div className="demo-role-switcher" title="Quick 1-Click Role Switcher"><span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>Demo:</span><button type="button" className={`demo-role-btn ${user?.role === 'doctor' ? 'active' : ''}`} onClick={() => switchDemoRole('doctor')} disabled={busy || user?.role === 'doctor'}>Clinician</button><button type="button" className={`demo-role-btn ${user?.role === 'patient' ? 'active' : ''}`} onClick={() => switchDemoRole('patient')} disabled={busy || user?.role === 'patient'}>Patient</button><button type="button" className={`demo-role-btn ${user?.role === 'caregiver' ? 'active' : ''}`} onClick={() => switchDemoRole('caregiver')} disabled={busy || user?.role === 'caregiver'}>Caregiver</button><button type="button" className={`demo-role-btn ${user?.role === 'admin' ? 'active' : ''}`} onClick={() => switchDemoRole('admin')} disabled={busy || user?.role === 'admin'}>Admin</button></div><span className="status-pill"><span /> Workspace active</span><button className="icon-button refresh-button" onClick={loadWorkspace} disabled={busy} aria-label="Refresh data" title="Refresh data"><RefreshCw size={17} /></button><div className="top-avatar">{user?.name?.[0] || 'N'}</div></div></header>
+      <div className="safety-banner"><AlertTriangle size={16} /><span><b>Decision-Support Tool Only</b> — Does not replace clinical judgment or generate independent diagnoses. Digital Twin represents monitored neurological state derived from EEG patterns, not a brain simulation. All AI alerts include confidence scores and explainability for clinician verification.</span></div>
+      {error && <div className="feedback error-feedback" role="alert"><AlertTriangle size={17} /><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error"><X size={16} /></button></div>}
+      {notice && <div className="feedback success-feedback" role="status"><CheckCircle2 size={17} /><span>{notice}</span><button onClick={() => setNotice('')} aria-label="Dismiss notice"><X size={16} /></button></div>}
 
       {tab === 'overview' && isClinician && <section className="panel eeg-workflow-panel">
         <div className="eeg-workflow-patient">
@@ -1821,20 +1821,20 @@ function App() {
             })}
           </select>
         </div>
-        <ModelStatus status={modelStatus}/>
+        <ModelStatus status={modelStatus} />
         {isClinician && (
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
             <label className={`upload-button workflow-upload${uploading || !patient || modelStatus.model_state !== 'ready' ? ' is-loading' : ''}`} aria-disabled={uploading || !patient || modelStatus.model_state !== 'ready'}>
-              <Upload size={17}/>{uploading ? `Processing ${uploadingFile}…` : 'Upload EDF (PhysioNet)'}
-              <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || !patient || modelStatus.model_state !== 'ready'} hidden/>
+              <Upload size={17} />{uploading ? `Processing ${uploadingFile}…` : 'Upload EDF (PhysioNet)'}
+              <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || !patient || modelStatus.model_state !== 'ready'} hidden />
             </label>
             {patient && (
               <div className="sim-btn-group">
                 <button type="button" className="sim-btn" onClick={() => simulateEEG('normal')} disabled={uploading} title="Run simulated normal baseline EEG">
-                  <Sparkles size={13}/> Sim Normal
+                  <Sparkles size={13} /> Sim Normal
                 </button>
                 <button type="button" className="sim-btn" style={{ background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }} onClick={() => simulateEEG('seizure')} disabled={uploading} title="Run simulated seizure burst EEG">
-                  <Activity size={13}/> Sim Seizure
+                  <Activity size={13} /> Sim Seizure
                 </button>
               </div>
             )}
@@ -1854,7 +1854,7 @@ function App() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {isClinician && <button className="primary-button" onClick={() => setShowNewPatient(!showNewPatient)} style={{ padding: '8px 12px' }}>
-              <UserPlus size={15}/> {showNewPatient ? 'Cancel' : 'Enroll patient'}
+              <UserPlus size={15} /> {showNewPatient ? 'Cancel' : 'Enroll patient'}
             </button>}
             <Badge>{patients.length} records</Badge>
           </div>
@@ -1896,7 +1896,7 @@ function App() {
                 try {
                   setOverview(await api(`/api/patients/${item._id}/overview`, {}, token));
                   setTab('overview');
-                } catch(err) {
+                } catch (err) {
                   setError(err.message);
                 } finally {
                   setBusy(false);
@@ -1908,7 +1908,7 @@ function App() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <b>{item.fullName || 'Unnamed patient'}</b>
                   {analysesList.some(a => (a.patientId?._id || a.patientId || a.patient?._id) === item._id && (Number(a.confidence ?? a.probabilities?.maxSeizureScore ?? 0) >= 0.65 || a.label?.toLowerCase().includes('seizure'))) && (
-                    <span className="triage-alert-badge"><AlertTriangle size={11}/> HIGH RISK</span>
+                    <span className="triage-alert-badge"><AlertTriangle size={11} /> HIGH RISK</span>
                   )}
                 </div>
                 <small>{item.mrn ? `Record ID · ${item.mrn}` : 'Patient research record'}{item.assignedDoctor?.name ? ` · Assigned to: ${item.assignedDoctor.name}` : ''}</small>
@@ -1919,13 +1919,13 @@ function App() {
                 )}
               </span>
               <Badge type="blue">{item._id === patient?._id ? 'Selected' : 'Record'}</Badge>
-              <ArrowUpRight size={17}/>
+              <ArrowUpRight size={17} />
             </button>
           ))}
         </div> : <EmptyState icon={Users} title="No patient records">No patients are currently available for this account.</EmptyState>}
       </section>}
 
-      {tab === 'twin' && <><section className="hero compact-hero"><div><p className="eyebrow">LONGITUDINAL RESEARCH CONTEXT</p><h2>Digital Twin snapshot</h2><p>A research representation assembled from stored records and model-backed outputs when available.</p></div><span className="hero-icon"><Brain size={34}/></span></section><section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><Brain size={18}/></span><div><h3>Current research state</h3><p>{patient?.fullName || 'No patient selected'}</p></div></div><Badge type="amber">{twin?.trend || 'NO SNAPSHOT'}</Badge></div><div className="twin-state"><small>Research summary</small><p>{twin?.state?.clinicalAction || 'No model-backed digital-twin snapshot has been recorded.'}</p><div className="twin-facts"><div><small>Last EEG upload</small><b>{twin?.state?.lastUpload || 'Not recorded'}</b></div><div><small>Model state</small><b>{twin?.state?.modelState || latest?.modelState || 'Not available'}</b></div></div></div></article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Activity size={18}/></span><div><h3>EEG signal</h3><p>Most recent recorded waveform</p></div></div></div><Plot values={latest?.waveform}/></article></section><section className="panel"><div className="panel-heading"><div><h3>Analysis history</h3><p>Stored research analyses for the selected record</p></div><Badge>{overview?.analyses?.length || 0} entries</Badge></div>{overview?.analyses?.length ? overview.analyses.map(item => <div className="record-row" key={item._id}><div className="record-status"><Activity size={17}/></div><div className="record-copy"><b>{item.label || 'EEG research analysis'}</b><span>{dateLabel(item.createdAt)} · {item.modelState || 'Model state unavailable'}</span></div><Badge type="amber">{item.clinicianReview || 'Review required'}</Badge></div>) : <EmptyState icon={ClipboardList} title="No analysis history">Recorded analysis entries will appear here after a successful backend inference.</EmptyState>}</section></>}
+      {tab === 'twin' && <><section className="hero compact-hero"><div><p className="eyebrow">LONGITUDINAL RESEARCH CONTEXT</p><h2>Digital Twin snapshot</h2><p>A research representation assembled from stored records and model-backed outputs when available.</p></div><span className="hero-icon"><Brain size={34} /></span></section><section className="content-grid"><article className="panel"><div className="panel-heading"><div><span className="panel-icon"><Brain size={18} /></span><div><h3>Current research state</h3><p>{patient?.fullName || 'No patient selected'}</p></div></div><Badge type="amber">{twin?.trend || 'NO SNAPSHOT'}</Badge></div><div className="twin-state"><small>Research summary</small><p>{twin?.state?.clinicalAction || 'No model-backed digital-twin snapshot has been recorded.'}</p><div className="twin-facts"><div><small>Last EEG upload</small><b>{twin?.state?.lastUpload || 'Not recorded'}</b></div><div><small>Model state</small><b>{twin?.state?.modelState || latest?.modelState || 'Not available'}</b></div></div></div></article><article className="panel"><div className="panel-heading"><div><span className="panel-icon purple"><Activity size={18} /></span><div><h3>EEG signal</h3><p>Most recent recorded waveform</p></div></div></div><Plot values={latest?.waveform} /></article></section><section className="panel"><div className="panel-heading"><div><h3>Analysis history</h3><p>Stored research analyses for the selected record</p></div><Badge>{overview?.analyses?.length || 0} entries</Badge></div>{overview?.analyses?.length ? overview.analyses.map(item => <div className="record-row" key={item._id}><div className="record-status"><Activity size={17} /></div><div className="record-copy"><b>{item.label || 'EEG research analysis'}</b><span>{dateLabel(item.createdAt)} · {item.modelState || 'Model state unavailable'}</span></div><Badge type="amber">{item.clinicianReview || 'Review required'}</Badge></div>) : <EmptyState icon={ClipboardList} title="No analysis history">Recorded analysis entries will appear here after a successful backend inference.</EmptyState>}</section></>}
 
       {tab === 'notes' && <section className="panel page-panel">
         <div className="section-heading inside">
@@ -1955,10 +1955,10 @@ function App() {
             <button type="button" className="quick-chip" onClick={() => setNote(prev => (prev ? prev + '\n' : '') + 'Medication Titration: Evaluated clinical efficacy and serum tolerability. Initiated regimen adjustment with regular therapeutic monitoring.')}>+ Med Titration</button>
             <button type="button" className="quick-chip" onClick={() => setNote(prev => (prev ? prev + '\n' : '') + 'Seizure Precautions: Counseled on medication adherence, sleep hygiene, trigger avoidance, and aquatic safety.')}>+ Precautions</button>
           </div>
-          <textarea id="clinical-note" value={note} onChange={e => setNote(e.target.value)} placeholder="Record relevant clinical context for authorized review…" rows={4} required/>
+          <textarea id="clinical-note" value={note} onChange={e => setNote(e.target.value)} placeholder="Record relevant clinical context for authorized review…" rows={4} required />
           <div className="form-bottom">
             <span>{noteVisibility === 'patient' ? 'Visible to patient and authorized caregivers.' : 'Visible only to authorized clinical staff.'}</span>
-            <button className="primary-button" disabled={busy || !note.trim()}>{busy ? 'Saving…' : 'Save note'} <ArrowUpRight size={16}/></button>
+            <button className="primary-button" disabled={busy || !note.trim()}>{busy ? 'Saving…' : 'Save note'} <ArrowUpRight size={16} /></button>
           </div>
         </form>}
 
@@ -1966,7 +1966,7 @@ function App() {
           {overview.notes.map(item => (
             <article className="note-card" key={item._id}>
               <div className="note-card-top">
-                <span className="panel-icon"><FileText size={17}/></span>
+                <span className="panel-icon"><FileText size={17} /></span>
                 <span>{dateLabel(item.createdAt)}</span>
                 <Badge type={item.visibility === 'patient' ? 'blue' : 'neutral'}>{item.visibility || 'clinical'}</Badge>
               </div>
@@ -1977,7 +1977,7 @@ function App() {
         </div> : <EmptyState icon={FileText} title="No notes recorded">No notes are available for the selected patient and your access level.</EmptyState>}
       </section>}
 
-      
+
       {tab === 'analyses' && <section className="panel page-panel">
         <div className="section-heading inside">
           <div>
@@ -1989,14 +1989,14 @@ function App() {
             {isClinician && patient && (
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <label className={`action-btn-sm action-btn-primary${uploading || modelStatus.model_state !== 'ready' ? ' is-loading' : ''}`} style={{ cursor: 'pointer', padding: '7px 12px' }}>
-                  <Upload size={14}/> {uploading ? 'Processing…' : 'Upload EDF'}
-                  <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || modelStatus.model_state !== 'ready'} hidden/>
+                  <Upload size={14} /> {uploading ? 'Processing…' : 'Upload EDF'}
+                  <input type="file" accept=".edf,application/octet-stream" onChange={upload} disabled={uploading || modelStatus.model_state !== 'ready'} hidden />
                 </label>
                 <button type="button" className="sim-btn" style={{ padding: '6px 10px', fontSize: '10px' }} onClick={() => simulateEEG('normal')} disabled={uploading}>
-                  <Sparkles size={12}/> Sim Normal
+                  <Sparkles size={12} /> Sim Normal
                 </button>
                 <button type="button" className="sim-btn" style={{ padding: '6px 10px', fontSize: '10px', background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }} onClick={() => simulateEEG('seizure')} disabled={uploading}>
-                  <Activity size={12}/> Sim Seizure
+                  <Activity size={12} /> Sim Seizure
                 </button>
               </div>
             )}
@@ -2008,7 +2008,7 @@ function App() {
           <div className="filter-item" style={{ flex: 2 }}>
             <label>Search archive</label>
             <div className="filter-search-box">
-              <Search size={14} color="#64748b"/>
+              <Search size={14} color="#64748b" />
               <input
                 type="text"
                 placeholder="Search patient, MRN, file, pattern..."
@@ -2106,7 +2106,7 @@ function App() {
                             onClick={() => toggleReviewStatus(item._id, item.clinicianReview)}
                             title="Click to toggle clinician review status"
                           >
-                            {isReviewed ? <Check size={12}/> : <Activity size={12}/>}
+                            {isReviewed ? <Check size={12} /> : <Activity size={12} />}
                             {isReviewed ? 'Reviewed' : 'Pending Review'}
                           </button>
                         ) : (
@@ -2120,7 +2120,7 @@ function App() {
                             onClick={() => inspectAnalysis(item)}
                             title="Inspect Waveforms & Intervals"
                           >
-                            <Eye size={13}/> Inspect
+                            <Eye size={13} /> Inspect
                           </button>
                           <button
                             className="action-btn-sm action-btn-primary"
@@ -2128,7 +2128,7 @@ function App() {
                             disabled={downloadingReportId === item._id}
                             title="Download Clinical PDF Report"
                           >
-                            <FileDown size={13}/>
+                            <FileDown size={13} />
                             {downloadingReportId === item._id ? '...' : 'PDF'}
                           </button>
                         </div>
@@ -2148,10 +2148,10 @@ function App() {
         )}
       </section>}
 
-      {tab === 'hms' && <HMSWorkspace token={token} user={user} patients={patients}/>}
+      {tab === 'hms' && <HMSWorkspace token={token} user={user} patients={patients} />}
 
-      {tab === 'admin' && user?.role === 'admin' && <section className="panel page-panel"><div className="section-heading inside"><div><p className="eyebrow">GOVERNANCE</p><h2>Audit & access</h2><p className="muted">Recent audit events returned by the administration API.</p></div><Badge>{audit.length} events</Badge></div>{audit.length ? <div className="audit-list">{audit.map(item => <div className="audit-row" key={item._id}><span className="audit-icon"><ShieldCheck size={17}/></span><div><b>{item.action || 'Workspace event'}</b><small>{item.actor?.name || 'System'} · {item.actor?.role || 'unknown role'}</small></div><time>{dateLabel(item.createdAt)}</time></div>)}</div> : <EmptyState icon={ShieldCheck} title="No audit events available">Audit events will appear here when returned by the server.</EmptyState>}<p className="chart-note">This view displays API-provided events; it does not modify user roles or permissions.</p></section>}
-      
+      {tab === 'admin' && user?.role === 'admin' && <section className="panel page-panel"><div className="section-heading inside"><div><p className="eyebrow">GOVERNANCE</p><h2>Audit & access</h2><p className="muted">Recent audit events returned by the administration API.</p></div><Badge>{audit.length} events</Badge></div>{audit.length ? <div className="audit-list">{audit.map(item => <div className="audit-row" key={item._id}><span className="audit-icon"><ShieldCheck size={17} /></span><div><b>{item.action || 'Workspace event'}</b><small>{item.actor?.name || 'System'} · {item.actor?.role || 'unknown role'}</small></div><time>{dateLabel(item.createdAt)}</time></div>)}</div> : <EmptyState icon={ShieldCheck} title="No audit events available">Audit events will appear here when returned by the server.</EmptyState>}<p className="chart-note">This view displays API-provided events; it does not modify user roles or permissions.</p></section>}
+
       {inspectedAnalysis && (
         <AnalysisDetailModal
           analysis={inspectedAnalysis}
@@ -2163,9 +2163,9 @@ function App() {
         />
       )}
 
-      <footer className="app-footer"><div className="footer-brand"><Brain size={16}/> NeuroTwin</div><span>Academic research prototype · Not for diagnosis</span><button onClick={loadWorkspace} className="text-button"><RefreshCw size={14}/> Refresh workspace</button></footer>
+      <footer className="app-footer"><div className="footer-brand"><Brain size={16} /> NeuroTwin</div><span>Academic research prototype · Not for diagnosis</span><button onClick={loadWorkspace} className="text-button"><RefreshCw size={14} /> Refresh workspace</button></footer>
     </main>
   </div>;
 }
 
-createRoot(document.getElementById('root')).render(<App/>);
+createRoot(document.getElementById('root')).render(<App />);
