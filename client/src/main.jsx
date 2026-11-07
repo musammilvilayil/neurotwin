@@ -10,7 +10,9 @@ import {
 import './style.css';
 import './plots.css';
 import './clinical-refinement.css';
+import './reactbits-experience.css';
 import HMSWorkspace from './HMSWorkspace.jsx';
+import ReactBitsLayer from './components/reactbits/ReactBitsLayer.jsx';
 
 const api = async (path, opts = {}, token) => {
   const headers = { ...(opts.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }), ...(token ? { Authorization: `Bearer ${token}` } : {}) };
@@ -2238,4 +2240,4 @@ function App() {
   </div>;
 }
 
-createRoot(document.getElementById('root')).render(<App />);
+createRoot(document.getElementById('root')).render(<><ReactBitsLayer /><App /></>);
