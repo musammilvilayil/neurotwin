@@ -3,11 +3,13 @@ import { createRoot } from 'react-dom/client';
 import './styles/tokens.css';
 import './styles/components.css';
 import './styles/layout.css';
+import './styles/premium-story.css';
 
 import { api } from './lib/api.js';
 import { ToastProvider, useToast } from './components/ui.jsx';
 import { Sidebar, Topbar, navFor } from './components/Shell.jsx';
 import { AnalysisModal } from './components/AnalysisModal.jsx';
+import SpotlightLayer from './components/SpotlightLayer.jsx';
 
 import PublicSite from './views/Public.jsx';
 import { Overview } from './views/Overview.jsx';
@@ -604,6 +606,7 @@ function NeuroTwinApp() {
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ToastProvider>
+      <SpotlightLayer />
       <NeuroTwinApp />
     </ToastProvider>
   </React.StrictMode>,
