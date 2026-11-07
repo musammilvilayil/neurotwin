@@ -10,6 +10,7 @@ import {
 import './style.css';
 import './plots.css';
 import './reactbits-theme.css';
+import './clinical-refinement.css';
 import Aurora from './components/reactbits/Aurora';
 import SpotlightCard from './components/reactbits/SpotlightCard';
 import HMSWorkspace from './HMSWorkspace.jsx';
