@@ -1,5 +1,4 @@
 import fs from 'fs';
-import path from 'path';
 import assert from 'node:assert/strict';
 import request from 'supertest';
 import mongoose from 'mongoose';
@@ -10,7 +9,11 @@ import { User, Patient, EEGSession, Analysis, TwinSnapshot } from '../src/models
 async function runE2ETest() {
   console.log('=== NEUROTWIN FULL-STACK END-TO-END INTEGRATION TEST ===\n');
 
-  // Connect to local MongoDB
+  // This opt-in integration test requires MongoDB, a running trained ML service and a local EDF sample.
+  const edfPath = process.env.E2E_EDF_PATH;
+  if (!edfPath) {
+    throw new Error('Set E2E_EDF_PATH to an authorized local EDF recording before running npm run test:e2e.');
+  }
   await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/neurotwin');
   console.log('1. Connected to MongoDB.');
 
@@ -49,7 +52,6 @@ async function runE2ETest() {
   assert.equal(stateRes.body.model_state, 'ready');
 
   // 4. Test EDF Upload through Backend to ML service
-  const edfPath = 'D:\\chbmit-1.0.0\\chb-mit-scalp-eeg-database-1.0.0\\chb02\\chb02_16.edf';
   assert.ok(fs.existsSync(edfPath), `EDF file not found at ${edfPath}`);
   const edfBuffer = fs.readFileSync(edfPath);
   console.log(`6. Reading real clinical EEG: chb02_16.edf (${(edfBuffer.length / (1024*1024)).toFixed(2)} MB)...`);
