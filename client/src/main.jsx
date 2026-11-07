@@ -9,10 +9,7 @@ import {
 } from 'lucide-react';
 import './style.css';
 import './plots.css';
-import './reactbits-theme.css';
 import './clinical-refinement.css';
-import Aurora from './components/reactbits/Aurora';
-import SpotlightCard from './components/reactbits/SpotlightCard';
 import HMSWorkspace from './HMSWorkspace.jsx';
 
 const api = async (path, opts = {}, token) => {
@@ -28,7 +25,7 @@ const dateLabel = value => value ? new Date(value).toLocaleString([], { dateStyl
 function HomePage({ onLogin, onNavigate }) {
   return <main className="public-main">
     <section className="public-hero">
-      <div className="public-aurora" aria-hidden="true"><Aurora colorStops={["#1e40af", "#3b82f6", "#6366f1"]} amplitude={0.7} blend={0.5} speed={0.2} height={0.35} scale={1.0} glow={0.3} layers={2} opacity={0.32} /></div>
+      
       <div className="public-hero-copy">
         <p className="eyebrow"><Sparkles size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }} />CLINICAL BCI DIGITAL TWIN PLATFORM</p>
         <h1>Understand the signal.<br /><i>Keep the clinical context.</i></h1>
@@ -57,21 +54,21 @@ function HomePage({ onLogin, onNavigate }) {
       <h2>Research context, made easier to explore.</h2>
       <p className="public-section-lead">A clinical decision-support prototype designed to organize EEG-informed records and support collaboration between authorized roles.</p>
       <div className="public-feature-grid">
-        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#3b82f6" intensity={0.25}>
+        <article className="public-feature-card">
           <span><Activity size={20} /></span>
           <h3>EEG Research & Anomaly Review</h3>
           <p>EEG preprocessing, model-assisted scoring, and reviewable signal intervals for supervised research.</p>
-        </SpotlightCard>
-        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#6366f1" intensity={0.25}>
+        </article>
+        <article className="public-feature-card">
           <span><Brain size={20} /></span>
           <h3>Patient-Specific Digital Twin</h3>
           <p>A longitudinal view of stored EEG analyses and patient-specific research context.</p>
-        </SpotlightCard>
-        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#0ea5e9" intensity={0.25}>
+        </article>
+        <article className="public-feature-card">
           <span><ShieldCheck size={20} /></span>
           <h3>Dual-View Role Architecture</h3>
           <p>Specialized dashboards: doctors access raw waveforms & explainability metrics; patients view simplified wellness scores.</p>
-        </SpotlightCard>
+        </article>
       </div>
     </section>
     <section className="public-bottom-cta">
@@ -99,26 +96,26 @@ function FeaturesPage({ onLogin }) {
       <h2>Built around four connected clinical roles.</h2>
       <p className="public-section-lead">NeuroTwin provides tailored interfaces designed to reduce cognitive load while preserving complete data transparency.</p>
       <div className="public-feature-grid role-grid">
-        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#6366f1" intensity={0.22}>
+        <article className="public-feature-card">
           <span><ShieldCheck size={20} /></span>
           <h3>Administrator</h3>
           <p>Governance oversight, audit event streaming, role assignments, user access, and patient consent management.</p>
-        </SpotlightCard>
-        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#3b82f6" intensity={0.22}>
+        </article>
+        <article className="public-feature-card">
           <span><Activity size={20} /></span>
           <h3>Doctor / Clinician</h3>
           <p>Raw 18-channel EEG inspection, AI-flagged seizure intervals, interactive threshold adjustment, and multi-medicine prescribing.</p>
-        </SpotlightCard>
-        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#0ea5e9" intensity={0.22}>
+        </article>
+        <article className="public-feature-card">
           <span><Heart size={20} /></span>
           <h3>Patient</h3>
           <p>Simplified brain wellness scores, plain-language clinical summaries, medication schedules, and printable prescription slips.</p>
-        </SpotlightCard>
-        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#10b981" intensity={0.22}>
+        </article>
+        <article className="public-feature-card">
           <span><Users size={20} /></span>
           <h3>Caregiver</h3>
           <p>Read-only access to authorized wellness views, appointment schedules, care instructions, and physician notes.</p>
-        </SpotlightCard>
+        </article>
       </div>
     </section>
     <section className="public-bottom-cta">
