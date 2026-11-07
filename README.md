@@ -135,3 +135,24 @@ The prototype has not been clinically validated, certified or prospectively eval
 ## Frontend UI and motion components
 
 The frontend uses selected official free React Bits source components (Aurora and SpotlightCard) copied into `client/src/components/reactbits/` and customized through the local NeuroTwin theme. The component source is included in the repository; no paid React Bits Pro blocks or license-gated assets are used. React Bits: https://reactbits.dev/ (MIT + Commons Clause; see upstream repository license for the applicable terms).
+
+
+## One-command local startup (recommended)
+
+Requirements: Node.js 20+, Python 3.11, and internet access for first-time package setup. MongoDB can be local or configured through `server/.env`; if the default local MongoDB is unavailable, the launcher uses the bundled temporary MongoDB instance for that session (data is not persistent across restarts).
+
+From the repository root, run:
+
+```bash
+npm run dev:all
+```
+
+This automatically installs missing JavaScript dependencies, creates the Python 3.11 virtual environment, installs the pinned ML requirements, creates `server/.env` from the example when needed, then starts the FastAPI ML service, Express API and React/Vite frontend. On Windows it also opens the frontend in your browser.
+
+- Frontend: `http://localhost:5173`
+- Express API: `http://localhost:5000`
+- ML health: `http://localhost:8001/health`
+
+Stop everything with `npm run stop:all` or press `Ctrl+C` in the launcher terminal. You can also double-click `RUN-NEUROTWIN.bat` on Windows.
+
+For repeatable setup without starting services, run `npm run setup`. If you use a persistent local/Atlas MongoDB, set `MONGODB_URI` in `server/.env`. The launcher never creates a trained model: if compatible `model.keras` and `metadata.json` artifacts are absent, the ML API starts in `not_ready` state and does not fabricate predictions.
