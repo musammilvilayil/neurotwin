@@ -1,22 +1,40 @@
 # Reproducible CHB-MIT research workflow
 
-Do not commit CHB-MIT files, protected health data, model weights, or metrics obtained from unreviewed experiments. Obtain and use the de-identified CHB-MIT dataset under its terms. For every EDF, parse the corresponding `chbXX-summary.txt` with `parse_chbmit_summary`, preprocess EEG to 0.5–40 Hz and 128 Hz, generate fixed windows, and retain a subject identifier for every window.
+Do not commit CHB-MIT EDF recordings, identifiable health data, credentials or unreviewed experiment results. Obtain and use the de-identified CHB-MIT dataset under its official terms. Keep original subject identifiers so train, validation and test partitions are separated by person.
 
-Place the downloaded PhysioNet directory under a local path such as `services/ml/data/`; it must contain subject directories (`chb01/`, …), EDF recordings, and each subject's `*-summary.txt`. Use the pinned dependencies with Python 3.11 (the Dockerfile's version), then build arrays with fixed/reordered bipolar channels:
+## 1. Environment and data
 
-```bash
-cd services/ml
-pip install -r requirements.txt
-python prepare_chbmit.py --data-dir data --output-dir prepared
-```
-
-This produces `features.npy` (`windows, samples, channels`), `labels.npy` (0/1), `subjects.npy` (one `chbXX` string per window), and a skipped-file report. Train with:
+Use Python 3.11 and the pinned dependencies:
 
 ```bash
 cd services/ml
-python train.py --features prepared/features.npy --labels prepared/labels.npy --subjects prepared/subjects.npy --output-dir artifacts --seed 42
+python -m venv .venv
+# Activate the environment
+python -m pip install -r requirements.txt
 ```
 
-The trainer uses group splitting so no subject belongs to more than one of train, validation, and test. It saves `model.keras`, `metadata.json`, and `evaluation.json`; preserve these with dataset version, preprocessing choices, package versions, seed, threshold selection, and independent validation protocol. The repository deliberately includes none of those artifacts and makes no accuracy claim.
+Place the downloaded PhysioNet dataset under services/ml/data/chbmit/. It should contain subject folders, EDF recordings and each subject's summary file.
 
-Before deploying an artifact, perform independent validation, subgroup/error analysis, calibration and threshold review, security/privacy review, and applicable regulatory/institutional review. A research score must never be represented as a diagnosis.
+## 2. Prepare windows
+
+```bash
+python prepare_chbmit.py --data-dir data/chbmit --output-dir data/processed --window-seconds 10 --stride-seconds 10
+```
+
+The preparation step produces features.npy (windows × samples × channels), labels.npy, subjects.npy, a preparation report and resumable per-subject shards. Review skipped files, subject counts, class counts, channel order and annotations.
+
+## 3. Train and evaluate
+
+```bash
+python train.py --features data/processed/features.npy --labels data/processed/labels.npy --subjects data/processed/subjects.npy --architecture multiscale_cnn --hard-negative-mining --output-dir artifacts --seed 42
+```
+
+The trainer supports subject-disjoint partitions, validation-only threshold selection, optional hard-negative mining and held-out testing. It saves model.keras, best_model.keras, metadata.json, evaluation.json and training_history.json. Review the actual subject split and class counts. Never use test subjects for training, hard-negative mining, threshold selection or repeated model selection. Training should stop if any split lacks both classes.
+
+## 4. Artifact policy
+
+The repository currently contains small research model artifacts and metadata under services/ml/artifacts*/. These are illustrative research assets, not a substitute for reproducing the experiment. Verify provenance, input shape, channel order, preprocessing and checksum before use. Do not commit CHB-MIT recordings or generated feature arrays.
+
+## 5. Validation
+
+Perform independent external validation, subgroup/error analysis, calibration and threshold review, security/privacy review and applicable institutional/regulatory review. A research score must never be represented as a diagnosis or used for treatment decisions.

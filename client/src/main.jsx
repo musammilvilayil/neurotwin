@@ -7,6 +7,9 @@ import {
 } from 'lucide-react';
 import './style.css';
 import './plots.css';
+import './reactbits-theme.css';
+import Aurora from './components/reactbits/Aurora';
+import SpotlightCard from './components/reactbits/SpotlightCard';
 
 const api = async (path, opts = {}, token) => {
   const headers = { ...(opts.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }), ...(token ? { Authorization: `Bearer ${token}` } : {}) };
@@ -21,13 +24,14 @@ const dateLabel = value => value ? new Date(value).toLocaleString([], { dateStyl
 function HomePage({ onLogin, onNavigate }) {
   return <main className="public-main">
     <section className="public-hero">
+      <div className="public-aurora" aria-hidden="true"><Aurora colorStops={["#2563eb", "#60a5fa", "#818cf8"]} amplitude={1.15} blend={0.42} speed={0.28} height={0.48} scale={1.1} glow={0.42} layers={2} opacity={0.75} /></div>
       <div className="public-hero-copy"><p className="eyebrow">EEG-INFORMED DIGITAL TWIN RESEARCH</p><h1>Understand the signal.<br/><i>Keep the context.</i></h1><p>NeuroTwin brings EEG research outputs, longitudinal context and role-based collaboration into one carefully scoped workspace.</p><div className="public-hero-actions"><button className="primary-button" onClick={onLogin}>Enter workspace <ArrowUpRight size={17}/></button><button className="public-secondary-button" onClick={() => onNavigate('features')}>Explore capabilities</button></div><div className="public-trust"><span><ShieldCheck size={16}/> Role-based access</span><span><Activity size={16}/> EEG research workflow</span><span><Users size={16}/> Connected care roles</span></div></div>
       <div className="public-visual"><div className="public-orbit orbit-a"/><div className="public-orbit orbit-b"/><div className="public-brain"><Brain size={94} strokeWidth={1.1}/></div><span className="public-signal signal-one"/><span className="public-signal signal-two"/><div className="public-visual-label"><Waves size={16}/> SIGNAL · CONTEXT · INSIGHT</div></div>
     </section>
     <section className="public-section"><p className="eyebrow">ONE CONNECTED WORKSPACE</p><h2>Research context, made easier to explore.</h2><p className="public-section-lead">A research prototype designed to organize EEG-informed records and support collaboration between authorized roles.</p><div className="public-feature-grid">
-      <article><span><Activity size={20}/></span><h3>EEG research review</h3><p>Upload supported EDF recordings and review artifact-backed model outputs when the research service is available.</p></article>
-      <article><span><Brain size={20}/></span><h3>Digital Twin context</h3><p>Explore stored longitudinal snapshots and research trends alongside available patient context.</p></article>
-      <article><span><ShieldCheck size={20}/></span><h3>Role-based workspace</h3><p>Separate access for administrators, doctors, patients and caregivers.</p></article>
+      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#3b82f6" intensity={0.22}><span><Activity size={20}/></span><h3>EEG research review</h3><p>Upload supported EDF recordings and review artifact-backed model outputs when the research service is available.</p></SpotlightCard>
+      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#6366f1" intensity={0.2}><span><Brain size={20}/></span><h3>Digital Twin context</h3><p>Explore stored longitudinal snapshots and research trends alongside available patient context.</p></SpotlightCard>
+      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#0ea5e9" intensity={0.2}><span><ShieldCheck size={20}/></span><h3>Role-based workspace</h3><p>Separate access for administrators, doctors, patients and caregivers.</p></SpotlightCard>
     </div></section>
     <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17}/></button></section>
   </main>;

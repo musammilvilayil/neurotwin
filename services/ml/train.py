@@ -144,17 +144,35 @@ def main():
     test_subs = [s.strip() for s in args.test_subjects.split(",") if s.strip()]
     available_subs = set(np.unique(subjects))
 
+    overlap = set(val_subs) & set(test_subs)
+    if overlap:
+        raise ValueError(f"Validation and test subject lists overlap: {sorted(overlap)}")
+
     if val_subs and test_subs and set(val_subs).issubset(available_subs) and set(test_subs).issubset(available_subs):
         val_idx = np.where(np.isin(subjects, val_subs))[0]
         test_idx = np.where(np.isin(subjects, test_subs))[0]
         train_idx = np.where(~np.isin(subjects, val_subs + test_subs))[0]
-        print(f"Subject splits explicitly configured:")
+        print("Subject splits explicitly configured:")
         print(f"  Train ({len(train_idx)} win): {sorted(set(subjects[train_idx].tolist()))}")
         print(f"  Val   ({len(val_idx)} win): {sorted(set(subjects[val_idx].tolist()))}")
         print(f"  Test  ({len(test_idx)} win): {sorted(set(subjects[test_idx].tolist()))}")
     else:
         print("Using automatic subject-disjoint split...")
         train_idx, val_idx, test_idx = split_subjects_auto(X, y, subjects, args.seed)
+
+    # Apply the same leakage and class-presence checks to explicit and automatic splits.
+    split_subject_sets = [set(subjects[idx].tolist()) for idx in (train_idx, val_idx, test_idx)]
+    if (split_subject_sets[0] & split_subject_sets[1] or
+            split_subject_sets[0] & split_subject_sets[2] or
+            split_subject_sets[1] & split_subject_sets[2]):
+        raise ValueError("Subject leakage detected across train/validation/test splits.")
+    for split_name, split_idx in (("train", train_idx), ("validation", val_idx), ("test", test_idx)):
+        if len(split_idx) == 0 or not np.array_equal(np.unique(y[split_idx]), np.array([0, 1])):
+            raise ValueError(
+                f"{split_name} split must be non-empty and contain both classes; "
+                f"subjects={sorted(split_subject_sets[['train', 'validation', 'test'].index(split_name)])}. "
+                "Use a larger or better-balanced subject subset."
+            )
 
     # Class weights for training
     counts = np.bincount(y[train_idx], minlength=2)

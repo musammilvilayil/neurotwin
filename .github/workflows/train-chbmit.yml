@@ -1,12 +1,6 @@
 name: Train CHB-MIT research model
 
 on:
-  push:
-    branches:
-      - feat/chbmit-training-and-inference
-    paths:
-      - '.github/workflows/train-chbmit.yml'
-      - 'services/ml/**'
   workflow_dispatch:
     inputs:
       subjects:
@@ -47,32 +41,34 @@ jobs:
         working-directory: services/ml
         run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
 
-      - name: Run preprocessing unit tests
+      - name: Run preprocessing and API unit tests
         working-directory: services/ml
         run: python -m unittest discover -s tests -v
 
       - name: Download labelled CHB-MIT subset
         working-directory: services/ml
         env:
-          SUBJECTS: ${{ inputs.subjects || 'chb01,chb02,chb03,chb05,chb06,chb07' }}
+          SUBJECTS: \${{ inputs.subjects || 'chb01,chb02,chb03,chb05,chb06,chb07' }}
         run: python download_chbmit.py --data-dir data/chbmit --subjects "$SUBJECTS" --negative-files-per-subject 1 --max-seizure-files-per-subject 1
 
       - name: Prepare subject-labelled EEG windows
         working-directory: services/ml
         run: python prepare_chbmit.py --data-dir data/chbmit --output-dir data/processed --window-seconds 10 --stride-seconds 10
 
-      - name: Train and evaluate CNN-LSTM
+      - name: Train and evaluate Multi-Scale CNN with hard-negative mining
         working-directory: services/ml
         env:
-          EPOCHS: ${{ inputs.epochs || '10' }}
+          EPOCHS: \${{ inputs.epochs || '10' }}
         run: |
-          python train.py \
-            --features data/processed/features.npy \
-            --labels data/processed/labels.npy \
-            --subjects data/processed/subjects.npy \
-            --output-dir artifacts \
-            --epochs "$EPOCHS" \
-            --window-seconds 10 \
+          python train.py \\
+            --features data/processed/features.npy \\
+            --labels data/processed/labels.npy \\
+            --subjects data/processed/subjects.npy \\
+            --architecture multiscale_cnn \\
+            --hard-negative-mining \\
+            --output-dir artifacts \\
+            --epochs "$EPOCHS" \\
+            --window-seconds 10 \\
             --sampling-rate 128
 
       - name: Include dataset preparation report
