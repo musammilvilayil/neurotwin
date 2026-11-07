@@ -11,6 +11,7 @@ import './style.css';
 import './plots.css';
 import './clinical-refinement.css';
 import './reactbits-experience.css';
+import './reactbits-theme.css';
 import HMSWorkspace from './HMSWorkspace.jsx';
 import ReactBitsLayer from './components/reactbits/ReactBitsLayer.jsx';
 
@@ -403,7 +404,7 @@ function AnalysisDetailModal({ analysis, onClose, onDownloadReport, onToggleRevi
             </div>
             <Plot values={analysis.timeline} kind="score" />
             <div style={{ marginTop: '16px' }}>
-              <h4 style={{ fontSize: '12px', margin: '0 0 6px', color: '#1e293b' }}>Confirmed Seizure Intervals</h4>
+              <h4 style={{ fontSize: '12px', margin: '0 0 6px', color: 'var(--nt-text-primary, #f8fafc)' }}>Confirmed Seizure Intervals</h4>
               <SeizureIntervalsList timeline={analysis.timeline} threshold={threshold} />
             </div>
           </article>
@@ -693,7 +694,7 @@ function PatientScheduleAndRx({ appointments = [], prescriptions = [], patient, 
                   <Badge type={app.status === 'Completed' ? 'neutral' : 'blue'}>{app.status || 'Scheduled'}</Badge>
                 </div>
                 <span><Clock size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />{dateLabel(app.scheduledAt)}</span>
-                <small style={{ color: '#475569' }}>Doctor: {app.doctorName || 'Dr. Maya Rao'}</small>
+                <small style={{ color: 'var(--nt-text-muted, #94a3b8)' }}>Doctor: {app.doctorName || 'Dr. Maya Rao'}</small>
               </div>
             ))}
           </div>
@@ -873,7 +874,7 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
 
   return (
     <form className="note-form" onSubmit={handleSubmit} style={{ marginTop: '16px' }}>
-      <h4 style={{ margin: '0 0 12px', fontSize: '13px', color: '#1e293b' }}>
+      <h4 style={{ margin: '0 0 12px', fontSize: '13px', color: 'var(--nt-text-primary, #f8fafc)' }}>
         Enter Diagnosis & Treatment Updates for {patient?.fullName || 'Patient'}
       </h4>
       {savedNotice && <div className="feedback success-feedback" style={{ padding: '8px 12px', fontSize: '11px', marginBottom: '10px' }}><CheckCircle2 size={14} /><span>{savedNotice}</span></div>}
@@ -883,7 +884,7 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
           <label>Primary Clinical Diagnosis</label>
           <input value={diagnosis} onChange={e => setDiagnosis(e.target.value)} placeholder="e.g. Focal Intractable Epilepsy (Temporal Lobe)" />
           <div className="quick-chips-row">
-            <span style={{ fontSize: '10px', color: '#64748b' }}>Diagnoses:</span>
+            <span style={{ fontSize: '10px', color: 'var(--nt-text-muted, #94a3b8)' }}>Diagnoses:</span>
             <button type="button" className="quick-chip" onClick={() => setDiagnosis('Focal Intractable Epilepsy (Temporal Lobe)')}>+ Focal Temporal</button>
             <button type="button" className="quick-chip" onClick={() => setDiagnosis('Absence Seizures (Generalized)')}>+ Absence</button>
             <button type="button" className="quick-chip" onClick={() => setDiagnosis('Post-Stroke Epileptogenesis Monitoring')}>+ Post-Stroke</button>
@@ -895,7 +896,7 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
           <label>Conditions & Comorbidities</label>
           <input value={conditions} onChange={e => setConditions(e.target.value)} placeholder="e.g. Sleep disruption, Post-ictal confusion" />
           <div className="quick-chips-row">
-            <span style={{ fontSize: '10px', color: '#64748b' }}>Add Condition:</span>
+            <span style={{ fontSize: '10px', color: 'var(--nt-text-muted, #94a3b8)' }}>Add Condition:</span>
             <button type="button" className="quick-chip" onClick={() => addPredefinedCondition('Refractory seizures')}>+ Refractory</button>
             <button type="button" className="quick-chip" onClick={() => addPredefinedCondition('Nocturnal events')}>+ Nocturnal</button>
             <button type="button" className="quick-chip" onClick={() => addPredefinedCondition('Post-ictal confusion')}>+ Post-ictal</button>
@@ -910,11 +911,11 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
       </div>
 
       {/* Dynamic Multiple Prescriptions Section */}
-      <div style={{ marginTop: '16px', borderTop: '1px solid #e2e8f0', paddingTop: '14px' }}>
+      <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '14px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
           <div>
-            <b style={{ fontSize: '13px', color: '#1e293b' }}>Prescription Regimen (Anti-Seizure Medications)</b>
-            <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>Add one or multiple anti-seizure medications with dosage and frequency instructions.</p>
+            <b style={{ fontSize: '13px', color: 'var(--nt-text-primary, #f8fafc)' }}>Prescription Regimen (Anti-Seizure Medications)</b>
+            <p style={{ margin: 0, fontSize: '11px', color: 'var(--nt-text-muted, #94a3b8)' }}>Add one or multiple anti-seizure medications with dosage and frequency instructions.</p>
           </div>
           <button type="button" className="action-btn-sm" onClick={() => addMedicineRow()} style={{ fontWeight: 600 }}>
             <Plus size={13} /> Add More Medicine
@@ -922,7 +923,7 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
         </div>
 
         <div className="quick-chips-row" style={{ marginBottom: '12px' }}>
-          <span style={{ fontSize: '11px', color: '#4338ca', fontWeight: 600 }}>Quick Add AED:</span>
+          <span style={{ fontSize: '11px', color: '#60a5fa', fontWeight: 600 }}>Quick Add AED:</span>
           <button type="button" className="quick-chip" onClick={() => addPredefinedMed('Levetiracetam', '500 mg', 'BID (Twice daily)', 'Take with water after meals')}>+ Levetiracetam 500mg BID</button>
           <button type="button" className="quick-chip" onClick={() => addPredefinedMed('Clobazam', '10 mg', 'QHS (At bedtime)', 'Take at night before sleep')}>+ Clobazam 10mg QHS</button>
           <button type="button" className="quick-chip" onClick={() => addPredefinedMed('Lamotrigine', '100 mg', 'BID (Twice daily)', 'Titrate gradually as advised')}>+ Lamotrigine 100mg BID</button>
@@ -980,11 +981,11 @@ function DoctorTreatmentForm({ patient, onSave, token, isBusy }) {
       </div>
 
       {/* Dynamic Follow-up Appointments Section */}
-      <div style={{ marginTop: '16px', borderTop: '1px solid #e2e8f0', paddingTop: '14px' }}>
+      <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '14px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
           <div>
-            <b style={{ fontSize: '13px', color: '#1e293b' }}>Schedule Consultations & Follow-ups</b>
-            <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>Book neurological review visits or EEG follow-up sessions.</p>
+            <b style={{ fontSize: '13px', color: 'var(--nt-text-primary, #f8fafc)' }}>Schedule Consultations & Follow-ups</b>
+            <p style={{ margin: 0, fontSize: '11px', color: 'var(--nt-text-muted, #94a3b8)' }}>Book neurological review visits or EEG follow-up sessions.</p>
           </div>
           <button type="button" className="action-btn-sm" onClick={() => addAppointmentRow()} style={{ fontWeight: 600 }}>
             <Plus size={13} /> Add Follow-up
@@ -1633,7 +1634,7 @@ function App() {
                 <button type="button" className="sim-btn" onClick={() => simulateEEG('normal')} disabled={uploading} title="Run simulated normal baseline EEG">
                   <Sparkles size={13} /> Sim Normal
                 </button>
-                <button type="button" className="sim-btn" style={{ background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }} onClick={() => simulateEEG('seizure')} disabled={uploading} title="Run simulated seizure burst EEG">
+                <button type="button" className="sim-btn sim-btn-seizure" onClick={() => simulateEEG('seizure')} disabled={uploading} title="Run simulated seizure burst EEG">
                   <Activity size={13} /> Sim Seizure
                 </button>
               </div>
@@ -1712,10 +1713,10 @@ function App() {
             </div>
             <div className="twin-state">
               <small>Documented Diagnosis</small>
-              <b style={{ display: 'block', fontSize: '13px', color: '#0f172a', margin: '4px 0' }}>
+              <b style={{ display: 'block', fontSize: '13px', color: 'var(--nt-text-primary, #f8fafc)', margin: '4px 0' }}>
                 {patient?.treatment?.diagnosis || (patient?.conditions?.length ? patient.conditions.join(', ') : 'Neurological evaluation in progress')}
               </b>
-              <p style={{ margin: '6px 0 0', fontSize: '11px', color: '#475569' }}>
+              <p style={{ margin: '6px 0 0', fontSize: '11px', color: 'var(--nt-text-muted, #94a3b8)' }}>
                 {patient?.treatment?.treatmentPlan || 'Treatment plan and medication titration guidelines.'}
               </p>
             </div>
@@ -1873,7 +1874,7 @@ function App() {
       <div className="sidebar-bottom"><div className="secure-label"><ShieldCheck size={16} /><span>Protected workspace<small>Role-based access enabled</small></span></div><div className="profile"><div className="avatar">{user?.name?.[0] || 'N'}</div><div className="profile-copy"><b>{user?.name}</b><small>{roleLabels[user?.role] || user?.role}</small></div><button className="icon-button" onClick={logout} aria-label="Sign out" title="Sign out"><LogOut size={17} /></button></div></div>
     </aside>
     <main className="workspace">
-      <header className="topbar"><div className="topbar-title"><button className="menu-toggle icon-button" onClick={() => setMobileNav(true)} aria-label="Open navigation"><Menu size={21} /></button><div><p className="eyebrow">{roleLabels[user?.role] || user?.role} workspace</p><h1>{tab === 'overview' ? `Welcome back${greeting ? `, ${greeting}` : ''}` : navigation.find(item => item.id === tab)?.label || 'Workspace'}</h1></div></div><div className="topbar-actions"><div className="demo-role-switcher" title="Quick 1-Click Role Switcher"><span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>Demo:</span><button type="button" className={`demo-role-btn ${user?.role === 'doctor' ? 'active' : ''}`} onClick={() => switchDemoRole('doctor')} disabled={busy || user?.role === 'doctor'}>Clinician</button><button type="button" className={`demo-role-btn ${user?.role === 'patient' ? 'active' : ''}`} onClick={() => switchDemoRole('patient')} disabled={busy || user?.role === 'patient'}>Patient</button><button type="button" className={`demo-role-btn ${user?.role === 'caregiver' ? 'active' : ''}`} onClick={() => switchDemoRole('caregiver')} disabled={busy || user?.role === 'caregiver'}>Caregiver</button><button type="button" className={`demo-role-btn ${user?.role === 'admin' ? 'active' : ''}`} onClick={() => switchDemoRole('admin')} disabled={busy || user?.role === 'admin'}>Admin</button></div><span className="status-pill"><span /> Workspace active</span><button className="icon-button refresh-button" onClick={loadWorkspace} disabled={busy} aria-label="Refresh data" title="Refresh data"><RefreshCw size={17} /></button><div className="top-avatar">{user?.name?.[0] || 'N'}</div></div></header>
+      <header className="topbar"><div className="topbar-title"><button className="menu-toggle icon-button" onClick={() => setMobileNav(true)} aria-label="Open navigation"><Menu size={21} /></button><div><p className="eyebrow">{roleLabels[user?.role] || user?.role} workspace</p><h1>{tab === 'overview' ? `Welcome back${greeting ? `, ${greeting}` : ''}` : navigation.find(item => item.id === tab)?.label || 'Workspace'}</h1></div></div><div className="topbar-actions"><div className="demo-role-switcher" title="Quick 1-Click Role Switcher"><span style={{ fontSize: '11px', color: 'var(--nt-text-muted, #94a3b8)', fontWeight: 600 }}>Demo:</span><button type="button" className={`demo-role-btn ${user?.role === 'doctor' ? 'active' : ''}`} onClick={() => switchDemoRole('doctor')} disabled={busy || user?.role === 'doctor'}>Clinician</button><button type="button" className={`demo-role-btn ${user?.role === 'patient' ? 'active' : ''}`} onClick={() => switchDemoRole('patient')} disabled={busy || user?.role === 'patient'}>Patient</button><button type="button" className={`demo-role-btn ${user?.role === 'caregiver' ? 'active' : ''}`} onClick={() => switchDemoRole('caregiver')} disabled={busy || user?.role === 'caregiver'}>Caregiver</button><button type="button" className={`demo-role-btn ${user?.role === 'admin' ? 'active' : ''}`} onClick={() => switchDemoRole('admin')} disabled={busy || user?.role === 'admin'}>Admin</button></div><span className="status-pill"><span /> Workspace active</span><button className="icon-button refresh-button" onClick={loadWorkspace} disabled={busy} aria-label="Refresh data" title="Refresh data"><RefreshCw size={17} /></button><div className="top-avatar">{user?.name?.[0] || 'N'}</div></div></header>
       <div className="safety-banner"><AlertTriangle size={16} /><span><b>Decision-Support Tool Only</b> — Does not replace clinical judgment or generate independent diagnoses. Digital Twin represents monitored neurological state derived from EEG patterns, not a brain simulation. All AI alerts include confidence scores and explainability for clinician verification.</span></div>
       {error && <div className="feedback error-feedback" role="alert"><AlertTriangle size={17} /><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error"><X size={16} /></button></div>}
       {notice && <div className="feedback success-feedback" role="status"><CheckCircle2 size={17} /><span>{notice}</span><button onClick={() => setNotice('')} aria-label="Dismiss notice"><X size={16} /></button></div>}
@@ -1905,7 +1906,7 @@ function App() {
                 <button type="button" className="sim-btn" onClick={() => simulateEEG('normal')} disabled={uploading} title="Run simulated normal baseline EEG">
                   <Sparkles size={13} /> Sim Normal
                 </button>
-                <button type="button" className="sim-btn" style={{ background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }} onClick={() => simulateEEG('seizure')} disabled={uploading} title="Run simulated seizure burst EEG">
+                <button type="button" className="sim-btn sim-btn-seizure" onClick={() => simulateEEG('seizure')} disabled={uploading} title="Run simulated seizure burst EEG">
                   <Activity size={13} /> Sim Seizure
                 </button>
               </div>
@@ -2021,7 +2022,7 @@ function App() {
             </div>
           </div>
           <div className="quick-chips-row" style={{ marginBottom: '8px' }}>
-            <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600 }}>Note Templates:</span>
+            <span style={{ fontSize: '11px', color: 'var(--nt-text-muted, #94a3b8)', fontWeight: 600 }}>Note Templates:</span>
             <button type="button" className="quick-chip" onClick={() => setNote(prev => (prev ? prev + '\n' : '') + 'Routine EEG Review: Baseline background activity within normal limits. No epileptiform discharges or focal slowing identified in current recording.')}>+ Routine Review</button>
             <button type="button" className="quick-chip" onClick={() => setNote(prev => (prev ? prev + '\n' : '') + 'Post-Ictal Review: Monitored post-event period. Transient generalized delta/theta slowing resolving toward alpha baseline. Neurological exam stable.')}>+ Post-Ictal</button>
             <button type="button" className="quick-chip" onClick={() => setNote(prev => (prev ? prev + '\n' : '') + 'Medication Titration: Evaluated clinical efficacy and serum tolerability. Initiated regimen adjustment with regular therapeutic monitoring.')}>+ Med Titration</button>
@@ -2067,7 +2068,7 @@ function App() {
                 <button type="button" className="sim-btn" style={{ padding: '6px 10px', fontSize: '10px' }} onClick={() => simulateEEG('normal')} disabled={uploading}>
                   <Sparkles size={12} /> Sim Normal
                 </button>
-                <button type="button" className="sim-btn" style={{ padding: '6px 10px', fontSize: '10px', background: '#fef2f2', color: '#991b1b', borderColor: '#fecaca' }} onClick={() => simulateEEG('seizure')} disabled={uploading}>
+                <button type="button" className="sim-btn sim-btn-seizure" style={{ padding: '6px 10px', fontSize: '10px' }} onClick={() => simulateEEG('seizure')} disabled={uploading}>
                   <Activity size={12} /> Sim Seizure
                 </button>
               </div>
@@ -2151,15 +2152,15 @@ function App() {
                       <td>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                           <strong>{dateLabel(item.createdAt)}</strong>
-                          <small style={{ color: '#64748b' }}>{new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+                          <small style={{ color: 'var(--nt-text-muted, #94a3b8)' }}>{new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
                         </div>
                       </td>
                       <td>
                         <strong>{pName}</strong>
-                        {pMrn && <small style={{ display: 'block', color: '#64748b' }}>MRN: {pMrn}</small>}
+                        {pMrn && <small style={{ display: 'block', color: 'var(--nt-text-muted, #94a3b8)' }}>MRN: {pMrn}</small>}
                       </td>
                       <td>
-                        <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#334155' }}>{fileName}</span>
+                        <span style={{ fontFamily: 'monospace', fontSize: '11px', color: '#38bdf8' }}>{fileName}</span>
                       </td>
                       <td>
                         <span className={`score-pill ${isSeizure ? 'score-elevated' : 'score-normal'}`}>
