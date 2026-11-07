@@ -353,8 +353,18 @@ input:focus, select:focus, textarea:focus {
   .workspace { padding: 20px 18px; }
   .topbar { align-items: flex-start; }
   .topbar-actions { flex-wrap: wrap; justify-content: flex-end; }
-  .public-nav { gap: 14px; }
-  .public-nav nav { display: none; }
+  .public-nav { gap: 12px; flex-wrap: wrap; }
+  .public-nav nav {
+    display: flex;
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 18px;
+    scrollbar-width: none;
+  }
+  .public-nav nav::-webkit-scrollbar { display: none; }
+  .public-nav nav button { white-space: nowrap; }
   .public-hero { gap: 30px; min-height: 0; }
   .public-visual { height: 300px; }
   .public-bottom-cta { padding: 26px; }
@@ -369,6 +379,8 @@ input:focus, select:focus, textarea:focus {
   .stats { grid-template-columns: 1fr 1fr; }
   .hero { padding: 20px !important; }
   .public-nav { padding: 12px 16px; }
+  .public-nav nav { gap: 16px; padding: 0; }
+  .public-nav nav button { font-size: 12px; }
   .public-main { padding: 0 18px; }
   .public-hero { padding: 42px 0 48px; }
   .public-hero-copy h1 { font-size: clamp(36px, 11vw, 48px); }
