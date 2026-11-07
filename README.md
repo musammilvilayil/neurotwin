@@ -37,35 +37,29 @@ flowchart LR
 - MongoDB 7+ (local or Docker)
 - Authorized CHB-MIT data only if you intend to reproduce training
 
-## Local setup
+## One-command local startup (recommended)
 
-\`\`\`bash
-# Install JavaScript dependencies
-npm run install:all
+Requirements: Node.js 20+, Python 3.11, and internet access for first-time package setup. MongoDB can be local or configured through `server/.env`; if the default local MongoDB is unavailable, the launcher uses the bundled temporary MongoDB instance for that session (data is not persistent across restarts).
 
-# Configure the Express API
-cp server/.env.example server/.env
-# Edit server/.env and set a unique random JWT_SECRET
+From the repository root, run:
 
-# Start MongoDB separately, then run frontend + Express
-npm run dev
-\`\`\`
+```bash
+npm run dev:all
+```
 
-Frontend: \`http://localhost:5173\`  
-Express API: \`http://localhost:5000\`
+This automatically installs missing JavaScript dependencies, creates the Python 3.11 virtual environment, installs the pinned ML requirements, creates `server/.env` from the example when needed, then starts the FastAPI ML service, Express API and React/Vite frontend. On Windows it also opens the frontend in your browser.
 
-In another terminal, install and launch the Python ML service:
+- Frontend: `http://localhost:5173`
+- Express API: `http://localhost:5000`
+- ML health: `http://localhost:8001/health`
 
-\`\`\`bash
-cd services/ml
-python -m venv .venv
-# Windows PowerShell: .venv\\Scripts\\Activate.ps1
-# macOS/Linux: source .venv/bin/activate
-python -m pip install -r requirements.txt
-uvicorn api:app --host 127.0.0.1 --port 8001
-\`\`\`
+Stop everything with `npm run stop:all` or press `Ctrl+C` in the launcher terminal. You can also double-click `RUN-NEUROTWIN.bat` on Windows.
 
-The ML API reports \`model_state: not_ready\` if its artifact directory does not contain a compatible \`model.keras\` and \`metadata.json\`. This is intentional; the API does not fabricate predictions.
+For repeatable setup without starting services, run `npm run setup`. If you use a persistent local/Atlas MongoDB, set `MONGODB_URI` in `server/.env`. The launcher never creates a trained model: if compatible `model.keras` and `metadata.json` artifacts are absent, the ML API starts in `not_ready` state and does not fabricate predictions.
+
+## Manual local setup
+
+The manual workflow is also available: install JS dependencies with `npm run install:all`, configure `server/.env`, start MongoDB, run `npm run dev`, and separately start the ML API from `services/ml` using the Python 3.11 virtual environment and `uvicorn api:app --host 127.0.0.1 --port 8001`.
 
 ## Demo accounts
 
