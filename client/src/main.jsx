@@ -27,16 +27,60 @@ const dateLabel = value => value ? new Date(value).toLocaleString([], { dateStyl
 function HomePage({ onLogin, onNavigate }) {
   return <main className="public-main">
     <section className="public-hero">
-      <div className="public-aurora" aria-hidden="true"><Aurora colorStops={["#2563eb", "#60a5fa", "#818cf8"]} amplitude={1.15} blend={0.42} speed={0.28} height={0.48} scale={1.1} glow={0.42} layers={2} opacity={0.75} /></div>
-      <div className="public-hero-copy"><p className="eyebrow">EEG-INFORMED DIGITAL TWIN RESEARCH</p><h1>Understand the signal.<br /><i>Keep the context.</i></h1><p>NeuroTwin brings EEG research outputs, longitudinal context and role-based collaboration into one carefully scoped workspace.</p><div className="public-hero-actions"><button className="primary-button" onClick={onLogin}>Enter workspace <ArrowUpRight size={17} /></button><button className="public-secondary-button" onClick={() => onNavigate('features')}>Explore capabilities</button></div><div className="public-trust"><span><ShieldCheck size={16} /> Role-based access</span><span><Activity size={16} /> EEG research workflow</span><span><Users size={16} /> Connected care roles</span></div></div>
-      <div className="public-visual"><div className="public-orbit orbit-a" /><div className="public-orbit orbit-b" /><div className="public-brain"><Brain size={94} strokeWidth={1.1} /></div><span className="public-signal signal-one" /><span className="public-signal signal-two" /><div className="public-visual-label"><Waves size={16} /> SIGNAL · CONTEXT · INSIGHT</div></div>
+      <div className="public-aurora" aria-hidden="true"><Aurora colorStops={["#1e40af", "#3b82f6", "#6366f1"]} amplitude={0.7} blend={0.5} speed={0.2} height={0.35} scale={1.0} glow={0.3} layers={2} opacity={0.32} /></div>
+      <div className="public-hero-copy">
+        <p className="eyebrow"><Sparkles size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '6px' }} />CLINICAL BCI DIGITAL TWIN PLATFORM</p>
+        <h1>Understand the signal.<br /><i>Keep the clinical context.</i></h1>
+        <p>NeuroTwin unifies high-resolution 18-channel EEG feature extraction, real-time seizure detection, and longitudinal digital twin modeling into an integrated decision-support workspace for doctors, patients, and care teams.</p>
+        <div className="public-hero-actions">
+          <button className="primary-button" onClick={onLogin}>Enter workspace <ArrowUpRight size={17} /></button>
+          <button className="public-secondary-button" onClick={() => onNavigate('features')}>Explore capabilities</button>
+        </div>
+        <div className="public-trust">
+          <span><ShieldCheck size={16} /> Role-based access</span>
+          <span><Activity size={16} /> Automated EEG analysis</span>
+          <span><Users size={16} /> Connected care teams</span>
+        </div>
+      </div>
+      <div className="public-visual">
+        <div className="public-orbit orbit-a" />
+        <div className="public-orbit orbit-b" />
+        <div className="public-brain"><Brain size={90} strokeWidth={1.2} /></div>
+        <span className="public-signal signal-one" />
+        <span className="public-signal signal-two" />
+        <div className="public-visual-label"><Waves size={15} /> 18-CH BIPOLAR · DIGITAL TWIN STREAM</div>
+      </div>
     </section>
-    <section className="public-section"><p className="eyebrow">ONE CONNECTED WORKSPACE</p><h2>Research context, made easier to explore.</h2><p className="public-section-lead">A research prototype designed to organize EEG-informed records and support collaboration between authorized roles.</p><div className="public-feature-grid">
-      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#3b82f6" intensity={0.22}><span><Activity size={20} /></span><h3>EEG research review</h3><p>Upload supported EDF recordings and review artifact-backed model outputs when the research service is available.</p></SpotlightCard>
-      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#6366f1" intensity={0.2}><span><Brain size={20} /></span><h3>Digital Twin context</h3><p>Explore stored longitudinal snapshots and research trends alongside available patient context.</p></SpotlightCard>
-      <SpotlightCard className="public-feature-card" theme="light" spotlightColor="#0ea5e9" intensity={0.2}><span><ShieldCheck size={20} /></span><h3>Role-based workspace</h3><p>Separate access for administrators, doctors, patients and caregivers.</p></SpotlightCard>
-    </div></section>
-    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17} /></button></section>
+    <section className="public-section">
+      <p className="eyebrow">ONE CONNECTED WORKSPACE</p>
+      <h2>Research context, made easier to explore.</h2>
+      <p className="public-section-lead">A clinical decision-support prototype designed to organize EEG-informed records and support collaboration between authorized roles.</p>
+      <div className="public-feature-grid">
+        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#3b82f6" intensity={0.25}>
+          <span><Activity size={20} /></span>
+          <h3>EEG Research & Anomaly Review</h3>
+          <p>Automated feature extraction and multi-scale CNN/LSTM seizure scoring with consecutive temporal confirmation.</p>
+        </SpotlightCard>
+        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#6366f1" intensity={0.25}>
+          <span><Brain size={20} /></span>
+          <h3>Patient-Specific Digital Twin</h3>
+          <p>Real-time neurological state representation and longitudinal trend tracking derived from monitored EEG recordings.</p>
+        </SpotlightCard>
+        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#0ea5e9" intensity={0.25}>
+          <span><ShieldCheck size={20} /></span>
+          <h3>Dual-View Role Architecture</h3>
+          <p>Specialized dashboards: doctors access raw waveforms & explainability metrics; patients view simplified wellness scores.</p>
+        </SpotlightCard>
+      </div>
+    </section>
+    <section className="public-bottom-cta">
+      <div>
+        <p className="eyebrow">CLINICAL DECISION SUPPORT</p>
+        <h2>Continue to your NeuroTwin workspace.</h2>
+        <p>Sign in to access patient records, explore digital twin trends, or review EEG wave analyses.</p>
+      </div>
+      <button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17} /></button>
+    </section>
   </main>;
 }
 
@@ -49,13 +93,41 @@ function AboutPage({ onLogin }) {
 
 function FeaturesPage({ onLogin }) {
   return <main className="public-main">
-    <section className="public-section"><p className="eyebrow">PLATFORM CAPABILITIES</p><h2>Built around four connected roles.</h2><div className="public-feature-grid role-grid">
-      <article><span><ShieldCheck size={20} /></span><h3>Administrator</h3><p>Review workspace activity and governance records, and oversee platform-level access.</p></article>
-      <article><span><Activity size={20} /></span><h3>Doctor</h3><p>Access assigned patient records, review EEG research outputs, upload EDF files and document clinical context.</p></article>
-      <article><span><Users size={20} /></span><h3>Patient</h3><p>View the linked personal research overview, permitted notes and longitudinal context.</p></article>
-      <article><span><Users size={20} /></span><h3>Caregiver</h3><p>View only the patient information explicitly linked and authorized for caregiver access.</p></article>
-    </div></section>
-    <section className="public-bottom-cta"><div><p className="eyebrow">AUTHORIZED USERS</p><h2>Continue to your NeuroTwin workspace.</h2><p>Sign in to access the tools and records permitted by your role.</p></div><button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17} /></button></section>
+    <section className="public-section">
+      <p className="eyebrow">PLATFORM CAPABILITIES</p>
+      <h2>Built around four connected clinical roles.</h2>
+      <p className="public-section-lead">NeuroTwin provides tailored interfaces designed to reduce cognitive load while preserving complete data transparency.</p>
+      <div className="public-feature-grid role-grid">
+        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#6366f1" intensity={0.22}>
+          <span><ShieldCheck size={20} /></span>
+          <h3>Administrator</h3>
+          <p>Governance oversight, audit event streaming, role assignments, user access, and patient consent management.</p>
+        </SpotlightCard>
+        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#3b82f6" intensity={0.22}>
+          <span><Activity size={20} /></span>
+          <h3>Doctor / Clinician</h3>
+          <p>Raw 18-channel EEG inspection, AI-flagged seizure intervals, interactive threshold adjustment, and multi-medicine prescribing.</p>
+        </SpotlightCard>
+        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#0ea5e9" intensity={0.22}>
+          <span><Heart size={20} /></span>
+          <h3>Patient</h3>
+          <p>Simplified brain wellness scores, plain-language clinical summaries, medication schedules, and printable prescription slips.</p>
+        </SpotlightCard>
+        <SpotlightCard className="public-feature-card" theme="dark" spotlightColor="#10b981" intensity={0.22}>
+          <span><Users size={20} /></span>
+          <h3>Caregiver</h3>
+          <p>Read-only access to authorized wellness views, appointment schedules, care instructions, and physician notes.</p>
+        </SpotlightCard>
+      </div>
+    </section>
+    <section className="public-bottom-cta">
+      <div>
+        <p className="eyebrow">AUTHORIZED ROLES</p>
+        <h2>Continue to your NeuroTwin workspace.</h2>
+        <p>Sign in to access the tools and records permitted by your role.</p>
+      </div>
+      <button className="primary-button" onClick={onLogin}>Workspace login <ArrowUpRight size={17} /></button>
+    </section>
   </main>;
 }
 
