@@ -22,6 +22,8 @@ jobs:
           cache: npm
           cache-dependency-path: client/package-lock.json
       - run: npm ci --prefix client
+      - name: Check launcher scripts syntax
+        run: node --check scripts/setup.mjs && node --check scripts/dev-all.mjs && node --check scripts/stop-all.mjs
       - run: npm run build --prefix client
   server:
     name: Backend tests
