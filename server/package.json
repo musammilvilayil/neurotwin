@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node scripts/run-dev.js",
     "start": "node src/index.js",
-    "test": "node --test test/health.test.js test/security_and_api.test.js",
+    "test": "node --test --test-concurrency=1 test/health.test.js test/security_and_api.test.js test/hms.test.js",
     "test:e2e": "node test/e2e_full_stack.js"
   },
   "dependencies": {

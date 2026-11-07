@@ -1,7 +1,41 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
-const user = new Schema({ name:String, username:{type:String,unique:true,lowercase:true,trim:true,sparse:true}, email:{type:String,unique:true,lowercase:true}, passwordHash:String, role:{type:String,enum:['admin','doctor','patient','caregiver'],default:'patient'}, linkedPatient:{type:Schema.Types.ObjectId,ref:'PatientProfile'}, active:{type:Boolean,default:true} }, {timestamps:true});
-const patient = new Schema({ fullName:String, dob:Date, mrn:{type:String,unique:true}, assignedDoctor:{type:Schema.Types.ObjectId,ref:'User'}, caregiverUsers:[{type:Schema.Types.ObjectId,ref:'User'}], conditions:[String], consented:{type:Boolean,default:false} }, {timestamps:true});
+const user = new Schema({ name:String, username:{type:String,unique:true,lowercase:true,trim:true,sparse:true}, email:{type:String,unique:true,lowercase:true}, passwordHash:String, role:{type:String,enum:['admin','doctor','patient','caregiver','receptionist','nurse','lab_technician','pharmacist','billing'],default:'patient'}, linkedPatient:{type:Schema.Types.ObjectId,ref:'PatientProfile'}, active:{type:Boolean,default:true} }, {timestamps:true});
+const patient = new Schema({
+  fullName: String,
+  dob: Date,
+  mrn: { type: String, unique: true },
+  assignedDoctor: { type: Schema.Types.ObjectId, ref: 'User' },
+  caregiverUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  conditions: [String],
+  consented: { type: Boolean, default: false },
+  treatment: {
+    diagnosis: String,
+    medications: [String],
+    treatmentPlan: String,
+    lastUpdated: { type: Date, default: Date.now }
+  },
+  appointments: [{
+    doctorName: String,
+    scheduledAt: Date,
+    reason: String,
+    status: { type: String, default: 'Scheduled' }
+  }],
+  prescriptions: [{
+    medicineName: String,
+    dosage: String,
+    frequency: String,
+    prescribedBy: String,
+    instructions: String,
+    status: { type: String, default: 'Active' }
+  }],
+  consentDetails: {
+    consented: { type: Boolean, default: true },
+    consentDate: { type: Date, default: Date.now },
+    privacyPolicyAccepted: { type: Boolean, default: true },
+    consentType: { type: String, default: 'Digital Twin & AI EEG Monitoring Consent' }
+  }
+}, { timestamps: true });
 const session = new Schema({ patient:{type:Schema.Types.ObjectId,ref:'PatientProfile',required:true}, uploadedBy:{type:Schema.Types.ObjectId,ref:'User'}, sourceName:String, status:{type:String,default:'queued'}, samplingRate:Number, channels:Number, preprocessing:Object, createdAt:{type:Date,default:Date.now} });
 const analysis = new Schema({ patient:{type:Schema.Types.ObjectId,ref:'PatientProfile'}, session:{type:Schema.Types.ObjectId,ref:'EEGSession'}, label:String, confidence:Number, probabilities:Object, timeline:[{start_seconds:Number,score:Number,confirmed_seizure:Boolean}], waveform:[Number], multichannel_waveform:[[Number]], explanation:[String], modelVersion:String, modelState:{type:String,enum:['trained_research_model'],required:true}, clinicianReview:{type:String,enum:['pending','reviewed'],default:'pending'}, createdAt:{type:Date,default:Date.now} });
 const twin = new Schema({ patient:{type:Schema.Types.ObjectId,ref:'PatientProfile'}, date:{type:Date,default:Date.now}, state:Object, trend:{type:String,enum:['stable','monitor','improving'],default:'stable'}, sourceAnalysis:{type:Schema.Types.ObjectId,ref:'Analysis'} });
