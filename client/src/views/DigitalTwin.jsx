@@ -181,8 +181,8 @@ export function DigitalTwin({
                     <dt>Signal specification</dt>
                     <dd className="mono">
                       {latest
-                        ? `${latest.session?.samplingRate || 128} Hz · ${Array.isArray(latest.session?.channels) ? latest.session.channels.length : (latest.session?.channels || 18)} leads`
-                        : '128 Hz · 18 leads'}
+                          ? `${latest.session?.samplingRate || 128} Hz · ${Array.isArray(latest.session?.channels) ? latest.session.channels.length : (latest.session?.channels || 18)} leads`
+                          : '128 Hz · 18 leads'}
                     </dd>
                   </div>
                 </dl>

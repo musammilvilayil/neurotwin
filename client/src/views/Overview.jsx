@@ -64,24 +64,26 @@ export function Overview({
         subtitle="Multi-channel scalp EEG telemetry, 1D-CNN window classification, and longitudinal digital twin context in one research workspace."
         actions={
           <>
-            {isClinician && safePatients.length > 0 && (
-              <label className="row" style={{ gap: 8 }}>
-                <span className="muted" style={{ fontSize: 12.5, fontWeight: 600 }}>Active subject:</span>
-                <select
-                  className="select"
-                  style={{ width: 'auto', minWidth: 210 }}
-                  value={selectedPatientId || ''}
-                  onChange={(e) => onSelectPatient(e.target.value)}
-                  aria-label="Select active subject"
-                >
-                  {safePatients.map((p) => (
-                    <option key={p._id} value={p._id}>
-                      {p.fullName} ({p.mrn})
-                    </option>
-                  ))}
+              { isClinician && safePatients.length > 0 && (
+                <label className="row" style={{ gap: 8 }}>
+                  <span className="muted" style={{ fontSize: 12.5, fontWeight: 600 }}>Active subject:</span>
+                  <select
+                    className="select"
+                    style={{ width: 'auto', minWidth: 210 }}
+                    value={selectedPatientId || ''}
+                    onChange={(e) => onSelectPatient(e.target.value)}
+                    aria-label="Select active subject"
+                  >
+                      {
+                        safePatients.map((p) => (
+                          <option key={p._id} value={p._id}>
+                            {p.fullName} ({p.mrn})
+                          </option>
+                        ))
+                      }
                 </select>
-              </label>
-            )}
+                </label>
+              )}
             {isClinician && (
               <>
                 <button
@@ -289,21 +291,23 @@ export function Overview({
                 </button>
               }
             />
-            {safeAnalyses.length ? (
-              <AnalysisTable
-                analyses={safeAnalyses.slice(0, 6)}
-                patients={safePatients}
-                onView={onViewAnalysis}
-                onDownload={onDownloadReport}
-                compact
-              />
-            ) : (
-              <EmptyState
-                icon={FileText}
-                title="No analyses available"
-                body="Processed EEG recordings will appear here with peak scores, confirmed event counts, and downloadable PDF reports."
-              />
-            )}
+              {
+                safeAnalyses.length ? (
+                  <AnalysisTable
+                    analyses={safeAnalyses.slice(0, 6)}
+                    patients={safePatients}
+                    onView={onViewAnalysis}
+                    onDownload={onDownloadReport}
+                    compact
+                  />
+                ) : (
+                  <EmptyState
+                    icon={FileText}
+                    title="No analyses available"
+                    body="Processed EEG recordings will appear here with peak scores, confirmed event counts, and downloadable PDF reports."
+                  />
+                )
+              }
           </Card>
         </div>
 
